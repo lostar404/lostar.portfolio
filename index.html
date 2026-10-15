@@ -1156,6 +1156,14 @@
   .tr-door.open .lf{transform:scaleX(.1);}
   .tr-w{animation:tr-glint 6s ease-in-out infinite;}
   @keyframes tr-glint{ 0%,100%{ opacity:.85; } 50%{ opacity:1; } }
+  /* click hints: arrow under the avatar, tap icon + CLICK on the train; 6s cycle, gone after first click */
+  .pl-avatar .av-hint{position:absolute; left:50%; bottom:-22px; width:14px; height:14px; margin-left:-7px; z-index:5; pointer-events:none; opacity:0; animation:hint-blink 6s ease-in-out infinite;}
+  .pl-avatar .av-hint svg{display:block; width:100%; height:100%; filter:drop-shadow(0 0 4px rgba(255,255,255,.7));}
+  .mq-hint{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:4; pointer-events:none; white-space:nowrap; display:flex; align-items:center; gap:10px; font:700 .85rem/1 'Space Mono',ui-monospace,monospace; letter-spacing:.3em; color:#fff; text-shadow:0 0 8px rgba(9,11,22,.95),0 0 18px rgba(9,11,22,.8); opacity:0; animation:hint-blink 6s ease-in-out infinite;}
+  .mq-hint svg{width:22px; height:22px; filter:drop-shadow(0 0 5px rgba(9,11,22,.9));}
+  .mq-hint.gone,.av-hint.gone{display:none;}
+  @keyframes hint-blink{0%,30%,100%{opacity:0;} 45%,65%{opacity:.85;} 80%{opacity:0;}}
+  @media (prefers-reduced-motion: reduce){ .pl-avatar .av-hint,.mq-hint{animation:none; opacity:.6;} }
   .showcase{position:relative; --u:4px;}
   .mq-fx{position:absolute; left:0; top:0; right:0; bottom:0; pointer-events:none; z-index:3; overflow:visible;}
   .mq-sign{position:absolute; transform:translate(-50%,0); white-space:nowrap; padding:5px 12px 5px; border:1px solid var(--hud); background:rgba(8,11,30,.94); font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; color:#dff7ee; box-shadow:0 0 14px rgba(143,224,200,.28); opacity:0; animation:sign-on .35s steps(1) forwards, sign-off .3s ease 4.45s forwards;}
@@ -1607,6 +1615,7 @@
 <section class="showcase" id="showcase" aria-hidden="true" hidden>
   <div class="wrap">
     <div class="mq" id="mq"><div class="mq-track" id="mqTrack"></div></div>
+    <div class="mq-hint" id="mqHint"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M9 9l11 4-4.5 1.8L13 19.5z" fill="#fff"/><path d="M5.2 8.2a5.5 5.5 0 0 1 2.6-4.6M3 11a8 8 0 0 1 2.2-6.2M9.4 6.2A3.2 3.2 0 0 0 7 8.5"/></svg>CLICK</div>
   </div>
 </section>
 
@@ -2776,13 +2785,13 @@
       function doors(open){ var d = track.querySelectorAll('.tr-door'); for(var q = 0; q < d.length; q++) d[q].classList.toggle('open', open); }
       // ---- station sign + a little passenger who steps out of the open door ----
       var PAX = {
-        gold:   { stop: '幸運星', c: '#f5c542', p: { H:'#f5c542', V:'#1b2147', v:'#fff6c9', B:'#e8b02e', A:'#c98f1a', P:'#fff3b0', N:'#b9831a', L:'#d9a22a', F:'#7a5410' },
-                  top: ['....HHHH....','...HHHHHH...','..HHVVVVHH..','..HHVvVVHH..','..HHVVVVHH..','...HHHHHH...','..NNBBBBNN..','.ABBBBBBBB..','.ABBPPPPBB..','.ABBBBBBBB..','..BBBBBBBB..','..BBBBBBBB..'],
-                  armD: [[10,7],[10,8],[10,9],[10,10]], armU: [[10,6],[11,5],[11,4],[11,3]],
+        gold:   { stop: '幸運星', c: '#f5c542', p: { H:'#f7d56a', V:'#1b2147', v:'#ffe9a0', B:'#e8b02e', A:'#c98f1a', P:'#fff3b0', R:'#ff5a5a', D:'#7a5410', N:'#9a6a14', K:'#b9831a', L:'#d9a22a', F:'#7a5410' },
+                  top: ['...HHHHHH...','..HHHHHHHH..','.HHVVVVVVHH.','.HVvvVVVVVH.','.HVvVVVVVVH.','.HVVVVVVVVH.','..HHHHHHHH..','..NNNNNNNN..','KABBBBBBBB.K','KABBDPRDBB.K','KABBBBBBBB.K','..NNNNNNNN..'],
+                  armD: [[10,8],[10,9],[10,10]], armU: [[10,8],[10,7],[11,6],[11,5],[11,4]],
                   la: ['..LL....LL..','..LL....LL..','..LL....LL..','.FFF....FFF.'], lb: ['...LL..LL...','...LL..LL...','...LL..LL...','..FFF..FFF..'] },
-        silver: { stop: '啟航星', c: '#8fe3ff', p: { H:'#dfe6f5', V:'#1b2147', v:'#8fe3ff', B:'#c3ccdf', A:'#9ba7c2', P:'#8fe3ff', N:'#8892ad', L:'#aab4cc', F:'#4b5573' },
-                  top: ['....HHHH....','...HHHHHH...','..HHVVVVHH..','..HHVvVVHH..','..HHVVVVHH..','...HHHHHH...','..NNBBBBNN..','.ABBBBBBBB..','.ABBPPPPBB..','.ABBBBBBBB..','..BBBBBBBB..','..BBBBBBBB..'],
-                  armD: [[10,7],[10,8],[10,9],[10,10]], armU: [[10,6],[11,5],[11,4],[11,3]],
+        silver: { stop: '啟航星', c: '#8fe3ff', p: { H:'#f1f5ff', V:'#1b2147', v:'#8fe3ff', B:'#c3ccdf', A:'#9ba7c2', P:'#8fe3ff', R:'#ff5a5a', D:'#4b5573', N:'#7b86a3', K:'#8892ad', L:'#aab4cc', F:'#4b5573' },
+                  top: ['...HHHHHH...','..HHHHHHHH..','.HHVVVVVVHH.','.HVvvVVVVVH.','.HVvVVVVVVH.','.HVVVVVVVVH.','..HHHHHHHH..','..NNNNNNNN..','KABBBBBBBB.K','KABBDPRDBB.K','KABBBBBBBB.K','..NNNNNNNN..'],
+                  armD: [[10,8],[10,9],[10,10]], armU: [[10,8],[10,7],[11,6],[11,5],[11,4]],
                   la: ['..LL....LL..','..LL....LL..','..LL....LL..','.FFF....FFF.'], lb: ['...LL..LL...','...LL..LL...','...LL..LL...','..FFF..FFF..'] },
         alien:  { stop: '地球', c: '#7be08f', p: { G:'#7be08f', E:'#0b1022', e:'#ffffff', S:'#6f7cff', A:'#565fd6', P:'#ffd24a', T:'#ffe066', a:'#4fb96a', M:'#2d7d45', L:'#5fcf7a', F:'#3f9f58' },
                   top: ['.T........T.','..a......a..','..GGGGGGGG..','.GGGGGGGGGG.','.GEEEGGEEEG.','.GEeEGGEeEG.','.GEEEGGEEEG.','..GGGMMGGG..','...SSSSSS...','..ASSPPSS...','..ASSSSSS...','...SSSSSS...'],
@@ -2822,6 +2831,13 @@
           var el = document.createElement('div'); el.className = 'pax'; el.setAttribute('data-kind', type);
           el.style.left = (doorX - 6 * u) + 'px'; el.style.top = (doorB - 16 * u) + 'px'; el.innerHTML = sprite(type);
           fx.appendChild(el);
+          // the train may still be settling on the first frame: re-centre on the open door a moment later
+          function recentre(){ try{
+            var sr2 = sec.getBoundingClientRect(), mr2 = mq.getBoundingClientRect(), cx2 = mr2.left + mr2.width / 2, b2 = null, bd2 = 1e9, ds2 = track.querySelectorAll('.tr-door.open');
+            for(var q2 = 0; q2 < ds2.length; q2++){ var r2 = ds2[q2].getBoundingClientRect(), dd2 = Math.abs(r2.left + r2.width / 2 - cx2); if(dd2 < bd2){ bd2 = dd2; b2 = r2; } }
+            if(b2){ var x2 = b2.left + b2.width / 2 - sr2.left; el.style.left = (x2 - 6 * u) + 'px'; sign.style.left = x2 + 'px'; }
+          }catch(e2){} }
+          recentre(); later(recentre, 60); later(recentre, 200);
           var drop = Math.max(8, groundY - doorB), dx = 24 * u, T = 4600;
           if(el.animate){
             el.animate([
@@ -3358,5 +3374,17 @@ cp.addEventListener('click',function(){
 })();
 </script>
 <script>(function(){var b=document.getElementById("pfResume");if(!b)return;b.setAttribute("href","resume/lostar-resume.pdf");b.setAttribute("download","蕭翔逸_履歷.pdf");b.removeAttribute("role");})();</script>
+<script>
+(function(){
+  function gone(el){ if(el) el.classList.add('gone'); }
+  var av = document.querySelector('.pl-avatar');
+  if(av){
+    var d = document.createElement('i'); d.className = 'av-hint'; d.innerHTML = '<svg viewBox="0 0 14 14"><path d="M7 2l5.5 9h-11z" fill="#fff"/></svg>'; av.appendChild(d);
+        av.addEventListener('click', function(){ gone(d); });
+  }
+  var t = document.getElementById('mqTrack'), h = document.getElementById('mqHint');
+  if(t && h) t.addEventListener('click', function(){ gone(h); });
+})();
+</script>
 </body>
 </html>
