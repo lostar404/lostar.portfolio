@@ -1009,7 +1009,7 @@
   @media (prefers-reduced-motion:reduce){.pf-tl li.ing::before{animation:none; box-shadow:0 0 6px 2px rgba(143,224,200,.6);}}
   .pfi-stats{display:block; margin:0 0 22px; padding:12px 0; border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft);}
   .pfi-stats .ps-exp{display:flex; align-items:baseline; gap:8px; margin-bottom:8px;}
-  .ps-scroll{margin-top:10px; margin-left:-2px; padding:4px 0 0 10px; max-height:112px; padding-right:24px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:none; -webkit-mask-image:linear-gradient(#000 70%,transparent); mask-image:linear-gradient(#000 70%,transparent); outline:none;}
+  .ps-scroll{margin-top:10px; margin-left:-2px; padding:4px 0 0 10px; max-height:112px; padding-right:6px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:none; -webkit-mask-image:linear-gradient(#000 70%,transparent); mask-image:linear-gradient(#000 70%,transparent); outline:none;}
   .ps-scroll::-webkit-scrollbar{display:none;}
   .ps-wrap{position:relative;}
   .ps-bar{position:absolute; top:4px; right:0; bottom:0; width:22px; touch-action:none; cursor:pointer;}
@@ -1017,6 +1017,7 @@
   .ps-thumb{position:absolute; right:6px; width:8px; top:0; height:30px; border-radius:4px; background:rgba(143,224,200,.5); border:1px solid rgba(143,224,200,.7); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); touch-action:none;}
   .ps-bar.dragging .ps-thumb,.ps-thumb:hover{background:rgba(143,224,200,.75);}
   .ps-bar.nobar{display:none;}
+  .ps-bar{display:none !important;}   /* scroll thumb removed: the timeline still scrolls with wheel / touch */
   .ps-scroll.at-end{-webkit-mask-image:none; mask-image:none;}
   .ps-edu{margin:0 0 0 4px;}
   .ps-edu li:last-child{padding-bottom:0;}
@@ -1168,7 +1169,10 @@
   footer{border-top:1px solid var(--line-soft); padding:28px 0; text-align:center; color:var(--muted); font-size:0.82rem;}
 
   @media (max-width:760px){
-    .navlinks{display:none;}
+    .navlinks{display:flex; gap:12px; font-size:0.8rem; flex:none; white-space:nowrap;}
+    .navlinks a{text-decoration:none; padding:8px 2px;}
+    .pl-info{min-width:0; width:112px;}
+    .player{gap:10px;}
     .star-label .name{font-size:2.25rem;} .star-label .medium{font-size:1.58rem;}
     .shoot, .compass{display:none;}
     .hero .plate{padding:76px 18px 0;}
@@ -2904,6 +2908,7 @@
         var r = img.getBoundingClientRect();
         var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
         var rad = Math.min(r.width, r.height * 1.05) * 0.38;
+        if(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) rad = Math.max(rad, 34);   // finger-sized target: the side planets are tiny on phones
         var dx = x - cx, dy = y - cy;
         var z = parseInt(btn.style.zIndex, 10) || 0;
         if(dx * dx + dy * dy <= rad * rad && z > bestZ){ best = i; bestZ = z; }
