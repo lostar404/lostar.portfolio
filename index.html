@@ -1164,13 +1164,15 @@
   .mq-hint.gone,.av-hint.gone{display:none;}
   @keyframes hint-blink{0%,30%,100%{opacity:0;} 45%,65%{opacity:.85;} 80%{opacity:0;}}
   @media (prefers-reduced-motion: reduce){ .pl-avatar .av-hint,.mq-hint{animation:none; opacity:.6;} }
-  .mq-win{position:absolute; left:50%; transform:translateX(-50%); z-index:5; white-space:nowrap; padding:7px 18px; border-radius:99px; font:800 1rem/1.2 'Noto Sans TC',system-ui,sans-serif; letter-spacing:.08em; color:#1b1440; background:linear-gradient(90deg,#ff7a7a,#ffc86b,#fff27a,#8dffb0,#7fd8ff,#b9a0ff); background-size:200% 100%; box-shadow:0 0 22px rgba(255,230,140,.75), 0 0 0 2px rgba(255,255,255,.85); opacity:0; animation:win-pop .5s cubic-bezier(.2,1.6,.4,1) forwards, win-shine 1.2s linear infinite, win-out .4s ease 4.2s forwards;}
+  .mq-win{position:absolute; left:50%; transform:translateX(-50%); z-index:5; white-space:nowrap; padding:7px 18px; border-radius:99px; font:800 1rem/1.2 'Noto Sans TC',system-ui,sans-serif; letter-spacing:.08em; color:#1b1440; background:linear-gradient(90deg,#ff7a7a,#ffc86b,#fff27a,#8dffb0,#7fd8ff,#b9a0ff); background-size:200% 100%; box-shadow:0 0 22px rgba(255,230,140,.75), 0 0 0 2px rgba(255,255,255,.85); opacity:0; animation:win-pop .5s cubic-bezier(.2,1.6,.4,1) forwards, win-shine 1.2s linear infinite, win-out .4s ease 6.4s forwards;}
   .mq-win i{position:absolute; width:6px; height:6px; background:#fff; border-radius:50%; box-shadow:0 0 8px #fff; opacity:0; animation:win-spark 1.1s ease-out infinite;}
   @keyframes win-pop{from{opacity:0; transform:translateX(-50%) scale(.3);} to{opacity:1; transform:translateX(-50%) scale(1);}}
   @keyframes win-shine{to{background-position:200% 0;}}
   @keyframes win-out{to{opacity:0;}}
   @keyframes win-spark{0%{opacity:1; transform:translate(0,0) scale(1);} 100%{opacity:0; transform:translate(var(--dx),var(--dy)) scale(.2);}}
   @media (max-width:760px){ .mq-win{font-size:.82rem; padding:6px 13px;} }
+  .mq-note{position:absolute; z-index:4; pointer-events:none; font:700 1.1rem/1 system-ui,sans-serif; color:#e9dcff; text-shadow:0 0 8px #b9a0ff,0 0 14px rgba(185,160,255,.8); opacity:0;}
+  .pax svg{transform-origin:50% 100%;}
   .showcase{position:relative; --u:4px;}
   .mq-fx{position:absolute; left:0; top:0; right:0; bottom:0; pointer-events:none; z-index:3; overflow:visible;}
   .mq-sign{position:absolute; transform:translate(-50%,0); white-space:nowrap; padding:5px 12px 5px; border:1px solid var(--hud); background:rgba(8,11,30,.94); font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; color:#dff7ee; box-shadow:0 0 14px rgba(143,224,200,.28); opacity:0; animation:sign-on .35s steps(1) forwards, sign-off .3s ease 4.45s forwards;}
@@ -1188,12 +1190,12 @@
   @media (max-width:760px){ .showcase{--u:2.6px;} .mq-sign{font-size:.6rem; padding:4px 9px;} .mq-sign i{width:5px; height:5px; margin-right:6px;} }
   @media (max-width:760px){ .mq-track{zoom:.62;} }
   @media (prefers-reduced-motion: reduce){ .mq-track{animation:none;} .mq{overflow-x:auto;} .tr-w{animation:none;} }
-  .visitor{text-align:center; padding:54px 20px 40px;}
+  .visitor{text-align:center; padding:6px 20px 14px;}
   .visitor[hidden]{display:none;}
   .visitor .hud-label{display:inline-flex; align-items:center; gap:10px;}
   .v-dot{width:7px; height:7px; border-radius:50%; background:var(--hud); box-shadow:0 0 10px var(--hud); animation:v-pulse 2s ease-in-out infinite;}
   @keyframes v-pulse{ 0%,100%{opacity:.4;} 50%{opacity:1;} }
-  .v-line{margin:14px 0 0; font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(1.35rem, 4vw, 2rem); color:var(--text);}
+  .v-line{margin:14px 0 0; font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(1.05rem, 3vw, 1.4rem); color:var(--text);}
   .v-num{display:inline-block; padding:0 .3em; font-style:normal; font-family:var(--mono); font-size:.9em; letter-spacing:.04em; background:var(--rainbow); -webkit-background-clip:text; background-clip:text; color:transparent; min-width:1ch;}
   @media (prefers-reduced-motion: reduce){ .v-dot{animation:none;} }
   footer{border-top:1px solid var(--line-soft); padding:28px 0; text-align:center; color:var(--muted); font-size:0.82rem;}
@@ -1612,10 +1614,6 @@
   </div>
 </section>
 
-<div class="visitor" id="visitor" hidden>
-  <div class="hud-label"><span class="v-dot"></span>TRAVELERS LOGGED</div>
-  <p class="v-line">已有 <span class="v-num" id="visitorNum">0</span> 位旅人經過此處</p>
-</div>
 
 
 
@@ -1626,6 +1624,10 @@
   </div>
 </section>
 
+<div class="visitor" id="visitor" hidden>
+  <div class="hud-label"><span class="v-dot"></span>TRAVELERS LOGGED</div>
+  <p class="v-line">已有 <span class="v-num" id="visitorNum">0</span> 位旅人經過此處</p>
+</div>
 <footer class="hud-line">© 2026 LOSTAR. All rights reserved.</footer>
 
 <div class="lg" id="detail" role="dialog" aria-modal="true" aria-labelledby="dtName" aria-hidden="true">
@@ -2830,7 +2832,7 @@
           var mq = sec.querySelector('.mq'), sr = sec.getBoundingClientRect(), mr = mq.getBoundingClientRect(), cx0 = mr.left + mr.width / 2, best = null, bd = 1e9, ds = track.querySelectorAll('.tr-door');
           for(var q = 0; q < ds.length; q++){ var r0 = ds[q].getBoundingClientRect(), dd = Math.abs(r0.left + r0.width / 2 - cx0); if(dd < bd){ bd = dd; best = r0; } }
           if(!best) return 2000;
-          var roll = Math.random(), type = roll < 0.05 ? 'hero' : (roll < 0.2 ? 'gold' : (roll < 0.6 ? 'silver' : 'alien')), d = PAX[type];
+          var roll = Math.random(), type = roll < 0.10 ? 'hero' : (roll < 0.30 ? 'gold' : (roll < 0.65 ? 'silver' : 'alien')), d = PAX[type];
           var u = parseFloat(getComputedStyle(sec).getPropertyValue('--u')) || 4;
           var doorX = best.left + best.width / 2 - sr.left, doorB = best.bottom - sr.top, groundY = mr.bottom - sr.top - 20;
           // sign
@@ -2838,6 +2840,7 @@
           sign.style.left = doorX + 'px'; sign.style.top = (mr.top - sr.top + 2) + 'px';
           sign.innerHTML = '<i></i>NEXT STOP // <b>' + d.stop + '</b>';
           fx.appendChild(sign);
+          if(type === 'hero') sign.style.animation = 'sign-on .35s steps(1) forwards, sign-off .3s ease 6.85s forwards';
           if(type === 'hero'){
             var win = document.createElement('div'); win.className = 'mq-win'; win.style.top = (mr.top - sr.top - 40) + 'px';
             win.textContent = '🎉 恭喜抽中隱藏！！！ 🎉';
@@ -2856,23 +2859,39 @@
             if(b2){ var x2 = b2.left + b2.width / 2 - sr2.left; el.style.left = (x2 - 6 * u) + 'px'; sign.style.left = x2 + 'px'; }
           }catch(e2){} }
           recentre(); later(recentre, 60); later(recentre, 200);
-          var drop = Math.max(8, groundY - doorB), dx = 24 * u, T = 4600;
+          var drop = Math.max(8, groundY - doorB), dx = 24 * u, hero = (type === 'hero'), T = hero ? 7000 : 4600;
+          var at = function(tx, ty, sc, op, off){ return { transform: 'translate(' + tx + 'px,' + ty + 'px) scale(' + sc + ')', opacity: op, offset: off }; };
+          var f = hero ? { o1: .0643, o2: .1543, o3: .3471, o4: .6914, o5: .8714, o6: .9486 } : { o1: .08, o2: .2, o3: .42, o4: .70, o5: .9, o6: .96 };
           if(el.animate){
             el.animate([
-              { transform: 'translate(0,0) scale(.92)', opacity: 0, offset: 0 },
-              { transform: 'translate(0,0) scale(.95)', opacity: 1, offset: .08 },
-              { transform: 'translate(0,' + drop + 'px) scale(1.12)', opacity: 1, offset: .2 },
-              { transform: 'translate(' + dx + 'px,' + drop + 'px) scale(1.12)', opacity: 1, offset: .42 },
-              { transform: 'translate(' + dx + 'px,' + drop + 'px) scale(1.12)', opacity: 1, offset: .70 },
-              { transform: 'translate(0,' + drop + 'px) scale(1.12)', opacity: 1, offset: .9 },
-              { transform: 'translate(0,0) scale(.95)', opacity: 1, offset: .96 },
-              { transform: 'translate(0,0) scale(.92)', opacity: 0, offset: 1 }
+              at(0, 0, .92, 0, 0), at(0, 0, .95, 1, f.o1), at(0, drop, 1.12, 1, f.o2), at(dx, drop, 1.12, 1, f.o3),
+              at(dx, drop, 1.12, 1, f.o4), at(0, drop, 1.12, 1, f.o5), at(0, 0, .95, 1, f.o6), at(0, 0, .92, 0, 1)
             ], { duration: T, easing: 'linear', fill: 'forwards' });
           } else { el.style.opacity = 1; }
-          later(function(){ el.classList.add('walk'); }, T * .2);
-          later(function(){ el.classList.remove('walk'); el.classList.add('wave'); }, T * .42);
-          later(function(){ el.classList.remove('wave'); el.classList.add('walk'); }, T * .70);
-          later(function(){ el.classList.remove('walk'); }, T * .9);
+          if(hero){
+            // dance: step-and-sway on the spot, arms pumping, little music notes
+            var svg = el.querySelector('svg');
+            later(function(){ el.classList.remove('walk'); el.classList.add('walk', 'wave');
+              if(svg && svg.animate) svg.animate([
+                { transform: 'translateY(0) rotate(0deg)' }, { transform: 'translateY(' + (-1.6 * u) + 'px) rotate(-7deg)' },
+                { transform: 'translateY(0) rotate(0deg)' }, { transform: 'translateY(' + (-1.6 * u) + 'px) rotate(7deg)' }, { transform: 'translateY(0) rotate(0deg)' }
+              ], { duration: 640, iterations: Math.round(T * (f.o4 - f.o3) / 640) });
+              for(var nn = 0; nn < 4; nn++) (function(i){ later(function(){
+                var nt = document.createElement('span'); nt.className = 'mq-note'; nt.textContent = ['♪', '♫', '♬'][i % 3];
+                nt.style.left = (doorX + dx + (i % 2 ? 7 : -9) * u) + 'px'; nt.style.top = (groundY - 12 * u) + 'px'; fx.appendChild(nt);
+                if(nt.animate) nt.animate([{ transform: 'translate(0,0)', opacity: 0 }, { opacity: 1, offset: .2 }, { transform: 'translate(' + ((i % 2 ? 1 : -1) * 4 * u) + 'px,' + (-9 * u) + 'px)', opacity: 0 }], { duration: 1400, fill: 'forwards' });
+              }, T * f.o3 + i * 620); })(nn);
+            }, T * f.o3);
+            later(function(){ el.classList.remove('wave'); }, T * f.o4);
+            later(function(){ el.classList.remove('walk'); }, T * f.o5);
+            later(function(){ el.classList.add('walk'); }, T * f.o2);
+            later(function(){ fx.innerHTML = ''; }, T + 150);
+            return T + 400;
+          }
+          later(function(){ el.classList.add('walk'); }, T * f.o2);
+          later(function(){ el.classList.remove('walk'); el.classList.add('wave'); }, T * f.o3);
+          later(function(){ el.classList.remove('wave'); el.classList.add('walk'); }, T * f.o4);
+          later(function(){ el.classList.remove('walk'); }, T * f.o5);
           later(function(){ fx.innerHTML = ''; }, T + 150);
           return 5000;
         }catch(err){ return 2000; }
