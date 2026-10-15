@@ -1164,6 +1164,13 @@
   .mq-hint.gone,.av-hint.gone{display:none;}
   @keyframes hint-blink{0%,30%,100%{opacity:0;} 45%,65%{opacity:.85;} 80%{opacity:0;}}
   @media (prefers-reduced-motion: reduce){ .pl-avatar .av-hint,.mq-hint{animation:none; opacity:.6;} }
+  .mq-win{position:absolute; left:50%; transform:translateX(-50%); z-index:5; white-space:nowrap; padding:7px 18px; border-radius:99px; font:800 1rem/1.2 'Noto Sans TC',system-ui,sans-serif; letter-spacing:.08em; color:#1b1440; background:linear-gradient(90deg,#ff7a7a,#ffc86b,#fff27a,#8dffb0,#7fd8ff,#b9a0ff); background-size:200% 100%; box-shadow:0 0 22px rgba(255,230,140,.75), 0 0 0 2px rgba(255,255,255,.85); opacity:0; animation:win-pop .5s cubic-bezier(.2,1.6,.4,1) forwards, win-shine 1.2s linear infinite, win-out .4s ease 4.2s forwards;}
+  .mq-win i{position:absolute; width:6px; height:6px; background:#fff; border-radius:50%; box-shadow:0 0 8px #fff; opacity:0; animation:win-spark 1.1s ease-out infinite;}
+  @keyframes win-pop{from{opacity:0; transform:translateX(-50%) scale(.3);} to{opacity:1; transform:translateX(-50%) scale(1);}}
+  @keyframes win-shine{to{background-position:200% 0;}}
+  @keyframes win-out{to{opacity:0;}}
+  @keyframes win-spark{0%{opacity:1; transform:translate(0,0) scale(1);} 100%{opacity:0; transform:translate(var(--dx),var(--dy)) scale(.2);}}
+  @media (max-width:760px){ .mq-win{font-size:.82rem; padding:6px 13px;} }
   .showcase{position:relative; --u:4px;}
   .mq-fx{position:absolute; left:0; top:0; right:0; bottom:0; pointer-events:none; z-index:3; overflow:visible;}
   .mq-sign{position:absolute; transform:translate(-50%,0); white-space:nowrap; padding:5px 12px 5px; border:1px solid var(--hud); background:rgba(8,11,30,.94); font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; color:#dff7ee; box-shadow:0 0 14px rgba(143,224,200,.28); opacity:0; animation:sign-on .35s steps(1) forwards, sign-off .3s ease 4.45s forwards;}
@@ -2793,6 +2800,10 @@
                   top: ['...HHHHHH...','..HHHHHHHH..','.HHVVVVVVHH.','.HVvvVVVVVH.','.HVvVVVVVVH.','.HVVVVVVVVH.','..HHHHHHHH..','..NNNNNNNN..','KABBBBBBBB.K','KABBDPRDBB.K','KABBBBBBBB.K','..NNNNNNNN..'],
                   armD: [[10,8],[10,9],[10,10]], armU: [[10,8],[10,7],[11,6],[11,5],[11,4]],
                   la: ['..LL....LL..','..LL....LL..','..LL....LL..','.FFF....FFF.'], lb: ['...LL..LL...','...LL..LL...','...LL..LL...','..FFF..FFF..'] },
+        hero:   { stop: '迷航星', c: '#c9b8ff', p: { R:'#ff5a5a', O:'#ff9b3d', Y:'#ffe066', G:'#6fe39a', C:'#4fd1ff', B:'#6a7dff', P:'#c47bff', W:'#f1f3ff', S:'#ffe3d6', E:'#2f7bff', H:'#ffffff', h:'#cfd6ee', K:'#23233a', T:'#bfe8ff', A:'#dfe4f7' },
+                  top: ['..ROYGGCBP..','...WWWWWW...','..WWWWWWWW..','.WWWWWWWWWW.','.WWSSSSSSWW.','.WSSESSESSW.','.BWSSSSSSWB.','..hHHHHHHh..','.HHKHHHHKH..','.HHKHTTHKH..','.KHKHHHHKH..','..KKKKKKKK..'],
+                  armD: [[10,8],[10,9],[10,10]], armU: [[10,8],[10,7],[11,6],[11,5],[11,4]],
+                  la: ['..KK....KK..','..SS....SS..','..WW....WW..','.HCH....HCH.'], lb: ['...KK..KK...','...SS..SS...','...WW..WW...','..HCH..HCH..'] },
         alien:  { stop: '地球', c: '#7be08f', p: { G:'#7be08f', E:'#0b1022', e:'#ffffff', S:'#6f7cff', A:'#565fd6', P:'#ffd24a', T:'#ffe066', a:'#4fb96a', M:'#2d7d45', L:'#5fcf7a', F:'#3f9f58' },
                   top: ['.T........T.','..a......a..','..GGGGGGGG..','.GGGGGGGGGG.','.GEEEGGEEEG.','.GEeEGGEeEG.','.GEEEGGEEEG.','..GGGMMGGG..','...SSSSSS...','..ASSPPSS...','..ASSSSSS...','...SSSSSS...'],
                   armD: [[9,9],[9,10]], armU: [[9,9],[10,8],[11,7]],
@@ -2819,7 +2830,7 @@
           var mq = sec.querySelector('.mq'), sr = sec.getBoundingClientRect(), mr = mq.getBoundingClientRect(), cx0 = mr.left + mr.width / 2, best = null, bd = 1e9, ds = track.querySelectorAll('.tr-door');
           for(var q = 0; q < ds.length; q++){ var r0 = ds[q].getBoundingClientRect(), dd = Math.abs(r0.left + r0.width / 2 - cx0); if(dd < bd){ bd = dd; best = r0; } }
           if(!best) return 2000;
-          var roll = Math.random(), type = roll < 0.2 ? 'gold' : (roll < 0.6 ? 'silver' : 'alien'), d = PAX[type];
+          var roll = Math.random(), type = roll < 0.05 ? 'hero' : (roll < 0.2 ? 'gold' : (roll < 0.6 ? 'silver' : 'alien')), d = PAX[type];
           var u = parseFloat(getComputedStyle(sec).getPropertyValue('--u')) || 4;
           var doorX = best.left + best.width / 2 - sr.left, doorB = best.bottom - sr.top, groundY = mr.bottom - sr.top - 20;
           // sign
@@ -2827,6 +2838,13 @@
           sign.style.left = doorX + 'px'; sign.style.top = (mr.top - sr.top + 2) + 'px';
           sign.innerHTML = '<i></i>NEXT STOP // <b>' + d.stop + '</b>';
           fx.appendChild(sign);
+          if(type === 'hero'){
+            var win = document.createElement('div'); win.className = 'mq-win'; win.style.top = (mr.top - sr.top - 40) + 'px';
+            win.textContent = '🎉 恭喜抽中隱藏！！！ 🎉';
+            [[-1,-1],[1,-1],[-1,1],[1,1],[0,-1.4],[0,1.4]].forEach(function(v, i){ var sp = document.createElement('i'); sp.style.left = (50 + v[0] * 46) + '%'; sp.style.top = '50%'; sp.style.setProperty('--dx', (v[0] * 22) + 'px'); sp.style.setProperty('--dy', (v[1] * 20) + 'px'); sp.style.animationDelay = (i * .17) + 's'; win.appendChild(sp); });
+            fx.appendChild(win);
+            try{ track('hidden/hero', '抽中隱藏主視覺小人'); }catch(e3){}
+          }
           // passenger
           var el = document.createElement('div'); el.className = 'pax'; el.setAttribute('data-kind', type);
           el.style.left = (doorX - 6 * u) + 'px'; el.style.top = (doorB - 16 * u) + 'px'; el.innerHTML = sprite(type);
