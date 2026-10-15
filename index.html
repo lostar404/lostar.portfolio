@@ -1173,6 +1173,10 @@
   @media (max-width:760px){ .mq-win{font-size:.82rem; padding:6px 13px;} }
   .mq-note{position:absolute; z-index:4; pointer-events:none; font:700 1.1rem/1 system-ui,sans-serif; color:#e9dcff; text-shadow:0 0 8px #b9a0ff,0 0 14px rgba(185,160,255,.8); opacity:0;}
   .pax svg{transform-origin:50% 100%;}
+  #lgWorks > div:last-child{scroll-margin-top:96px;}
+  button.ct-v,button.pf-mi{background:none; border:0; font-family:inherit; cursor:pointer; text-align:inherit; padding-left:0; padding-right:0;}
+  button.pf-mi{width:100%; padding:9px 11px;}
+  button.ct-v{padding:0; color:var(--text);}
   .showcase{position:relative; --u:4px;}
   .mq-fx{position:absolute; left:0; top:0; right:0; bottom:0; pointer-events:none; z-index:3; overflow:visible;}
   .mq-sign{position:absolute; transform:translate(-50%,0); white-space:nowrap; padding:5px 12px 5px; border:1px solid var(--hud); background:rgba(8,11,30,.94); font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; color:#dff7ee; box-shadow:0 0 14px rgba(143,224,200,.28); opacity:0; animation:sign-on .35s steps(1) forwards, sign-off .3s ease 4.45s forwards;}
@@ -1345,9 +1349,8 @@
           <div class="pf-contact" id="pfContact">
             <button type="button" class="pf-btn ghost" id="pfContactBtn" aria-haspopup="true" aria-expanded="false" aria-controls="pfContactMenu">聯絡我 <small>CONTACT <i class="pf-caret" aria-hidden="true"></i></small></button>
             <div class="pf-menu" id="pfContactMenu" role="menu" hidden>
-              <a class="pf-mi" role="menuitem" href="mailto:Lostar404@gmail.com"><span class="pf-mk">EMAIL</span><span class="pf-mv">Lostar404@gmail.com</span></a>
+              <button type="button" class="pf-mi" id="pfMail" role="menuitem"><span class="pf-mk">EMAIL</span><span class="pf-mv">Lostar404@gmail.com</span></button>
               <a class="pf-mi" role="menuitem" href="https://www.instagram.com/lostar.0404" target="_blank" rel="noopener noreferrer"><span class="pf-mk">INSTAGRAM</span><span class="pf-mv">@lostar.0404</span></a>
-              <button type="button" class="pf-copy" id="pfCopy">複製信箱 <small>COPY</small></button>
             </div>
           </div>
         </div>
@@ -1602,7 +1605,7 @@
     <div class="ct-cards">
       <div class="ct-card">
         <span class="ct-k">EMAIL</span>
-        <a class="ct-v" href="mailto:Lostar404@gmail.com">Lostar404@gmail.com</a>
+        <button type="button" class="ct-v" id="ctMail" title="點擊複製">Lostar404@gmail.com</button>
         <button type="button" class="ct-copy" id="ctCopy">複製信箱 <small>COPY</small></button>
       </div>
       <div class="ct-card">
@@ -2288,6 +2291,14 @@
       { src: 'images/img-55.webp', title: '背背包的生氣水獺' },
       { src: 'images/img-56.webp', title: '愛心眼水獺' }
     ]);
+    addSeries('累累兔鼠', { year: '', desc: '' }, [
+      { src: 'images/img-57.webp', title: '不想上班' },
+      { src: 'images/img-58.webp', title: '不加班' }
+    ]);
+    addSeries('其他', { year: '', desc: '' }, [
+      { src: 'images/img-59.webp', title: '草泥馬' },
+      { src: 'images/img-60.webp', title: '水豚疑惑' }
+    ]);
     var detailEl = document.getElementById('detail');
     var lgBar = document.getElementById('lgBar');
     var lgMain = document.getElementById('lgMain');
@@ -2379,7 +2390,14 @@
         var sp = document.createElement('span'); sp.textContent = (s.stickers.length || 0) + ' ' + cfg.unit + (s.year ? ' · ' + s.year : '');
         c.appendChild(cv); c.appendChild(b); c.appendChild(sp);
         if(isPinned(s)) c.appendChild(pinBadge());
-        c.addEventListener('click', function(){ show(k); });
+        c.addEventListener('click', function(){
+          show(k);
+          // phones: jump down to the works of the series that was just picked
+          if(window.matchMedia && window.matchMedia('(max-width:760px)').matches){
+            var bt = bodyEl.getBoundingClientRect().top, sc = detailEl && detailEl.scrollHeight > detailEl.clientHeight ? detailEl : null;
+            try{ bodyEl.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); }catch(e){ bodyEl.scrollIntoView(true); }
+          }
+        });
         cardsEl.appendChild(c); cards.push(c);
       });
       function show(k){
@@ -3384,7 +3402,7 @@ top();window.addEventListener('load',top);window.addEventListener('pageshow',top
 </script>
 <script>
 (function(){
-var wrap=document.getElementById('pfContact'),btn=document.getElementById('pfContactBtn'),menu=document.getElementById('pfContactMenu'),cp=document.getElementById('pfCopy');
+var wrap=document.getElementById('pfContact'),btn=document.getElementById('pfContactBtn'),menu=document.getElementById('pfContactMenu'),cp=document.getElementById('pfMail');
 if(!wrap||!btn||!menu)return;
 function set(o){menu.hidden=!o;wrap.classList.toggle('open',o);btn.setAttribute('aria-expanded',o?'true':'false');}
 btn.addEventListener('click',function(e){e.stopPropagation();set(menu.hidden);});
@@ -3393,7 +3411,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!menu.hidde
 menu.addEventListener('click',function(e){if(e.target.closest('a'))setTimeout(function(){set(false);},0);});
 if(cp)cp.addEventListener('click',function(){
   var t='Lostar404@gmail.com',lab=cp.firstChild;
-  function done(){var o=cp.innerHTML;cp.innerHTML='已複製 <small>COPIED</small>';setTimeout(function(){cp.innerHTML=o;},1400);}
+  function done(){var v=cp.querySelector('.pf-mv'),o=v.textContent;v.textContent='已複製 ✓';setTimeout(function(){v.textContent=o;},1400);}
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){fallback();});}else fallback();
   function fallback(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(_){}document.body.removeChild(ta);}
 });
@@ -3402,6 +3420,7 @@ if(cp)cp.addEventListener('click',function(){
 <script>
 (function(){
 var cp=document.getElementById('ctCopy'); if(!cp)return;
+var cm=document.getElementById('ctMail'); if(cm) cm.addEventListener('click',function(){cp.click();});
 cp.addEventListener('click',function(){
   var t='Lostar404@gmail.com';
   function done(){var o=cp.innerHTML;cp.innerHTML='已複製 <small>COPIED</small>';setTimeout(function(){cp.innerHTML=o;},1400);}
