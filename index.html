@@ -1868,6 +1868,7 @@
 
     var base = 'https://' + GOATCOUNTER_CODE + '.goatcounter.com/counter/';
     var path = window.location.pathname || '/';
+    if(path.length > 1) path = path.replace(/\/+$/, '');   // GoatCounter stores paths without the trailing slash
     // this page's own count first, then the whole-site total as a fallback
     var urls = [ base + encodeURIComponent(path) + '.json', base + path + '.json', base + 'TOTAL.json' ];
     function parseCount(j){
