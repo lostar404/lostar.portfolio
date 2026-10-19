@@ -716,12 +716,12 @@
   .sp-frame::after{display:none;}
   .sp-details{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:14px;}
   /* 啟航星 feature plate: the original sits on the left, three close-ups are stacked beside it and answer it */
-  .sp-item.has-details{grid-column:1 / -1; display:grid; grid-template-columns:auto 230px; justify-content:start; column-gap:40px; align-items:start;}
-  .sp-item.has-details > .sp-frame{width:auto; height:min(82vh, 800px); aspect-ratio:var(--ar, .5);}
+  .sp-item.has-details{grid-column:auto; display:grid; grid-template-columns:minmax(0,1fr) 34%; column-gap:26px; align-items:start;}
+  .sp-item.has-details > .sp-frame{width:100%; height:auto; aspect-ratio:.58;}
   .sp-item.has-details > .sp-frame{grid-column:1; grid-row:1;}
   .sp-item.has-details > .sp-cap{grid-column:1; grid-row:2;}
   .sp-item.has-details > .sp-own, .sp-item.has-details > .own-bar{grid-column:1;}
-  .sp-item.has-details > .sp-details{grid-column:2; grid-row:1; align-self:center; width:230px; display:flex; flex-direction:column; gap:14px; margin-top:0; position:relative;}
+  .sp-item.has-details > .sp-details{grid-column:2; grid-row:1; align-self:center; width:auto; display:flex; flex-direction:column; gap:14px; margin-top:0; position:relative;}
   .sp-item.has-details > .sp-details::before{content:'DETAIL'; position:absolute; left:-24px; top:50%; transform:translate(-50%,-50%) rotate(-90deg); font-family:var(--mono); font-size:.58rem; letter-spacing:.3em; color:var(--hud); opacity:.7; white-space:nowrap;}
   .sp-item.has-details > .sp-details .sp-detail{flex:0 0 auto; aspect-ratio:1/1;}
   .sp-detail[data-k="0"] img{object-position:50% 32%;} .sp-detail[data-k="1"] img{object-position:50% 50%;} .sp-detail[data-k="2"] img{object-position:50% 50%;}
@@ -732,6 +732,7 @@
   .sp-detail:hover img{transform:scale(1.06);}
   .sp-detail:focus-visible{outline:2px solid var(--star); outline-offset:3px;}
   .sp-detail span{position:absolute; left:0; right:0; bottom:0; padding:14px 6px 5px; font-family:var(--mono); font-size:.6rem; letter-spacing:.12em; text-align:center; color:#fff; background:linear-gradient(180deg, transparent, rgba(4,6,16,.85));}
+  .sp-col:empty{display:none;}
   .sp-col.sp-hero{grid-column:1 / -1; width:calc((100% - 44px) * 5 / 9); justify-self:center;}
   @media (max-width:760px){ .sp-col.sp-hero{width:100%;} }
   .sp-cap{padding:16px 2px 0; display:flex; flex-direction:column; gap:5px;}
