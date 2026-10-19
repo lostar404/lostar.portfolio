@@ -1886,16 +1886,14 @@
         .catch(function(){ attempt(k + 1, sawOk); });
     }
     // GoatCounter's public counter stayed at 0 for this site, so the number on the page now comes from a tiny
-    // independent counter (abacus). It is +1'd once per browser tab session; BASE carries over the visits GoatCounter had already logged.
+    // independent counter (abacus). It is +1'd on every page load; BASE carries over the visits GoatCounter had already logged.
     var BASE = 45, NS = 'lostar404-portfolio', KEY = 'visits';
     function viaAbacus(){
-      var seen = false; try{ seen = sessionStorage.getItem('lostar_counted') === '1'; }catch(e){}
-      var url = 'https://abacus.jasoncameron.dev/' + (seen ? 'get' : 'hit') + '/' + NS + '/' + KEY;
+      var url = 'https://abacus.jasoncameron.dev/hit/' + NS + '/' + KEY;   // every page load (refresh included) counts once
       fetch(url).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
         .then(function(j){
           var n = parseInt(j && j.value, 10);
           if(!isFinite(n) || n < 0) throw new Error('bad');
-          try{ sessionStorage.setItem('lostar_counted', '1'); }catch(e){}
           show(BASE + n);
         })
         .catch(function(){ attempt(0, false); });
