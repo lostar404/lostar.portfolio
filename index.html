@@ -1876,7 +1876,7 @@
       return isFinite(n) ? n : null;
     }
     function attempt(k, sawOk){
-      if(k >= urls.length){ if(sawOk) show(1); return; }   // reachable but still 0 -> show 1 (this visit)
+      if(k >= urls.length){ return; }   // nothing usable -> keep the block hidden rather than show a made-up number
       fetch(urls[k]).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
         .then(function(j){
           var n = parseCount(j);
@@ -1885,8 +1885,22 @@
         })
         .catch(function(){ attempt(k + 1, sawOk); });
     }
-    // give the page-view beacon a moment to register first so the visitor counts themselves
-    setTimeout(function(){ attempt(0, false); }, 1500);
+    // GoatCounter's public counter stayed at 0 for this site, so the number on the page now comes from a tiny
+    // independent counter (abacus). It is +1'd once per browser tab session; BASE carries over the visits GoatCounter had already logged.
+    var BASE = 45, NS = 'lostar404-portfolio', KEY = 'visits';
+    function viaAbacus(){
+      var seen = false; try{ seen = sessionStorage.getItem('lostar_counted') === '1'; }catch(e){}
+      var url = 'https://abacus.jasoncameron.dev/' + (seen ? 'get' : 'hit') + '/' + NS + '/' + KEY;
+      fetch(url).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
+        .then(function(j){
+          var n = parseInt(j && j.value, 10);
+          if(!isFinite(n) || n < 0) throw new Error('bad');
+          try{ sessionStorage.setItem('lostar_counted', '1'); }catch(e){}
+          show(BASE + n);
+        })
+        .catch(function(){ attempt(0, false); });
+    }
+    setTimeout(viaAbacus, 800);
   })();
 
   (function(){
