@@ -1194,7 +1194,7 @@
   @media (max-width:760px){ .showcase{--u:2.6px;} .mq-sign{font-size:.6rem; padding:4px 9px;} .mq-sign i{width:5px; height:5px; margin-right:6px;} }
   @media (max-width:760px){ .mq-track{zoom:.62;} }
   @media (prefers-reduced-motion: reduce){ .mq-track{animation:none;} .mq{overflow-x:auto;} .tr-w{animation:none;} }
-  .visitor{text-align:center; padding:4px 20px 10px;}
+  .visitor{text-align:center; padding:0 20px 8px; opacity:.8;}
   .visitor[hidden]{display:none;}
   .visitor .hud-label{display:none;}
   .v-dot{display:none;}
@@ -1626,11 +1626,13 @@
   </div>
 </section>
 
+<footer class="hud-line">
 <div class="visitor" id="visitor" hidden>
   <div class="hud-label"><span class="v-dot"></span>TRAVELERS LOGGED</div>
   <p class="v-line">已有 <span class="v-num" id="visitorNum">0</span> 位旅人經過此處</p>
 </div>
-<footer class="hud-line">© 2026 LOSTAR. All rights reserved.</footer>
+<div>© 2026 LOSTAR. All rights reserved.</div>
+</footer>
 
 <div class="lg" id="detail" role="dialog" aria-modal="true" aria-labelledby="dtName" aria-hidden="true">
   <header class="lg-bar" id="lgBar">
