@@ -714,6 +714,26 @@
   .sp-item.tall .sp-frame::before{display:none;}
   /* no rainbow base line on plates */
   .sp-frame::after{display:none;}
+  .sp-details{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:14px;}
+  /* 啟航星 feature plate: the original sits on the left, three close-ups are stacked beside it and answer it */
+  .sp-item.has-details{grid-column:1 / -1; display:grid; grid-template-columns:auto 230px; justify-content:start; column-gap:40px; align-items:start;}
+  .sp-item.has-details > .sp-frame{width:auto; height:min(82vh, 800px); aspect-ratio:var(--ar, .5);}
+  .sp-item.has-details > .sp-frame{grid-column:1; grid-row:1;}
+  .sp-item.has-details > .sp-cap{grid-column:1; grid-row:2;}
+  .sp-item.has-details > .sp-own, .sp-item.has-details > .own-bar{grid-column:1;}
+  .sp-item.has-details > .sp-details{grid-column:2; grid-row:1; align-self:center; width:230px; display:flex; flex-direction:column; gap:14px; margin-top:0; position:relative;}
+  .sp-item.has-details > .sp-details::before{content:'DETAIL'; position:absolute; left:-24px; top:50%; transform:translate(-50%,-50%) rotate(-90deg); font-family:var(--mono); font-size:.58rem; letter-spacing:.3em; color:var(--hud); opacity:.7; white-space:nowrap;}
+  .sp-item.has-details > .sp-details .sp-detail{flex:0 0 auto; aspect-ratio:1/1;}
+  .sp-detail[data-k="0"] img{object-position:50% 32%;} .sp-detail[data-k="1"] img{object-position:50% 50%;} .sp-detail[data-k="2"] img{object-position:50% 50%;}
+  @media (max-width:760px){ .sp-item.has-details{display:block;} .sp-item.has-details > .sp-frame{width:100%; height:auto; aspect-ratio:4/5;} .sp-item.has-details > .sp-details{display:grid; margin-top:14px; width:auto;} .sp-item.has-details > .sp-details::before{display:none;} .sp-item.has-details > .sp-details .sp-detail{aspect-ratio:1/1;} }
+  .sp-detail{position:relative; display:block; padding:0; border:1px solid var(--line-soft); background:radial-gradient(circle at 50% 40%, rgba(120,110,180,0.16), rgba(0,0,0,0.6)); cursor:zoom-in; overflow:hidden; aspect-ratio:1/1; -webkit-tap-highlight-color:transparent; transition:border-color .3s ease, box-shadow .3s ease, transform .3s ease;}
+  .sp-detail img{position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; display:block; transition:transform .6s ease;}
+  .sp-detail:hover{border-color:var(--line); box-shadow:0 0 24px rgba(140,160,255,0.22); transform:translateY(-2px);}
+  .sp-detail:hover img{transform:scale(1.06);}
+  .sp-detail:focus-visible{outline:2px solid var(--star); outline-offset:3px;}
+  .sp-detail span{position:absolute; left:0; right:0; bottom:0; padding:14px 6px 5px; font-family:var(--mono); font-size:.6rem; letter-spacing:.12em; text-align:center; color:#fff; background:linear-gradient(180deg, transparent, rgba(4,6,16,.85));}
+  .sp-col.sp-hero{grid-column:1 / -1; width:calc((100% - 44px) * 5 / 9); justify-self:center;}
+  @media (max-width:760px){ .sp-col.sp-hero{width:100%;} }
   .sp-cap{padding:16px 2px 0; display:flex; flex-direction:column; gap:5px;}
   .sp-cap small{font-family:var(--mono); font-size:0.66rem; letter-spacing:0.18em; color:var(--hud);}
   .sp-cap b{font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:1.25rem;}
@@ -2395,25 +2415,25 @@
       var heroPic = document.getElementById('coverArt');
       var fullBody = document.getElementById('workFullbody');
       if(heroPic)  addWork('啟航星', { title: '迷航星．主視覺', year: '', medium: '角色立繪', desc: '', src: heroPic.src });
-      if(fullBody) addWork('啟航星', { title: '迷航星．全身立繪', year: '', medium: '角色立繪', desc: '', src: fullBody.src });
+      if(fullBody) addWork('啟航星', { title: '迷航星．全身立繪', year: '', medium: '角色立繪', desc: '', src: fullBody.src, details: [
+        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-43.webp' },
+        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-44.webp' },
+        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-45.webp' } ] });
+      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-46.webp', details: [
+        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-47.webp' },
+        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-48.webp' },
+        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-49.webp' } ] });
     })();
 
     addSeries('吉呱呱', { year: '', desc: '' }, [
-      { src: 'images/img-43.webp' },
-      { src: 'images/img-44.webp' },
-      { src: 'images/img-45.webp' },
-      { src: 'images/img-46.webp' },
-      { src: 'images/img-47.webp' },
-      { src: 'images/img-48.webp' }
-    ]);
-    addSeries('邱邱羊的日記', { year: '', desc: '' }, [
-      { src: 'images/img-49.webp' },
       { src: 'images/img-50.webp' },
       { src: 'images/img-51.webp' },
       { src: 'images/img-52.webp' },
       { src: 'images/img-53.webp' },
       { src: 'images/img-54.webp' },
-      { src: 'images/img-55.webp' },
+      { src: 'images/img-55.webp' }
+    ]);
+    addSeries('邱邱羊的日記', { year: '', desc: '' }, [
       { src: 'images/img-56.webp' },
       { src: 'images/img-57.webp' },
       { src: 'images/img-58.webp' },
@@ -2424,19 +2444,26 @@
       { src: 'images/img-63.webp' },
       { src: 'images/img-64.webp' },
       { src: 'images/img-65.webp' },
-      { src: 'images/img-66.webp' }
+      { src: 'images/img-66.webp' },
+      { src: 'images/img-67.webp' },
+      { src: 'images/img-68.webp' },
+      { src: 'images/img-69.webp' },
+      { src: 'images/img-70.webp' },
+      { src: 'images/img-71.webp' },
+      { src: 'images/img-72.webp' },
+      { src: 'images/img-73.webp' }
     ]);
     addSeries('水獺好有戲', { year: '', desc: '' }, [
-      { src: 'images/img-67.webp', title: '背背包的生氣水獺' },
-      { src: 'images/img-68.webp', title: '愛心眼水獺' }
+      { src: 'images/img-74.webp', title: '背背包的生氣水獺' },
+      { src: 'images/img-75.webp', title: '愛心眼水獺' }
     ]);
     addSeries('累累兔鼠', { year: '', desc: '' }, [
-      { src: 'images/img-69.webp', title: '不想上班' },
-      { src: 'images/img-70.webp', title: '不加班' }
+      { src: 'images/img-76.webp', title: '不想上班' },
+      { src: 'images/img-77.webp', title: '不加班' }
     ]);
     addSeries('其他', { year: '', desc: '' }, [
-      { src: 'images/img-71.webp', title: '草泥馬' },
-      { src: 'images/img-72.webp', title: '水豚疑惑' }
+      { src: 'images/img-78.webp', title: '草泥馬' },
+      { src: 'images/img-79.webp', title: '水豚疑惑' }
     ]);
     var detailEl = document.getElementById('detail');
     var lgBar = document.getElementById('lgBar');
@@ -2705,7 +2732,7 @@
           var fr = document.createElement('button'); fr.type = 'button'; fr.className = 'sp-frame';
           fr.setAttribute('aria-label', '放大檢視：' + (w.title || '作品'));
           var im = document.createElement('img'); im.alt = w.title || ''; im.src = w.src; fr.appendChild(im);
-          function tag(){ if(im.naturalWidth && im.naturalHeight && im.naturalWidth / im.naturalHeight < 0.6) it.classList.add('tall'); }
+          function tag(){ if(im.naturalWidth && im.naturalHeight){ var rr = im.naturalWidth / im.naturalHeight; it.style.setProperty('--ar', (rr * 1.12).toFixed(3)); if(rr < 0.6) it.classList.add('tall'); } }
           if(im.complete) tag(); else im.addEventListener('load', tag);
           fr.addEventListener('click', function(){ lbOpen(ws, k); });
           var c = document.createElement('div'); c.className = 'sp-cap';
@@ -2715,9 +2742,22 @@
           c.appendChild(no); c.appendChild(tt); if(mm.textContent) c.appendChild(mm);
           if(w.desc){ var dp = document.createElement('p'); dp.textContent = w.desc; c.appendChild(dp); }
           it.appendChild(fr); it.appendChild(c);
+          if(w.details && w.details.length){
+            var dg = document.createElement('div'); dg.className = 'sp-details';
+            var dl = [w].concat(w.details.map(function(d){ return { src: d.src, title: d.title, year: '', medium: w.medium, desc: '' }; }));
+            w.details.forEach(function(d, q){
+              var db = document.createElement('button'); db.type = 'button'; db.className = 'sp-detail'; db.setAttribute('data-k', q); db.setAttribute('aria-label', '放大檢視：' + d.label);
+              var di = document.createElement('img'); di.alt = d.label; di.loading = 'lazy'; di.src = d.src; db.appendChild(di);
+              var ds = document.createElement('span'); ds.textContent = d.label; db.appendChild(ds);
+              db.addEventListener('click', function(){ lbOpen(dl, q + 1); });
+              dg.appendChild(db);
+            });
+            it.appendChild(dg); it.classList.add('has-details');
+          }
           var otb = ownToolbar(w, ws, stars[i].zh, true); if(otb) it.appendChild(otb);
-          it.style.order = k; cols[k % 2].appendChild(it);
+          it.style.order = k; if(it.classList.contains('has-details')) sp.appendChild(it); else cols[k % 2].appendChild(it);
         });
+        if(!cols[1].children.length && cols[0].children.length){ cols[0].classList.add('sp-hero'); }
         box.appendChild(sp);
         return;
       }
