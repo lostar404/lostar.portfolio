@@ -1577,9 +1577,10 @@
   /* >=1600px: right column reserved for a future comment panel; the section rail lives inside it */
   .cm-slot{display:none;}
   @media (min-width:1600px){
-    body{padding-right:300px;}
-    .cm-slot{display:block; position:fixed; right:0; top:0; bottom:16px; padding:72px 16px 0 0; box-sizing:border-box; width:340px; z-index:30; pointer-events:none; -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 48px,#000 118px); mask-image:linear-gradient(to bottom,transparent 0,transparent 48px,#000 118px);}
-    .cm-form{width:268px; align-self:flex-end; box-sizing:border-box;}
+    body{padding-right:376px;}
+    .cm-slot{display:block; position:fixed; right:0; top:0; bottom:16px; padding:72px 28px 0 0; box-sizing:border-box; width:400px; z-index:30; pointer-events:none; -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 48px,#000 118px); mask-image:linear-gradient(to bottom,transparent 0,transparent 48px,#000 118px);}
+    .cm-slot .cm-form{width:328px; align-self:flex-end; box-sizing:border-box;}
+    .cm-slot .cm-b{width:328px;}
     .side-rail{right:30px; top:150px; transform:none;}
   }
   @media (min-width:1600px){
