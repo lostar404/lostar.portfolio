@@ -1521,7 +1521,7 @@
   /* fullscreen (>=1600px): avatar + XP and the explorer profile become a wider, always-visible left dock; everything else is centred in the remaining space */
   .side-shade{display:none;}
   @media (min-width:1600px){
-    body{padding-left:420px;}
+    body{padding-left:346px;}
     .side-tag{display:none !important;}
     body{padding-top:72px;}
     header{position:fixed; top:0; left:0; right:0; margin-left:0;}
@@ -1529,11 +1529,11 @@
     .top-grid{grid-template-columns:minmax(0,1fr) !important; overflow-x:visible;}
     .top-grid .hero{grid-column:1 !important;}
     .top-grid .live-status:not([hidden]){grid-column:1 !important;}
-    .top-grid .pfi{position:fixed !important; left:28px; top:72px; bottom:16px; width:372px; grid-column:auto; grid-row:auto !important; padding:0 !important; display:block !important; overflow-y:auto; overflow-x:hidden; z-index:45; scrollbar-width:thin; scrollbar-color:rgba(143,227,199,.28) transparent;}
+    .top-grid .pfi{position:fixed !important; left:28px; top:72px; bottom:16px; width:298px; grid-column:auto; grid-row:auto !important; padding:0 !important; display:block !important; overflow-y:auto; overflow-x:hidden; z-index:45; scrollbar-width:thin; scrollbar-color:rgba(143,227,199,.28) transparent;}
     .top-grid .pfi::after{display:none;}
     .top-grid .pfi-clip{overflow:visible;}
     .top-grid .pfi-box{background:linear-gradient(180deg, rgba(14,17,40,.97), rgba(8,10,24,.98)) !important; padding:46px 22px 20px;}
-    .side-shade{display:block; position:fixed; top:0; bottom:0; left:400px; width:60px; z-index:44; pointer-events:none;
+    .side-shade{display:block; position:fixed; top:0; bottom:0; left:326px; width:60px; z-index:44; pointer-events:none;
       background:linear-gradient(90deg, rgba(0,0,8,.85) 0, rgba(0,0,8,.5) 28%, rgba(0,0,8,.18) 62%, rgba(0,0,8,0) 100%);}
     .hero .vh{width:min(100%,860px) !important; max-width:none; margin:4px auto 0 !important; clip-path:none !important;}
     .vh-tilt{-webkit-mask-image:linear-gradient(270deg,#000 80%,transparent 99%) !important; mask-image:linear-gradient(270deg,#000 80%,transparent 99%) !important;}
