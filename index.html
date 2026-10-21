@@ -1469,6 +1469,13 @@
     .hero{margin-top:26px;}
     .vh-tilt{-webkit-mask-image:none; mask-image:none;}
   }
+  /* phones: sections are told apart by colour, not by rules -- the profile sits on a deep-blue field that fades in/out */
+  @media (max-width:960px){
+    .pfi-box{border:none !important; background:linear-gradient(180deg, rgba(10,22,62,0) 0, #0a1640 84px, #0b1a4a 50%, #0a1640 calc(100% - 84px), rgba(10,22,62,0) 100%) !important; padding-top:96px; padding-bottom:96px;}
+    .pfi-stats, .pfi-foot{border-color:transparent !important;}
+    footer{border-top:none; background:linear-gradient(180deg, transparent, rgba(30,24,70,.55));}
+    .contact{background:linear-gradient(180deg, transparent 0, rgba(46,30,96,.34) 140px, rgba(46,30,96,.34) calc(100% - 60px), transparent 100%);}
+  }
 </style>
 </head>
 <body>
