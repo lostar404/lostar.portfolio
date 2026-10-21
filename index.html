@@ -4433,14 +4433,17 @@ cm.addEventListener('click',function(){
   function tx(x,y,s){ return 'translate('+x+'px,'+(y||0)+'px)'+(s?' scale('+s+')':''); }
   function play(again){
     if(again) rebuild();
+    var wasGone=deck.classList.contains('gone');
     reset(); btn.disabled=true;
+    var D=0;
+    if(wasGone){ D=450; go(deck,[{height:'0px',marginTop:'0px'},{height:'168px',marginTop:'14px'}],{duration:420,easing:'cubic-bezier(.3,.7,.25,1)',fill:'backwards'}); }   /* the space opens smoothly and pushes the work galaxy down before the cards spread */
     var W=stage.clientWidth, span=Math.min(W-CW,(N-1)*(CW+16)), x0=(W-CW)/2, left0=x0-span/2, els=[], xs=[];
     for(var i=0;i<N;i++){
       var d=document.createElement('div'); d.className='ft-dk'; d.innerHTML='<div class="ft-dk-face"></div>'; deck.appendChild(d); els.push(d);
       var xi=left0+i*span/(N-1); xs.push(xi); d.style.transform=tx(left0);
-      go(d,[{transform:tx(left0),opacity:0},{opacity:1,offset:.12},{transform:tx(xi),opacity:1}],{duration:380,delay:i*30,easing:'cubic-bezier(.2,.8,.25,1)',fill:'forwards'});
+      go(d,[{transform:tx(left0),opacity:0},{opacity:1,offset:.12},{transform:tx(xi),opacity:1}],{duration:380,delay:D+i*30,easing:'cubic-bezier(.2,.8,.25,1)',fill:'forwards'});
     }
-    var spreadEnd=380+(N-1)*30+150, landed=0;
+    var spreadEnd=D+380+(N-1)*30+150, landed=0;
     // the others fade away once the picks have left
     els.forEach(function(d,i){ if(PICK.indexOf(i)>-1) return;
       later(function(){ go(d,[{transform:tx(xs[i]),opacity:1},{transform:tx(xs[i],16,.92),opacity:0}],{duration:250,delay:(i%5)*15,easing:'ease-in',fill:'forwards'}); }, spreadEnd+250); });
