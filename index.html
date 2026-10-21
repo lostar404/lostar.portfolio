@@ -1578,7 +1578,7 @@
   @media (min-width:1600px){
     body{padding-right:300px;}
     .cm-slot{display:block; position:fixed; right:16px; top:72px; bottom:16px; width:268px; z-index:30; pointer-events:none;}
-    .side-rail{right:30px;}
+    .side-rail{right:30px; top:150px; transform:none;}
   }
   @media (min-width:1600px){
     /* the dock already scrolls by itself: no second scroller inside it */
@@ -1586,6 +1586,26 @@
     .top-grid .pfi .ps-more{display:none !important;}
     .top-grid .pfi{overscroll-behavior:contain;}
   }
+  /* comment dock (>=1600px): note box pinned bottom-right; sent notes rise as floating dialog frames */
+  .cm-feed,.cm-form{display:none;}
+  @media (min-width:1600px){
+    .cm-slot{display:flex !important; flex-direction:column; justify-content:flex-end; gap:14px;}
+    .cm-feed{display:flex; flex-direction:column-reverse; align-items:flex-end; gap:6px; flex:1; min-height:0; overflow:visible; position:relative;}
+    .cm-b{position:relative; width:290px; flex:none; margin-right:0; will-change:transform,opacity;}
+    .cm-b-in{position:relative; animation:cmBob 5.5s ease-in-out infinite; filter:drop-shadow(0 6px 14px rgba(70,90,200,.35));}
+    .cm-b img{display:block; width:100%; height:auto; user-select:none; -webkit-user-drag:none;}
+    .cm-b p{position:absolute; left:14%; right:13%; top:19%; bottom:21%; margin:0; display:flex; align-items:center; justify-content:center; text-align:center;
+      font:600 13px/1.35 var(--sans,"Noto Sans TC",sans-serif); color:#26307a; word-break:break-all; overflow:hidden;}
+    @keyframes cmBob{0%,100%{transform:translateY(0) rotate(-.8deg)} 50%{transform:translateY(-6px) rotate(.9deg)}}
+    .cm-form{display:block; pointer-events:auto; position:relative; padding:12px 12px 10px; border:1px solid rgba(143,227,199,.3); border-radius:12px; background:rgba(9,11,26,.72); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
+    .cm-form label{display:block; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); margin-bottom:8px;}
+    .cm-form textarea{display:block; width:100%; height:58px; resize:none; box-sizing:border-box; padding:8px 10px; border-radius:8px; border:1px solid rgba(160,175,255,.28); background:rgba(255,255,255,.05); color:var(--text); font:inherit; font-size:13px; line-height:1.4; outline:none;}
+    .cm-form textarea:focus{border-color:rgba(143,227,199,.6);}
+    .cm-row{display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-family:var(--mono); font-size:var(--fs-micro); color:var(--muted);}
+    .cm-form button{cursor:pointer; padding:6px 14px; border-radius:8px; border:1px solid rgba(143,227,199,.55); background:rgba(143,227,199,.1); color:var(--hud); font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); transition:background .2s;}
+    .cm-form button:hover{background:rgba(143,227,199,.22);}
+  }
+  @media (prefers-reduced-motion:reduce){ .cm-b-in{animation:none;} }
 </style>
 </head>
 <body>
@@ -1612,7 +1632,15 @@
   <a href="#contact" data-sec="2"><span>TRANSMIT</span><i></i></a>
 </nav>
 <div class="side-shade" aria-hidden="true"></div>
-<aside class="cm-slot" id="cmSlot" aria-hidden="true"></aside>
+<aside class="cm-slot" id="cmSlot" aria-label="留言">
+  <div class="cm-feed" id="cmFeed" aria-live="polite"></div>
+  <form class="cm-form" id="cmForm" autocomplete="off">
+    <label for="cmText">// LEAVE A NOTE · 留言</label>
+    <textarea id="cmText" maxlength="30" placeholder="留一句話給迷航星…" rows="2"></textarea>
+    <div class="cm-row"><span id="cmCnt">0/30</span><button type="submit">SEND ➤</button></div>
+  </form>
+  <img decoding="async" id="cmFrameSrc" alt="" hidden src="images/img-04.webp">
+</aside>
 <div class="side-tag" aria-hidden="true"><span>LOSTAR · X-404</span><b id="sideProg">SCAN 000</b></div>
 <div class="milkyway"></div>
 <div class="star-far"></div>
@@ -1624,9 +1652,9 @@
 <header>
   <nav class="wrap">
     <div class="player" id="player">
-      <div class="pl-avatar" role="button" tabindex="0" aria-label="發射太空船"><img decoding="async" src="images/img-04.png" alt="Xiaoyi 太空人頭盔"></div>
+      <div class="pl-avatar" role="button" tabindex="0" aria-label="發射太空船"><img decoding="async" src="images/img-05.png" alt="Xiaoyi 太空人頭盔"></div>
       <div class="pl-info">
-        <div class="pl-name"><img decoding="async" class="pl-word" src="images/img-05.png" alt="LOSTAR 迷航星"><span class="pl-lv">LV.<i id="plLv">--</i></span></div>
+        <div class="pl-name"><img decoding="async" class="pl-word" src="images/img-06.png" alt="LOSTAR 迷航星"><span class="pl-lv">LV.<i id="plLv">--</i></span></div>
         <div class="pl-xp-wrap" tabindex="0">
           <div class="pl-xp" role="progressbar" aria-label="經驗值" aria-valuemin="0" aria-valuemax="100" id="plBar"><i id="plXp"></i></div>
           <span class="pl-xp-txt" id="plXpTxt">EXP --%</span>
@@ -1675,7 +1703,7 @@
           <div class="vh-tilt" id="vhTilt">
             <div class="vh-flip">
               <div class="vh-glow" id="vhGlow" aria-hidden="true"></div>
-              <img decoding="async" id="vhHand" alt="填滿星空的手，托著上方的主視覺" src="images/img-06.webp">
+              <img decoding="async" id="vhHand" alt="填滿星空的手，托著上方的主視覺" src="images/img-07.webp">
               <canvas id="vhDust" aria-hidden="true"></canvas>
             </div>
           </div>
@@ -1698,7 +1726,7 @@
             <p>創作者的簡歷、專長與經歷。</p>
           </div>
           <div class="pfi-who">
-            <div class="pfi-photo"><img decoding="async" src="images/img-07.jpg" alt="海邊手持乾燥花的側臉人像"></div>
+            <div class="pfi-photo"><img decoding="async" src="images/img-08.jpg" alt="海邊手持乾燥花的側臉人像"></div>
             <div class="pfi-names">
               <h2>蕭翔逸<span>XiangYi Xiao</span></h2>
               <p class="pfi-role">插畫家 ・ 角色設計 ・ 貼圖企劃</p>
@@ -1782,12 +1810,12 @@
       <div class="trail-canvas" id="trailCanvas"></div>
       <div class="ring-tilt">
         <div class="blackhole" aria-hidden="true" style="--bh-grow:1.35; --bh-bright:1.3;">
-          <img decoding="async" class="bh-img" src="images/img-08.webp" alt="黑洞插畫">
+          <img decoding="async" class="bh-img" src="images/img-09.webp" alt="黑洞插畫">
         </div>
         <div class="ring collapsed" id="starRing">
           <button class="ring-item" type="button" data-angle="0" style="transform:rotateY(0deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-09.webp" alt="水星風格行星">
+              <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-10.webp" alt="水星風格行星">
               <div class="star-label"><div class="name">啟航星</div><div class="medium">Voyage Star</div></div>
             </div>
           </button>
@@ -1807,7 +1835,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(24deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="72" style="transform:rotateY(72deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-10.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-11.webp" alt="星環行星">
               <div class="star-label"><div class="name">元宇宙</div><div class="medium">Metaverse</div></div>
             </div>
           </button>
@@ -1827,7 +1855,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(96deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="144" style="transform:rotateY(144deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-11.webp" alt="森林行星">
+              <img decoding="async" class="planet-img" src="images/img-12.webp" alt="森林行星">
               <div class="star-label"><div class="name">貼圖星</div><div class="medium">Sticker Star</div></div>
             </div>
           </button>
@@ -1847,7 +1875,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(168deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="216" style="transform:rotateY(216deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-12.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-13.webp" alt="星環行星">
               <div class="star-label"><div class="name">萬象星</div><div class="medium">Spectrum</div></div>
             </div>
           </button>
@@ -1867,7 +1895,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(240deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="288" style="transform:rotateY(288deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-13.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-14.webp" alt="星環行星">
               <div class="star-label"><div class="name">牡羊 41</div><div class="medium">41 Arietis</div></div>
             </div>
           </button>
@@ -1989,7 +2017,7 @@
       <div class="ct-title">合作友星 <small>NEIGHBOR STARS</small></div>
       <div class="ct-partners" style="margin-top:0">
         <a class="pn-card" id="pnGuo" href="https://sakanaouo.github.io/" title="郭乃瑜 作品集" aria-label="郭乃瑜 作品集" target="_blank" rel="noopener noreferrer">
-          <span class="pn-orb"><img decoding="async" src="images/img-14.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
+          <span class="pn-orb"><img decoding="async" src="images/img-15.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
           <span class="pn-txt"><b>郭乃瑜</b><em>具備數位多媒體與3D製作的跨領域背景。</em><small>VISIT PORTFOLIO ›</small></span>
         </a>
       </div>
@@ -2031,7 +2059,7 @@
   <div class="lg-main" id="lgMain">
     <section class="lg-hero">
       <div class="lg-bignum" id="lgBigNum" aria-hidden="true"></div>
-      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img decoding="async" id="lgFigImg" alt="" src="images/img-15.webp"></div>
+      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img decoding="async" id="lgFigImg" alt="" src="images/img-16.webp"></div>
       <span class="hud-label" id="dtNo"></span>
       <h1 class="lg-name" id="dtName"></h1>
       <div class="lg-en" id="dtEn"></div>
@@ -2083,8 +2111,8 @@
 </div>
 
 <div id="assetStore" hidden>
-  <img decoding="async" id="workFullbody" src="images/img-16.webp" alt="白髮少年回眸站姿全身設定">
-  <img decoding="async" id="coverArt" src="images/img-17.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
+  <img decoding="async" id="workFullbody" src="images/img-17.webp" alt="白髮少年回眸站姿全身設定">
+  <img decoding="async" id="coverArt" src="images/img-18.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
 </div>
 
 <script>
@@ -2650,7 +2678,6 @@
     // metaverse: addCharacterSeries('角色名稱', { year:'2026', desc:'角色／系列說明', cover:'(選填) 封面圖', pinned:false }, [ { src:'…', title:'' }, … ]);
     function addCharacterSeries(name, meta, works){ pushSeries(META_NAME, name, meta, works, '角色系列'); }
     addCharacterSeries('許願神．新輝', { year: '', desc: '' }, [
-      { src: 'images/img-18.webp' },
       { src: 'images/img-19.webp' },
       { src: 'images/img-20.webp' },
       { src: 'images/img-21.webp' },
@@ -2658,25 +2685,26 @@
       { src: 'images/img-23.webp' },
       { src: 'images/img-24.webp' },
       { src: 'images/img-25.webp' },
-      { src: 'images/img-26.webp', title: '新輝 Q版 動圖' }
+      { src: 'images/img-26.webp' },
+      { src: 'images/img-27.webp', title: '新輝 Q版 動圖' }
     ]);
     addCharacterSeries('星鯊．魚', { year: '', desc: '' }, [
-      { src: 'images/img-27.webp' },
       { src: 'images/img-28.webp' },
-      { src: 'images/img-29.webp' }
+      { src: 'images/img-29.webp' },
+      { src: 'images/img-30.webp' }
     ]);
     addCharacterSeries('瑤幽', { year: '', desc: '' }, [
-      { src: 'images/img-30.webp' },
       { src: 'images/img-31.webp' },
-      { src: 'images/img-32.webp' }
+      { src: 'images/img-32.webp' },
+      { src: 'images/img-33.webp' }
     ]);
     addCharacterSeries('專題小夥伴', { year: '', desc: '大學專題時，為組員們畫的 Q 版形象。' }, [
-      { src: 'images/img-33.webp' },
       { src: 'images/img-34.webp' },
       { src: 'images/img-35.webp' },
       { src: 'images/img-36.webp' },
       { src: 'images/img-37.webp' },
       { src: 'images/img-38.webp' },
+      { src: 'images/img-39.webp' },
     ]);
 
     if(newIdx >= 0){
@@ -2685,11 +2713,11 @@
     }
 
     (function(){
-      addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-39.webp' });
-      addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-40.webp' });
-      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-41.webp' });
-      addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-42.webp' });
-      addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-43.webp' });
+      addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-40.webp' });
+      addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-41.webp' });
+      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-42.webp' });
+      addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-43.webp' });
+      addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-44.webp' });
     })();
 
     (function(){
@@ -2697,25 +2725,24 @@
       var fullBody = document.getElementById('workFullbody');
       if(heroPic)  addWork('啟航星', { title: '迷航星．主視覺', year: '', medium: '角色立繪', desc: '', src: heroPic.src });
       if(fullBody) addWork('啟航星', { title: '迷航星．全身立繪', year: '', medium: '角色立繪', desc: '', src: fullBody.src, details: [
-        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-44.webp' },
-        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-45.webp' },
-        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-46.webp' } ] });
-      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-47.webp', details: [
-        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-48.webp' },
-        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-49.webp' },
-        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-50.webp' } ] });
+        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-45.webp' },
+        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-46.webp' },
+        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-47.webp' } ] });
+      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-48.webp', details: [
+        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-49.webp' },
+        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-50.webp' },
+        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-51.webp' } ] });
     })();
 
     addSeries('吉呱呱', { year: '', desc: '' }, [
-      { src: 'images/img-51.webp' },
       { src: 'images/img-52.webp' },
       { src: 'images/img-53.webp' },
       { src: 'images/img-54.webp' },
       { src: 'images/img-55.webp' },
-      { src: 'images/img-56.webp' }
+      { src: 'images/img-56.webp' },
+      { src: 'images/img-57.webp' }
     ]);
     addSeries('邱邱羊的日記', { year: '', desc: '' }, [
-      { src: 'images/img-57.webp' },
       { src: 'images/img-58.webp' },
       { src: 'images/img-59.webp' },
       { src: 'images/img-60.webp' },
@@ -2732,19 +2759,20 @@
       { src: 'images/img-71.webp' },
       { src: 'images/img-72.webp' },
       { src: 'images/img-73.webp' },
-      { src: 'images/img-74.webp' }
+      { src: 'images/img-74.webp' },
+      { src: 'images/img-75.webp' }
     ]);
     addSeries('水獺好有戲', { year: '', desc: '' }, [
-      { src: 'images/img-75.webp', title: '背背包的生氣水獺' },
-      { src: 'images/img-76.webp', title: '愛心眼水獺' }
+      { src: 'images/img-76.webp', title: '背背包的生氣水獺' },
+      { src: 'images/img-77.webp', title: '愛心眼水獺' }
     ]);
     addSeries('累累兔鼠', { year: '', desc: '' }, [
-      { src: 'images/img-77.webp', title: '不想上班' },
-      { src: 'images/img-78.webp', title: '不加班' }
+      { src: 'images/img-78.webp', title: '不想上班' },
+      { src: 'images/img-79.webp', title: '不加班' }
     ]);
     addSeries('其他', { year: '', desc: '' }, [
-      { src: 'images/img-79.webp', title: '草泥馬' },
-      { src: 'images/img-80.webp', title: '水豚疑惑' }
+      { src: 'images/img-80.webp', title: '草泥馬' },
+      { src: 'images/img-81.webp', title: '水豚疑惑' }
     ]);
     var detailEl = document.getElementById('detail');
     var lgBar = document.getElementById('lgBar');
@@ -4286,6 +4314,35 @@ cm.addEventListener('click',function(){
     if(r<0.02){ if(!left){ left=true; reset(); } }
     else if(left && r>=0.3){ left=false; play(); }
   },{threshold:[0,0.02,0.3]}).observe(panel);
+})();
+</script>
+<script>
+/* comment dock: a sent note is dropped into the dialog frame, rises from the box and keeps floating */
+(function(){
+  var form=document.getElementById('cmForm'), feed=document.getElementById('cmFeed'), ta=document.getElementById('cmText'), cnt=document.getElementById('cmCnt'), src=document.getElementById('cmFrameSrc');
+  if(!form||!feed||!ta||!src) return;
+  var MAX=5, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ta.addEventListener('input',function(){ cnt.textContent=ta.value.length+'/30'; });
+  ta.addEventListener('keydown',function(e){ if(e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); form.requestSubmit ? form.requestSubmit() : send(); } });
+  form.addEventListener('submit',function(e){ e.preventDefault(); send(); });
+  function send(){
+    var t=ta.value.replace(/\s+/g,' ').trim(); if(!t) return;
+    ta.value=''; cnt.textContent='0/30';
+    var old=[].slice.call(feed.children), before=old.map(function(n){ return n.getBoundingClientRect().top; });
+    var b=document.createElement('div'); b.className='cm-b';
+    var inn=document.createElement('div'); inn.className='cm-b-in'; inn.style.animationDuration=(4.8+Math.random()*2)+'s'; inn.style.animationDelay=(-Math.random()*4)+'s';
+    var im=document.createElement('img'); im.alt=''; im.src=src.src; var p=document.createElement('p'); p.textContent=t;
+    inn.appendChild(im); inn.appendChild(p); b.appendChild(inn); feed.insertBefore(b,feed.firstChild);
+    if(!reduce && b.animate){
+      b.animate([{transform:'translateY(70px) scale(.7)',opacity:0},{transform:'translateY(-8px) scale(1.03)',opacity:1,offset:.7},{transform:'translateY(0) scale(1)',opacity:1}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'});
+      old.forEach(function(n,i){ var d=before[i]-n.getBoundingClientRect().top; if(d) n.animate([{transform:'translateY('+d+'px)'},{transform:'translateY(0)'}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'}); });
+    }
+    [].slice.call(feed.children).slice(MAX).forEach(function(l){
+      if(l.gone) return; l.gone=true;
+      if(!reduce && l.animate){ l.animate([{opacity:1},{opacity:0}],{duration:400,fill:'forwards'}).onfinish=function(){ if(l.parentNode) l.parentNode.removeChild(l); }; }
+      else l.parentNode.removeChild(l);
+    });
+  }
 })();
 </script>
 </body>
