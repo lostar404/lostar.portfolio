@@ -4568,14 +4568,14 @@ cm.addEventListener('click',function(){
 (function(){
   var fab=document.getElementById('cmFab'), bd=document.getElementById('cmBackdrop'), x=document.getElementById('cmX'), ta=document.getElementById('cmText'), mq=window.matchMedia('(max-width:960px)');
   if(!fab) return;
-  function playIn(){   /* the dialog frames come out first, then each message floats up from behind its frame */
-    var feed=document.getElementById('cmFeed'); if(!feed||!feed.animate) return;
+  function playIn(){   /* frame + text together rise slowly from behind the input box */
+    var feed=document.getElementById('cmFeed'), form=document.getElementById('cmForm'); if(!feed||!form||!feed.animate) return;
     if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var ft=form.getBoundingClientRect().top;
     [].slice.call(feed.children).forEach(function(b,i){
       if(b.gone) return;
-      var t=220+i*130, p=b.querySelector('p'), im=b.querySelector('img');
-      b.animate([{opacity:0,transform:'translateY(46px) scale(.82)'},{opacity:1,transform:'translateY(-4px) scale(1.02)',offset:.7},{opacity:1,transform:'none'}],{duration:560,delay:t,easing:'cubic-bezier(.2,.8,.25,1)',fill:'backwards'});
-      if(p) p.animate([{opacity:0,transform:'translateY(30px) scale(.9)'},{opacity:0,transform:'translateY(24px) scale(.92)',offset:.25},{opacity:1,transform:'none'}],{duration:1300,delay:t+520,easing:'cubic-bezier(.22,.8,.3,1)',fill:'backwards'});
+      var d=Math.max(40,ft-b.getBoundingClientRect().top-20);
+      b.animate([{opacity:0,transform:'translateY('+d+'px) scale(.86)'},{opacity:1,transform:'translateY('+(d*.45)+'px) scale(.94)',offset:.3},{opacity:1,transform:'translateY(-5px) scale(1.01)',offset:.85},{opacity:1,transform:'none'}],{duration:1150,delay:200+i*150,easing:'cubic-bezier(.25,.7,.3,1)',fill:'backwards'});
     });
   }
   function open(){ if(!mq.matches) return; var was=document.body.classList.contains('cm-open'); document.body.classList.add('cm-open'); if(!was) playIn(); }
