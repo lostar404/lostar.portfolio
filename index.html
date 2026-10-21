@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<script>(function(){var raf=window.requestAnimationFrame.bind(window),held=[];window.requestAnimationFrame=function(cb){if(window.__rafHold){held.push(cb);return -held.length;}return raf(cb);};window.__rafRelease=function(){window.__rafHold=false;var h=held;held=[];h.forEach(function(cb){raf(cb);});};})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LOSTAR 迷航星｜X-404 的星圖紀錄</title>
@@ -1594,6 +1595,7 @@
     .cm-feed{display:flex; flex-direction:column-reverse; align-items:flex-end; gap:6px; flex:1; min-height:0; overflow:visible; position:relative;}
     .cm-b{position:relative; width:290px; flex:none; margin-right:0; will-change:transform,opacity;}
     .cm-b-in{position:relative; animation:cmBob 5.5s ease-in-out infinite; filter:drop-shadow(0 6px 14px rgba(70,90,200,.35));}
+    @media (max-width:960px){ .cm-b-in{filter:none; will-change:transform;} body.cm-open *:not(.cm-slot):not(.cm-slot *){animation-play-state:paused !important;} body.cm-open .cm-slot .cm-b-in{animation-play-state:running !important;} }
     .cm-b img{display:block; width:100%; height:auto; user-select:none; -webkit-user-drag:none;}
     .cm-b p{position:absolute; left:14%; right:13%; top:19%; bottom:21%; margin:0; display:flex; align-items:center; justify-content:center; text-align:center;
       font:600 13px/1.35 var(--sans,"Noto Sans TC",sans-serif); color:#26307a; word-break:break-all; overflow:hidden;}
@@ -4592,8 +4594,8 @@ cm.addEventListener('click',function(){
       b.animate([{opacity:0,transform:'translateY('+d+'px) scale(.86)'},{opacity:1,transform:'translateY('+(d*.45)+'px) scale(.94)',offset:.3},{opacity:1,transform:'translateY(-5px) scale(1.01)',offset:.85},{opacity:1,transform:'none'}],{duration:1150,delay:200+i*150,easing:'cubic-bezier(.25,.7,.3,1)',fill:'backwards'});
     });
   }
-  function open(){ if(!mq.matches) return; var was=document.body.classList.contains('cm-open'); document.body.classList.add('cm-open'); if(!was) playIn(); }
-  function shut(){ document.body.classList.remove('cm-open'); document.documentElement.style.removeProperty('--cmkb'); document.getElementById('cmSlot').style.removeProperty('--cmkb'); if(ta) ta.blur(); }
+  function open(){ if(!mq.matches) return; var was=document.body.classList.contains('cm-open'); document.body.classList.add('cm-open'); window.__rafHold=true; if(!was) playIn(); }
+  function shut(){ document.body.classList.remove('cm-open'); if(window.__rafRelease) window.__rafRelease(); document.documentElement.style.removeProperty('--cmkb'); document.getElementById('cmSlot').style.removeProperty('--cmkb'); if(ta) ta.blur(); }
   fab.addEventListener('click',open); if(bd) bd.addEventListener('click',shut); if(x) x.addEventListener('click',shut);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') shut(); });
   if(mq.addEventListener) mq.addEventListener('change',function(){ if(!mq.matches) shut(); });
