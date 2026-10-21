@@ -1608,14 +1608,37 @@
   }
   @media (prefers-reduced-motion:reduce){ .cm-b-in{animation:none;} }
   .side-rail{display:none !important;}   /* section dots removed for now */
-  .ft-replay{display:none;}
-  @media (min-width:961px){
+  @media all{
     .ft-replay{display:flex; justify-content:center; margin-top:14px;}
     .ft-replay button{cursor:pointer; padding:6px 16px; border-radius:999px; border:1px solid rgba(143,227,199,.45); background:rgba(143,227,199,.08); color:var(--hud); font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); transition:background .2s, opacity .2s;}
     .ft-replay button:hover:not(:disabled){background:rgba(143,227,199,.2);}
     .ft-replay button:disabled{opacity:.35; cursor:default;}
   }
   .ft-card.ft-bust .ft-frame img, .ft-fl-art.ft-bust img{object-fit:cover; object-position:50% 0%; transform:scale(1.18); transform-origin:50% 0%;}
+  /* ===== mobile: profile opens from a button (full-screen sheet); featured works + card-draw sit under the hero, above the work galaxy ===== */
+  .pf-open-wrap{display:none;}
+  @media (min-width:961px){ .pf-close{display:none !important;} }
+  @media (max-width:960px){
+    .pf-open-wrap{display:flex; justify-content:center; padding:4px 20px 22px; position:relative; z-index:3;}
+    .pf-open{cursor:pointer; display:inline-flex; align-items:center; gap:10px; padding:11px 22px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(143,227,199,.09); color:var(--text); font-family:var(--serif); font-size:15px; letter-spacing:.04em; -webkit-tap-highlight-color:transparent;}
+    .pf-open small{font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--hud);}
+    .pf-open:active{background:rgba(143,227,199,.2);}
+    #profile{display:none !important;}
+    html:has(body.pf-sheet), body.pf-sheet{overflow:hidden;}
+    body.pf-sheet #profile{display:block !important; visibility:visible; position:fixed; inset:0; z-index:1200; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; margin:0 !important; padding:60px 0 36px !important; background:linear-gradient(180deg,#0b0e24,#070916);}
+    .pf-close{position:fixed; top:12px; right:14px; z-index:1210; cursor:pointer; padding:8px 16px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:11px; letter-spacing:.14em;}
+    .live-status:not([hidden]){display:block !important; margin:2px 0 6px; padding:0; position:relative; z-index:2; text-align:center;}
+    .live-status .hud-label{margin-bottom:12px;}
+    .feat-wrap{padding-top:0; padding-bottom:18px;}
+    .ft-row{display:grid; grid-template-columns:repeat(var(--n,3),minmax(0,1fr)); gap:8px;}
+    .ft-card{display:block; padding:0; border:none; background:none; cursor:pointer; color:inherit; font:inherit; -webkit-tap-highlight-color:transparent;}
+    .ft-frame{display:flex; align-items:center; justify-content:center; aspect-ratio:4/5; padding:6px; border:1px solid var(--line-soft); background:rgba(10,12,30,.55); overflow:hidden;}
+    .ft-frame img{display:block; width:100%; height:100%; max-width:none; max-height:none; object-fit:contain;}
+    .ft-name{display:block; margin-top:7px; font-family:var(--serif); font-style:italic; font-size:12px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .ft-star{display:block; margin-top:2px; font-family:var(--mono); font-size:8.5px; letter-spacing:.04em; color:var(--hud); opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .ft-stage .ft-row{max-width:none;}
+    .ft-deck{height:150px;}
+  }
 </style>
 </head>
 <body>
@@ -1726,6 +1749,7 @@
   </div>
 </section>
 
+<div class="pf-open-wrap"><button type="button" class="pf-open" id="pfOpen" aria-haspopup="dialog">◈ 探索者檔案 <small>EXPLORER PROFILE</small></button></div>
 <div class="pfi open" id="profile">
   <div class="sec-ghost sg-01" aria-hidden="true">01</div>
   <div class="pfi-clip">
@@ -4264,7 +4288,7 @@ cm.addEventListener('click',function(){
     function update(){
       tick=false;
       var stack=innerWidth<=960, pts=[[mid(hero),COL.hero]];
-      if(stack&&prof) pts.push([mid(prof),COL.prof]);
+      if(stack&&prof&&prof.offsetParent) pts.push([mid(prof),COL.prof]);
       pts.push([mid(work),COL.work],[mid(contact),COL.contact]);
       var y=scrollY+innerHeight*.5, c;
       if(y<=pts[0][0]) c=pts[0][1]; else if(y>=pts[pts.length-1][0]) c=pts[pts.length-1][1];
@@ -4409,6 +4433,27 @@ cm.addEventListener('click',function(){
   }
   load(true);
   setInterval(function(){ if(!document.hidden && window.innerWidth>=1600) load(false); },15000);
+})();
+</script>
+<script>
+/* mobile: profile sheet + featured works moved between the hero and the work galaxy */
+(function(){
+  var btn=document.getElementById('pfOpen'), prof=document.getElementById('profile'), tg=document.querySelector('.top-grid'), fw=document.querySelector('.feat-wrap'), work=document.getElementById('work');
+  var mq=window.matchMedia('(max-width:960px)'), close=null;
+  if(prof){ close=document.createElement('button'); close.type='button'; close.className='pf-close'; close.textContent='✕ CLOSE'; close.setAttribute('aria-label','關閉探索者檔案'); prof.appendChild(close); }
+  function isOpen(){ return document.body.classList.contains('pf-sheet'); }
+  function open(){ if(!mq.matches||!prof) return; document.body.classList.add('pf-sheet'); prof.scrollTop=0; }
+  function shut(){ document.body.classList.remove('pf-sheet'); }
+  if(btn) btn.addEventListener('click',open);
+  if(close) close.addEventListener('click',shut);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&isOpen()) shut(); });
+  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a[href="#profile"]'); if(a&&mq.matches){ e.preventDefault(); open(); } });
+  function place(){
+    if(!tg||!fw||!work) return;
+    if(mq.matches){ if(fw.parentNode!==tg) tg.insertBefore(fw,work); }
+    else { shut(); if(fw.parentNode===tg) tg.parentNode.insertBefore(fw,tg.nextSibling); }
+  }
+  place(); if(mq.addEventListener) mq.addEventListener('change',place); else mq.addListener(place);
 })();
 </script>
 </body>
