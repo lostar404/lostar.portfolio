@@ -4191,7 +4191,7 @@ cm.addEventListener('click',function(){
     tx.globalAlpha=1;
   }
   /* click / tap on the hand: one big wrist flick that decays, plus a burst of fingertip dust */
-  var flickT=0, flickAmp=30, alphaMap=null, AW=160, AH=72;
+  var flickT=0, ARM_AMP=1.7, WRIST_AMP=7, LAG=.14, FQ=.95, alphaMap=null, AW=160, AH=72;
   hand.addEventListener('load',buildAlpha); if(hand.complete) buildAlpha();
   function buildAlpha(){ try{ var c=document.createElement('canvas'); c.width=AW; c.height=AH; var g=c.getContext('2d'); g.drawImage(hand,0,0,AW,AH); var d=g.getImageData(0,0,AW,AH).data; alphaMap=new Uint8Array(AW*AH); for(var i=0;i<AW*AH;i++) alphaMap[i]=d[i*4+3]; }catch(e){ alphaMap=null; } }
   function onHand(cx,cy){
@@ -4206,7 +4206,7 @@ cm.addEventListener('click',function(){
     if(reduce) return; flickT=performance.now(); kick();
     var sr=stage.getBoundingClientRect(), hr=tilt.getBoundingClientRect();
     tips.forEach(function(p){ var X=hr.left-sr.left+p[0]*hr.width, Y=hr.top-sr.top+p[1]*hr.height;
-      for(var i=0;i<7&&parts.length<90;i++) parts.push({x:X+(rnd()-.5)*8,y:Y+(rnd()-.5)*8,vx:(rnd()-.2)*60,vy:(rnd()-.8)*50,l:0,L:.9+rnd()*1.1,r:.7+rnd()*1.1,c:cols[(rnd()*5)|0]}); });
+      for(var i=0;i<4&&parts.length<90;i++) parts.push({x:X+(rnd()-.5)*8,y:Y+(rnd()-.5)*8,vx:(rnd()-.2)*34,vy:(rnd()-.8)*28,l:0,L:.9+rnd()*1.1,r:.7+rnd()*1.1,c:cols[(rnd()*5)|0]}); });
   }
   document.addEventListener('pointerdown',function(e){
     if(e.target.closest&&e.target.closest('a,button,input,textarea,.pfi,#profile')) return;
@@ -4225,8 +4225,15 @@ cm.addEventListener('click',function(){
     if(title) title.style.translate='0 '+(Math.sin(t*1.1)*-3.5).toFixed(1)+'px';
     tilt.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
     drawDust(t,dt,px,py); dx2.clearRect(0,0,dust2.width,dust2.height); dx2.drawImage(dust,0,0); drawTrail(dt);
-    var fk=0; if(flickT){ var ft=(now-flickT)/1000; if(ft>2.6){ flickT=0; } else fk=-flickAmp*Math.exp(-2.2*ft)*Math.sin(6.283*1.5*ft); }
-    pB.style.transform='rotate('+(Math.sin(t*.9)*2.4+fk).toFixed(3)+'deg)';
+    var ar=0, wr=0;
+    if(flickT){ var ft=(now-flickT)/1000;
+      if(ft>3.4) flickT=0;
+      else { ar=-ARM_AMP*Math.exp(-1.7*ft)*Math.sin(6.283*FQ*ft);                       /* the arm leads ... */
+             var wt=ft-LAG; if(wt>0) wr=-WRIST_AMP*Math.exp(-1.6*wt)*Math.sin(6.283*FQ*wt); } }   /* ... the wrist follows a beat later and overshoots softly */
+    var base=Math.sin(t*.9)*2.4+wr, WX=W*.35, WY=H*.75, PX=W*.02, PY=H*.85;
+    pB.style.transformOrigin='0 0'; pA.style.transformOrigin='0 0';
+    pA.style.transform=ar?'translate('+PX+'px,'+PY+'px) rotate('+ar.toFixed(3)+'deg) translate('+(-PX)+'px,'+(-PY)+'px)':'';
+    pB.style.transform=(ar?'translate('+PX+'px,'+PY+'px) rotate('+ar.toFixed(3)+'deg) translate('+(-PX)+'px,'+(-PY)+'px) ':'')+'translate('+WX+'px,'+WY+'px) rotate('+base.toFixed(3)+'deg) translate('+(-WX)+'px,'+(-WY)+'px)';
     if(reduce){ running=false; return; }
     requestAnimationFrame(frame);
   }
