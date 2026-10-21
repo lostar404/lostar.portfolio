@@ -1577,7 +1577,7 @@
   .cm-slot{display:none;}
   @media (min-width:1600px){
     body{padding-right:300px;}
-    .cm-slot{display:block; position:fixed; right:16px; top:72px; bottom:16px; width:268px; z-index:30; pointer-events:none;}
+    .cm-slot{display:block; position:fixed; right:16px; top:0; bottom:16px; padding-top:72px; box-sizing:border-box; width:268px; z-index:30; pointer-events:none; -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 48px,#000 118px); mask-image:linear-gradient(to bottom,transparent 0,transparent 48px,#000 118px);}
     .side-rail{right:30px; top:150px; transform:none;}
   }
   @media (min-width:1600px){
@@ -1696,6 +1696,7 @@
     body.cm-open .cm-slot{transform:none; opacity:1; visibility:visible; pointer-events:none; transition:transform .45s cubic-bezier(.2,.8,.25,1), opacity .3s ease, visibility 0s;}
     body.cm-open .cm-form, body.cm-open .cm-x{pointer-events:auto;}
     .cm-feed{pointer-events:none;}
+    .cm-slot{-webkit-mask-image:none !important; mask-image:none !important;}
     .cm-feed{align-items:center !important; overflow:hidden !important;}
     .cm-b{width:min(290px,86vw) !important;}
     .cm-form{width:100% !important; align-self:stretch !important; background:rgba(9,11,26,.78) !important;}
@@ -4492,7 +4493,7 @@ cm.addEventListener('click',function(){
   var SB_URL='https://gbwoznjcujkafuzbkqhl.supabase.co', SB_KEY='sb_publishable_Qfpe4W_udlA_030K78jxpA_MkCcY12u';
   var form=document.getElementById('cmForm'), feed=document.getElementById('cmFeed'), ta=document.getElementById('cmText'), cnt=document.getElementById('cmCnt'), src=document.getElementById('cmFrameSrc'), src2=document.getElementById('cmFrame2Src'), msg=document.getElementById('cmMsg'), hp=document.getElementById('cmHp');
   if(!form||!feed||!ta||!src) return;
-  var MAX=5, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen={}, lastId=0, lastSent=0, busy=false;
+  var MAXM=5, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen={}, lastId=0, lastSent=0, busy=false;
   var H={apikey:SB_KEY, Authorization:'Bearer '+SB_KEY};
   function say(t){ if(msg) msg.textContent=t||''; }
   ta.addEventListener('input',function(){ cnt.textContent=ta.value.length+'/30'; });
@@ -4502,6 +4503,7 @@ cm.addEventListener('click',function(){
   var mctx=null; function needsTwo(t){
     try{ if(!mctx){ mctx=document.createElement('canvas').getContext('2d'); mctx.font='600 13px "Noto Sans TC",sans-serif'; } return mctx.measureText(t).width>195; }catch(e){ return t.length>14; }
   }
+  function MAXF(){ return (window.matchMedia && matchMedia('(min-width:1600px)').matches)?80:MAXM; }
   function addBubble(t,animate){
     var old=[].slice.call(feed.children), before=old.map(function(n){ return n.getBoundingClientRect().top; });
     var b=document.createElement('div'); b.className='cm-b';
@@ -4512,7 +4514,7 @@ cm.addEventListener('click',function(){
       b.animate([{transform:'translateY(70px) scale(.7)',opacity:0},{transform:'translateY(-8px) scale(1.03)',opacity:1,offset:.7},{transform:'translateY(0) scale(1)',opacity:1}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'});
       old.forEach(function(n,i){ var d=before[i]-n.getBoundingClientRect().top; if(d) n.animate([{transform:'translateY('+d+'px)'},{transform:'translateY(0)'}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'}); });
     }
-    [].slice.call(feed.children).slice(MAX).forEach(function(l){
+    [].slice.call(feed.children).slice(MAXF()).forEach(function(l){
       if(l.gone) return; l.gone=true;
       if(!reduce && l.animate){ l.animate([{opacity:1},{opacity:0}],{duration:400,fill:'forwards'}).onfinish=function(){ if(l.parentNode) l.parentNode.removeChild(l); }; }
       else l.parentNode.removeChild(l);
@@ -4523,7 +4525,7 @@ cm.addEventListener('click',function(){
     fresh.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,animate); }, animate?k*450:0); });
   }
   function load(first){
-    var q=SB_URL+'/rest/v1/notes?select=id,body&order=id.desc&limit='+(first?MAX:20);
+    var q=SB_URL+'/rest/v1/notes?select=id,body&order=id.desc&limit='+(first?MAXF():20);
     fetch(q,{headers:H}).then(function(r){ return r.ok?r.json():Promise.reject(r.status); }).then(function(rows){
       rows=rows.slice().reverse();
       if(first){ var n=0; rows.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,true); }, 500+k*420); }); }
