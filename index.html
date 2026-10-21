@@ -356,6 +356,9 @@
       border:1px solid var(--line); border-radius:50%; transform:rotate(-16deg); z-index:0;}
   .p1-moon{width:18px; height:18px; top:120px; right:36px;
       background:radial-gradient(circle at 35% 30%, #8890B8, #3A3F5C 75%);}
+  .meteors{position:absolute; inset:0; overflow:hidden; pointer-events:none;}
+  .meteor{position:absolute; height:1.5px; border-radius:2px; transform-origin:100% 50%; opacity:0; background:linear-gradient(90deg, rgba(255,255,255,.95), rgba(190,215,255,.45) 35%, transparent);}
+  .meteor::before{content:""; position:absolute; left:-2px; top:50%; width:5px; height:5px; margin-top:-2.5px; border-radius:50%; background:#fff; box-shadow:0 0 8px 2px rgba(190,220,255,.8);}
   .shoot{position:absolute; width:90px; height:1px; background:linear-gradient(90deg, var(--star), transparent); transform:rotate(-35deg);}
   .shoot1{top:90px; left:120px;}
   .shoot2{bottom:60px; right:220px; width:60px;}
@@ -1329,6 +1332,7 @@
     .player{gap:10px;}
     .star-label .name{font-size:var(--fs-h2);} .star-label .medium{font-size:var(--fs-h3);}
     .shoot, .compass{display:none;}
+    .ho2{width:94%; height:auto; aspect-ratio:1/1;}
     .hero .plate{padding:76px 18px 0;}
     .ho3{display:none;}
     .hero-stats{margin:48px -18px 0;}
@@ -1523,8 +1527,7 @@
         <path d="M50 8 L58 42 L92 50 L58 58 L50 92 L42 58 L8 50 L42 42 Z" fill="currentColor" opacity="0.8"/>
       </svg>
 
-      <div class="shoot shoot1"></div>
-      <div class="shoot shoot2"></div>
+      <div class="meteors" id="meteors" aria-hidden="true"></div>
 
       <div class="hero-orbits" aria-hidden="true">
         <span class="ho ho1"></span><span class="ho ho2"></span><span class="ho ho3"></span>
@@ -3983,6 +3986,28 @@ cm.addEventListener('click',function(){
   else { var mo=new MutationObserver(function(){ if(b.classList.contains('hide')){ mo.disconnect(); begin(); } }); mo.observe(b,{attributes:true,attributeFilter:['class']}); }
 })();
 
+</script>
+<script>
+(function(){
+  var box=document.getElementById('meteors'); if(!box||!box.animate) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var vis=true; if('IntersectionObserver' in window) new IntersectionObserver(function(e){ vis=e[0].isIntersecting; }).observe(box);
+  function r(a,b){ return a+Math.random()*(b-a); }
+  function fire(){
+    if(vis && !document.hidden){
+      var W=box.clientWidth, H=box.clientHeight, L=r(90,150), ang=r(28,40), rad=ang*Math.PI/180, dist=r(240,420)*(W<500?.7:1);
+      var m=document.createElement('div'); m.className='meteor';
+      m.style.width=L+'px'; m.style.left=r(W*.35,W*1.02)+'px'; m.style.top=r(-10,H*.45)+'px';
+      m.style.transform='rotate(-'+ang+'deg)';
+      box.appendChild(m);
+      var dx=-Math.cos(rad)*dist, dy=Math.sin(rad)*dist, d=r(900,1500);
+      var a=m.animate([{transform:'translate(0,0) rotate(-'+ang+'deg)',opacity:0},{opacity:1,offset:.2},{opacity:.9,offset:.7},{transform:'translate('+dx+'px,'+dy+'px) rotate(-'+ang+'deg)',opacity:0}],{duration:d,easing:'cubic-bezier(.3,.1,.6,1)',fill:'forwards'});
+      a.onfinish=function(){ if(m.parentNode) m.parentNode.removeChild(m); };
+    }
+    setTimeout(fire, r(2200,6500));
+  }
+  setTimeout(fire, 2500);
+})();
 </script>
 </body>
 </html>
