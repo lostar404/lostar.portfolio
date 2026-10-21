@@ -1486,6 +1486,9 @@
   .sg-01{z-index:0;}
   .pfi-clip{position:relative; z-index:1;}
   @media (min-width:961px){ .sg-01{display:none;} }
+  .pfi-sh{margin-bottom:22px; padding-bottom:16px; width:100%;}
+  .pfi-sh p{font-size:var(--fs-meta); line-height:var(--lh-body);}
+  @media (min-width:961px){ .top-grid .pfi-sh{align-items:flex-start; text-align:left;} .top-grid .pfi-sh h2{font-size:var(--fs-h2s); line-height:var(--lh-head);} .top-grid .pfi-sh p{margin:0;} .top-grid .pfi-sh .hud-label{font-size:var(--fs-micro); letter-spacing:var(--ls-meta);} }
 </style>
 </head>
 <body>
@@ -1584,7 +1587,11 @@
     <div class="pfi-box">
       <div class="pfi-head">
         <div class="pfi-left">
-          <div class="hud-label pfi-hud"><span>// 01 — EXPLORER PROFILE</span> <span class="pfi-dot">·</span> <span>探索者檔案</span></div>
+          <div class="section-head pfi-sh">
+            <div class="hud-label">// 01 — EXPLORER PROFILE · ABOUT</div>
+            <h2>探索者檔案</h2>
+            <p>創作者的簡歷、專長與經歷。</p>
+          </div>
           <div class="pfi-who">
             <div class="pfi-photo"><img decoding="async" src="images/img-07.jpg" alt="海邊手持乾燥花的側臉人像"></div>
             <div class="pfi-names">
