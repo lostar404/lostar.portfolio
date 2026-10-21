@@ -1573,6 +1573,13 @@
   #featPanel{background:none !important;border:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
   #featPanel::before,#featPanel::after{display:none !important;}
   #featPanel .hud-label{text-align:center !important;}
+  /* >=1600px: right column reserved for a future comment panel; the section rail lives inside it */
+  .cm-slot{display:none;}
+  @media (min-width:1600px){
+    body{padding-right:300px;}
+    .cm-slot{display:block; position:fixed; right:16px; top:72px; bottom:16px; width:268px; z-index:30; pointer-events:none;}
+    .side-rail{right:30px;}
+  }
 </style>
 </head>
 <body>
@@ -1599,6 +1606,7 @@
   <a href="#contact" data-sec="2"><span>TRANSMIT</span><i></i></a>
 </nav>
 <div class="side-shade" aria-hidden="true"></div>
+<aside class="cm-slot" id="cmSlot" aria-hidden="true"></aside>
 <div class="side-tag" aria-hidden="true"><span>LOSTAR · X-404</span><b id="sideProg">SCAN 000</b></div>
 <div class="milkyway"></div>
 <div class="star-far"></div>
