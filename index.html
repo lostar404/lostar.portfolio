@@ -1495,6 +1495,84 @@
       background:linear-gradient(90deg, rgba(0,0,8,.88) 0, rgba(0,0,8,.5) 28%, rgba(0,0,8,.18) 62%, rgba(0,0,8,0) 100%);
       -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 40px, #000 calc(100% - 60px), transparent 100%); mask-image:linear-gradient(180deg, transparent 0, #000 40px, #000 calc(100% - 60px), transparent 100%);}
   }
+  /* big screens: a wider column, plus a section rail on the right and a live scan read-out on the left */
+  @media (min-width:1600px){
+    html{font-size:106.25%;}
+    .wrap, .top-grid{max-width:1320px !important;}
+  }
+  @media (min-width:1900px){
+    html{font-size:112.5%;}
+    .wrap, .top-grid{max-width:1440px !important;}
+  }
+  .side-rail, .side-tag{display:none;}
+  @media (min-width:1360px){
+    .side-rail{display:flex; position:fixed; right:28px; top:50%; transform:translateY(-50%); z-index:40; flex-direction:column; align-items:flex-end; gap:20px;}
+    .side-rail a{display:flex; align-items:center; gap:10px; color:var(--muted); font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); text-decoration:none; opacity:.6; transition:opacity .3s ease, color .3s ease;}
+    .side-rail a span{max-width:0; overflow:hidden; white-space:nowrap; opacity:0; transition:max-width .35s ease, opacity .3s ease;}
+    .side-rail a:hover span, .side-rail a.on span{max-width:90px; opacity:1;}
+    .side-rail a i{width:8px; height:8px; border-radius:50%; border:1px solid currentColor; transition:background .3s ease, box-shadow .3s ease;}
+    .side-rail a:hover{opacity:1;}
+    .side-rail a.on{color:var(--hud); opacity:1;}
+    .side-rail a.on i{background:var(--hud); box-shadow:0 0 12px 2px rgba(143,227,199,.55);}
+    .side-tag{display:flex; align-items:center; gap:18px; position:fixed; left:28px; top:50%; transform:translateY(-50%) rotate(180deg); writing-mode:vertical-rl; z-index:40; pointer-events:none;
+      font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-wide); color:var(--muted); opacity:.55;}
+    .side-tag b{font-weight:400; color:var(--hud);}
+  }
+  /* fullscreen (>=1600px): avatar + XP and the explorer profile become a wider, always-visible left dock; everything else is centred in the remaining space */
+  .side-shade{display:none;}
+  @media (min-width:1600px){
+    body{padding-left:420px;}
+    .side-tag{display:none !important;}
+    body{padding-top:72px;}
+    header{position:fixed; top:0; left:0; right:0; margin-left:0;}
+    header nav.wrap{max-width:none !important; padding:0 28px;}
+    .top-grid{grid-template-columns:minmax(0,1fr) !important; overflow-x:visible;}
+    .top-grid .hero{grid-column:1 !important;}
+    .top-grid .live-status:not([hidden]){grid-column:1 !important;}
+    .top-grid .pfi{position:fixed !important; left:28px; top:72px; bottom:16px; width:372px; grid-column:auto; grid-row:auto !important; padding:0 !important; display:block !important; overflow-y:auto; overflow-x:hidden; z-index:45; scrollbar-width:thin; scrollbar-color:rgba(143,227,199,.28) transparent;}
+    .top-grid .pfi::after{display:none;}
+    .top-grid .pfi-clip{overflow:visible;}
+    .top-grid .pfi-box{background:linear-gradient(180deg, rgba(14,17,40,.97), rgba(8,10,24,.98)) !important; padding:46px 22px 20px;}
+    .side-shade{display:block; position:fixed; top:0; bottom:0; left:400px; width:60px; z-index:44; pointer-events:none;
+      background:linear-gradient(90deg, rgba(0,0,8,.85) 0, rgba(0,0,8,.5) 28%, rgba(0,0,8,.18) 62%, rgba(0,0,8,0) 100%);}
+    .hero .vh{width:min(100%,860px) !important; max-width:none; margin:4px auto 0 !important; clip-path:none !important;}
+    .vh-tilt{-webkit-mask-image:linear-gradient(270deg,#000 80%,transparent 99%) !important; mask-image:linear-gradient(270deg,#000 80%,transparent 99%) !important;}
+  }
+  /* swapped order: the work galaxy sits under the hero (beside the profile card), the featured works follow below it */
+  .feat-wrap{padding-top:0; padding-bottom:36px;}
+  @media (min-width:961px){
+    .top-grid #work{grid-column:2; grid-row:2; min-width:0;}
+    .top-grid #work > .wrap{padding-left:0; padding-right:0; max-width:none;}
+    .feat-wrap{max-width:1100px; margin:0 auto; padding:0 28px 36px;}
+  }
+  @media (min-width:961px) and (max-width:1599px){ .top-grid #work .bh-hud{display:none;} }   /* the narrower column has no room for the side read-outs */
+  @media (min-width:1600px){ .top-grid #work{grid-column:1;} .feat-wrap{max-width:1320px;} }
+  @media (min-width:1900px){ .feat-wrap{max-width:1440px;} }
+  /* featured works: a row of ten rounded cards spreads out, three are drawn, flip and settle into the display area */
+  .ft-stage{position:relative;}
+  .ft-stage .ft-row{max-width:780px; margin:0 auto;}
+  .ft-frame{border-radius:16px;}
+  .ft-card{transition:opacity .4s ease;}
+  .ft-armed .ft-card{opacity:0;}
+  .ft-armed .ft-card.ft-shown{opacity:1;}
+  .ft-deck{position:relative; height:168px; margin-top:14px;}
+  .ft-deck.gone{display:none;}
+  .ft-dk{position:absolute; left:0; top:22px; width:100px; height:125px; opacity:0; will-change:transform;}
+  .ft-dk-face{position:absolute; inset:0; border-radius:16px; overflow:hidden; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    background:radial-gradient(circle at 30% 20%, rgba(150,130,255,.45), transparent 55%), linear-gradient(150deg,#2b3274,#151b4c 55%,#2a1d63);
+    border:1px solid rgba(190,205,255,.38); box-shadow:0 10px 24px rgba(0,0,0,.5), inset 0 0 0 5px rgba(8,10,28,.55), inset 0 0 0 6px rgba(160,180,255,.25);}
+  .ft-dk-face::before{content:""; position:absolute; inset:0; opacity:.9;
+    background-image:radial-gradient(1.4px 1.4px at 22% 28%, #fff 50%, transparent 55%), radial-gradient(1px 1px at 70% 22%, #cfe0ff 50%, transparent 55%), radial-gradient(1.2px 1.2px at 80% 68%, #fff 50%, transparent 55%), radial-gradient(1px 1px at 30% 78%, #cfe0ff 50%, transparent 55%), radial-gradient(1px 1px at 55% 50%, #fff 50%, transparent 55%);}
+  .ft-dk-face::after{content:"\2726"; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:30px; line-height:1; color:rgba(215,228,255,.9); text-shadow:0 0 14px rgba(160,190,255,.8);}
+  .ft-fl{position:absolute; left:0; top:0; transform-origin:0 0; perspective:900px; z-index:6; pointer-events:none; will-change:transform;}
+  .ft-fl-in{position:absolute; inset:0; transform-style:preserve-3d;}
+  .ft-fl-in .ft-dk-face{inset:0;}
+  .ft-fl-art{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; transform:rotateY(180deg);}
+  .ft-fl-art.ft-frame{aspect-ratio:auto; height:100%; box-sizing:border-box;}
+  @media (prefers-reduced-motion:reduce){ .ft-deck{display:none;} }
+  #featPanel{background:none !important;border:0 !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+  #featPanel::before,#featPanel::after{display:none !important;}
+  #featPanel .hud-label{text-align:center !important;}
 </style>
 </head>
 <body>
@@ -1515,6 +1593,13 @@
 
 <div class="nebula-bg"></div>
 <div class="scroll-tint" aria-hidden="true"></div>
+<nav class="side-rail" id="sideRail" aria-label="區塊導覽">
+  <a href="#profile" data-sec="0"><span>EXPLORER</span><i></i></a>
+  <a href="#work" data-sec="1"><span>STAR MAP</span><i></i></a>
+  <a href="#contact" data-sec="2"><span>TRANSMIT</span><i></i></a>
+</nav>
+<div class="side-shade" aria-hidden="true"></div>
+<div class="side-tag" aria-hidden="true"><span>LOSTAR · X-404</span><b id="sideProg">SCAN 000</b></div>
 <div class="milkyway"></div>
 <div class="star-far"></div>
 <div class="star-near"></div>
@@ -1652,13 +1737,6 @@
     </div>
   </div>
 </div>
-
-<aside class="live-status" id="featPanel" aria-label="精選作品" hidden>
-  <div class="hud-label">// FEATURED · 精選作品</div>
-  <div class="ft-row" id="ftRow"></div>
-</aside>
-</div><!-- /top-grid -->
-
 
 <section class="section" id="work">
   <div class="sec-ghost" aria-hidden="true">02</div>
@@ -1845,6 +1923,18 @@
     </div>
   </div>
 </section>
+</div><!-- /top-grid -->
+
+
+<div class="wrap feat-wrap">
+<aside class="live-status" id="featPanel" aria-label="精選作品" hidden>
+  <div class="hud-label">// FEATURED · 精選作品</div>
+  <div class="ft-stage" id="ftStage">
+    <div class="ft-row" id="ftRow"></div>
+    <div class="ft-deck" id="ftDeck" aria-hidden="true"></div>
+  </div>
+</aside>
+</div>
 
 <section class="contact" id="contact">
   <div class="sec-ghost" aria-hidden="true">03</div>
@@ -4109,6 +4199,79 @@ cm.addEventListener('click',function(){
     function req(){ if(!tick){ tick=true; requestAnimationFrame(update); } }
     addEventListener('scroll',req,{passive:true}); addEventListener('resize',req); update(); setTimeout(update,1200);
   }
+})();
+</script>
+<script>
+(function(){
+  var rail=document.getElementById('sideRail'), prog=document.getElementById('sideProg'); if(!rail) return;
+  var links=[].slice.call(rail.querySelectorAll('a')), secs=[document.querySelector('.top-grid'),document.getElementById('work'),document.getElementById('contact')], tick=false;
+  function update(){
+    tick=false;
+    var y=scrollY+innerHeight*.45, cur=0;
+    secs.forEach(function(e,i){ if(e && e.getBoundingClientRect().top+scrollY<=y) cur=i; });
+    links.forEach(function(a,i){ a.classList.toggle('on',i===cur); });
+    var max=document.documentElement.scrollHeight-innerHeight, pc=max>0?Math.round(Math.min(1,scrollY/max)*100):0;
+    if(prog) prog.textContent='SCAN '+String(pc).padStart(3,'0');
+  }
+  function req(){ if(!tick){ tick=true; requestAnimationFrame(update); } }
+  addEventListener('scroll',req,{passive:true}); addEventListener('resize',req); update(); setTimeout(update,1200);
+})();
+</script>
+<script>
+(function(){
+  var panel=document.getElementById('featPanel'), stage=document.getElementById('ftStage'), deck=document.getElementById('ftDeck'), row=document.getElementById('ftRow');
+  if(!panel||!stage||!deck||!row||!deck.animate) return;
+  var cards=[].slice.call(row.querySelectorAll('.ft-card')); if(cards.length<3) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ deck.classList.add('gone'); return; }
+  var N=10, CW=100, CH=125, TOP=22, PICK=[2,5,8], timers=[], anims=[], fl=[], left=true;
+  function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
+  function go(el,kf,opt){ var a=el.animate(kf,opt); anims.push(a); return a; }
+  function clear(){ timers.forEach(clearTimeout); timers=[]; anims.forEach(function(a){ try{ a.cancel(); }catch(e){} }); anims=[]; fl.forEach(function(f){ if(f.parentNode) f.parentNode.removeChild(f); }); fl=[]; deck.innerHTML=''; }
+  function arm(){ panel.classList.add('ft-armed'); cards.forEach(function(c){ c.classList.remove('ft-shown'); }); }
+  function reset(){ clear(); arm(); deck.classList.remove('gone'); }
+  function tx(x,y,s){ return 'translate('+x+'px,'+(y||0)+'px)'+(s?' scale('+s+')':''); }
+  function play(){
+    reset();
+    var W=stage.clientWidth, span=Math.min(W-CW,(N-1)*(CW+16)), x0=(W-CW)/2, left0=x0-span/2, els=[], xs=[];
+    for(var i=0;i<N;i++){
+      var d=document.createElement('div'); d.className='ft-dk'; d.innerHTML='<div class="ft-dk-face"></div>'; deck.appendChild(d); els.push(d);
+      var xi=left0+i*span/(N-1); xs.push(xi); d.style.transform=tx(left0);
+      go(d,[{transform:tx(left0),opacity:0},{opacity:1,offset:.12},{transform:tx(xi),opacity:1}],{duration:550,delay:i*50,easing:'cubic-bezier(.2,.8,.25,1)',fill:'forwards'});
+    }
+    var spreadEnd=550+(N-1)*50+300, landed=0;
+    // the others fade away once the picks have left
+    els.forEach(function(d,i){ if(PICK.indexOf(i)>-1) return;
+      later(function(){ go(d,[{transform:tx(xs[i]),opacity:1},{transform:tx(xs[i],16,.92),opacity:0}],{duration:300,delay:(i%5)*25,easing:'ease-in',fill:'forwards'}); }, spreadEnd+400); });
+    PICK.forEach(function(idx,k){
+      later(function(){
+        var card=cards[k], fr=card.querySelector('.ft-frame'), img=card.querySelector('img'); if(!fr) return;
+        var sr=stage.getBoundingClientRect(), tr=fr.getBoundingClientRect(), ex=tr.left-sr.left, ey=tr.top-sr.top, ew=tr.width, eh=tr.height;
+        var sx=xs[idx], sy=deck.offsetTop+TOP, s=CW/ew;
+        var f=document.createElement('div'); f.className='ft-fl'; f.style.width=ew+'px'; f.style.height=eh+'px';
+        f.innerHTML='<div class="ft-fl-in"><div class="ft-dk-face"></div><div class="ft-fl-art ft-frame"><img decoding="async" alt=""></div></div>';
+        f.querySelector('img').src=img.src; stage.appendChild(f); fl.push(f);
+        els[idx].style.visibility='hidden';
+        go(f,[{transform:tx(sx,sy,s)},{transform:tx(sx,sy-34,s*1.1),offset:.28},{transform:tx(ex,ey,1)}],{duration:780,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
+        go(f.firstChild,[{transform:'rotateY(0deg)'},{transform:'rotateY(0deg)',offset:.2},{transform:'rotateY(180deg)'}],{duration:780,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
+        later(function(){
+          card.classList.add('ft-shown'); if(f.parentNode) f.parentNode.removeChild(f);
+          if(++landed===PICK.length){
+            later(function(){
+              var a=go(deck,[{height:deck.offsetHeight+'px',marginTop:'14px'},{height:'0px',marginTop:'0px'}],{duration:400,easing:'ease-in-out',fill:'forwards'});
+              a.onfinish=function(){ deck.classList.add('gone'); panel.classList.remove('ft-armed'); try{ a.cancel(); }catch(e){} };
+            },150);
+          }
+        },780);
+      }, spreadEnd+k*240);
+    });
+  }
+  arm();
+  if(!('IntersectionObserver' in window)){ panel.classList.remove('ft-armed'); deck.classList.add('gone'); return; }
+  new IntersectionObserver(function(en){
+    var r=en[0].intersectionRatio;
+    if(r<0.02){ if(!left){ left=true; reset(); } }
+    else if(left && r>=0.3){ left=false; play(); }
+  },{threshold:[0,0.02,0.3]}).observe(panel);
 })();
 </script>
 </body>
