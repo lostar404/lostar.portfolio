@@ -1699,6 +1699,7 @@
     .cm-feed{pointer-events:none;}
     .cm-slot{-webkit-mask-image:none !important; mask-image:none !important;}
     .cm-form{width:auto; align-self:stretch;}
+    .cm-feed{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px); mask-image:linear-gradient(to bottom,transparent 0,#000 90px);}
     .cm-feed{align-items:center !important; overflow:hidden !important;}
     .cm-b{width:min(290px,86vw) !important;}
     .cm-form{width:100% !important; align-self:stretch !important; background:rgba(9,11,26,.78) !important;}
@@ -4499,7 +4500,7 @@ cm.addEventListener('click',function(){
   var SB_URL='https://gbwoznjcujkafuzbkqhl.supabase.co', SB_KEY='sb_publishable_Qfpe4W_udlA_030K78jxpA_MkCcY12u';
   var form=document.getElementById('cmForm'), feed=document.getElementById('cmFeed'), ta=document.getElementById('cmText'), cnt=document.getElementById('cmCnt'), src=document.getElementById('cmFrameSrc'), src2=document.getElementById('cmFrame2Src'), srcB1=document.getElementById('cmFrameB1Src'), srcB2=document.getElementById('cmFrameB2Src'), msg=document.getElementById('cmMsg'), hp=document.getElementById('cmHp');
   if(!form||!feed||!ta||!src) return;
-  var MAXM=5, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen={}, lastId=0, lastSent=0, busy=false;
+  var MAXM=6, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen={}, lastId=0, lastSent=0, busy=false;
   var H={apikey:SB_KEY, Authorization:'Bearer '+SB_KEY};
   function say(t){ if(msg) msg.textContent=t||''; }
   ta.addEventListener('input',function(){ cnt.textContent=ta.value.length+'/30'; });
