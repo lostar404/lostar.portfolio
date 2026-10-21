@@ -158,11 +158,18 @@
   .navlinks a:hover{color:var(--star);}
   .navlinks{align-self:stretch;}
   .nav-dd{position:relative; align-self:stretch; display:flex; margin:0 4px;}
-  @media (max-width:600px){ .nav-dd-t .dd-pre{display:none;} .nav-dd-t{padding:0 14px;} .navlinks a[href="#work"]{display:none;} .nav-dd{margin:0 2px;} .nav-dd-menu{right:-60px;} .navlinks{gap:8px !important;} }
-  .nav-dd-t{display:flex; align-items:center; gap:6px; height:100%; padding:0 26px; border:0; border-left:1px solid rgba(255,255,255,.55); border-right:1px solid rgba(255,255,255,.55); border-radius:0; background:rgba(255,255,255,.04); font:inherit; color:#e8eeff; letter-spacing:inherit; cursor:pointer; white-space:nowrap; transition:background .2s, color .2s;}
-  .nav-dd-t:hover{background:rgba(143,227,199,.12); color:var(--star);}
-  .nav-dd.open .nav-dd-t{background:rgba(143,227,199,.18); color:var(--star);}
-  .nav-dd-t i{font-style:normal; display:inline-block; font-size:.8em; transition:transform .25s ease;}
+  @media (max-width:600px){ .nav-dd-t .dd-pre{display:none;} .nav-dd-t{padding:0 12px; gap:7px;} .nav-dd-t small{display:none;} .navlinks a[href="#work"]{display:none;} .nav-dd{margin:0 2px;} .nav-dd-menu{right:-60px;} .navlinks{gap:8px !important;} }
+  .nav-dd-t{position:relative; display:flex; align-items:center; gap:12px; height:100%; padding:0 22px 0 20px; border:0; border-left:1px solid rgba(190,215,255,.28); border-right:1px solid rgba(190,215,255,.28); border-radius:0; background:linear-gradient(180deg,rgba(143,227,199,0) 0,rgba(143,227,199,.07) 100%); font:inherit; color:#e8eeff; letter-spacing:inherit; cursor:pointer; white-space:nowrap; transition:background .25s, color .25s;}
+  .nav-dd-t::before,.nav-dd-t::after{content:""; position:absolute; width:7px; height:7px; border:1px solid #8fe3c7; opacity:.75; pointer-events:none;}
+  .nav-dd-t::before{left:-1px; top:9px; border-width:1px 0 0 1px;}
+  .nav-dd-t::after{right:-1px; bottom:9px; border-width:0 1px 1px 0;}
+  .nav-dd-t .dd-tx{display:flex; flex-direction:column; align-items:flex-start; gap:5px; line-height:1;}
+  .nav-dd-t small{font:500 9px/1 var(--mono); letter-spacing:.24em; color:#8fe3c7; opacity:.85;}
+  .nav-dd-t b{font:500 var(--fs-ui,15px)/1 inherit; font-family:inherit; letter-spacing:.14em; font-weight:500;}
+  .nav-dd-t:hover,.nav-dd.open .nav-dd-t{background:linear-gradient(180deg,rgba(143,227,199,.04) 0,rgba(143,227,199,.2) 100%); color:#fff;}
+  .nav-dd-t:hover{box-shadow:inset 0 -2px 0 rgba(143,227,199,.7);}
+  .nav-dd.open .nav-dd-t{box-shadow:inset 0 -2px 0 #8fe3c7, 0 6px 22px -6px rgba(143,227,199,.5);}
+  .nav-dd-t i{font-style:normal; display:inline-block; font-size:11px; color:#8fe3c7; transition:transform .25s ease;}
   .nav-dd.open .nav-dd-t i{transform:rotate(180deg);}
   .nav-dd-menu{position:absolute; top:calc(100% + 1px); right:0; min-width:210px; padding:8px; border:1px solid rgba(143,227,199,.28); border-radius:12px; background:rgba(9,12,28,.96); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 14px 40px rgba(0,0,10,.55); opacity:0; transform:translateY(-8px); visibility:hidden; pointer-events:none; transition:opacity .22s ease, transform .22s ease, visibility 0s .22s; z-index:70;}
   .nav-dd.open .nav-dd-menu{opacity:1; transform:none; visibility:visible; pointer-events:auto; transition:opacity .22s ease, transform .22s ease, visibility 0s;}
@@ -1817,7 +1824,7 @@
       </div>
     </div>
     <div class="navlinks">
-      <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-pre">作品</span>星系 <i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
+      <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-tx"><small>STAR MAP</small><b><span class="dd-pre">作品</span>星系</b></span><i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
       <a href="#work">作品</a>
       <a href="#profile">關於</a>
       <a href="#contact">聯絡</a>
