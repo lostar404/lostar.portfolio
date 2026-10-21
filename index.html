@@ -1608,6 +1608,13 @@
   }
   @media (prefers-reduced-motion:reduce){ .cm-b-in{animation:none;} }
   .side-rail{display:none !important;}   /* section dots removed for now */
+  .ft-replay{display:none;}
+  @media (min-width:961px){
+    .ft-replay{display:flex; justify-content:center; margin-top:14px;}
+    .ft-replay button{cursor:pointer; padding:6px 16px; border-radius:999px; border:1px solid rgba(143,227,199,.45); background:rgba(143,227,199,.08); color:var(--hud); font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); transition:background .2s, opacity .2s;}
+    .ft-replay button:hover:not(:disabled){background:rgba(143,227,199,.2);}
+    .ft-replay button:disabled{opacity:.35; cursor:default;}
+  }
 </style>
 </head>
 <body>
@@ -4275,9 +4282,11 @@ cm.addEventListener('click',function(){
   function clear(){ timers.forEach(clearTimeout); timers=[]; anims.forEach(function(a){ try{ a.cancel(); }catch(e){} }); anims=[]; fl.forEach(function(f){ if(f.parentNode) f.parentNode.removeChild(f); }); fl=[]; deck.innerHTML=''; }
   function arm(){ panel.classList.add('ft-armed'); cards.forEach(function(c){ c.classList.remove('ft-shown'); }); }
   function reset(){ clear(); arm(); deck.classList.remove('gone'); }
+  var wrap=document.createElement('div'); wrap.className='ft-replay'; var btn=document.createElement('button'); btn.type='button'; btn.disabled=true; btn.textContent='↻ 再抽一次'; wrap.appendChild(btn); panel.appendChild(wrap);
+  btn.addEventListener('click',function(){ if(!btn.disabled) play(); });
   function tx(x,y,s){ return 'translate('+x+'px,'+(y||0)+'px)'+(s?' scale('+s+')':''); }
   function play(){
-    reset();
+    reset(); btn.disabled=true;
     var W=stage.clientWidth, span=Math.min(W-CW,(N-1)*(CW+16)), x0=(W-CW)/2, left0=x0-span/2, els=[], xs=[];
     for(var i=0;i<N;i++){
       var d=document.createElement('div'); d.className='ft-dk'; d.innerHTML='<div class="ft-dk-face"></div>'; deck.appendChild(d); els.push(d);
@@ -4304,7 +4313,7 @@ cm.addEventListener('click',function(){
           if(++landed===PICK.length){
             later(function(){
               var a=go(deck,[{height:deck.offsetHeight+'px',marginTop:'14px'},{height:'0px',marginTop:'0px'}],{duration:280,easing:'ease-in-out',fill:'forwards'});
-              a.onfinish=function(){ deck.classList.add('gone'); panel.classList.remove('ft-armed'); try{ a.cancel(); }catch(e){} };
+              a.onfinish=function(){ deck.classList.add('gone'); panel.classList.remove('ft-armed'); btn.disabled=false; try{ a.cancel(); }catch(e){} };
             },100);
           }
         },520);
@@ -4313,11 +4322,12 @@ cm.addEventListener('click',function(){
   }
   arm();
   if(!('IntersectionObserver' in window)){ panel.classList.remove('ft-armed'); deck.classList.add('gone'); return; }
-  new IntersectionObserver(function(en){
-    var r=en[0].intersectionRatio;
-    if(r<0.02){ if(!left){ left=true; reset(); } }
-    else if(left && r>=0.3){ left=false; play(); }
-  },{threshold:[0,0.02,0.3]}).observe(panel);
+  /* plays once when the section first comes into view; the button replays it on demand */
+  var played=false;
+  var io=new IntersectionObserver(function(en){
+    if(!played && en[0].intersectionRatio>=0.3){ played=true; io.disconnect(); play(); }
+  },{threshold:[0.3]});
+  io.observe(panel);
 })();
 </script>
 <script>
