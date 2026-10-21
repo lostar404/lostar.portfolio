@@ -3978,45 +3978,52 @@ cm.addEventListener('click',function(){
 </script>
 <script>
 (function(){
-  // Load intro: the hand slides in from the left, light gathers in the palm, flies up and becomes the title.
-  var plate=document.querySelector('.hero .plate-inner'), stage=document.getElementById('vhStage'), tilt=document.getElementById('vhTilt'), h1=plate&&plate.querySelector('h1');
-  if(!plate||!stage||!tilt||!h1||!stage.animate) return;
+  // Hero intro: the hand slides in from the left, then the title and the rest fade in together.
+  // Plays on load and again every time the visitor comes back to the hero after scrolling away.
+  var hero=document.querySelector('.hero'), plate=document.querySelector('.hero .plate-inner'), stage=document.getElementById('vhStage'), tilt=document.getElementById('vhTilt'), h1=plate&&plate.querySelector('h1');
+  if(!hero||!plate||!stage||!tilt||!h1||!stage.animate) return;
   if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var rest=[].slice.call(plate.children).filter(function(e){ return e!==h1; });
-  var anims=[], timers=[], fx=null, done=false;
+  var anims=[], timers=[], done=true, left=false;
   function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
   function hide(){ stage.style.opacity='0'; h1.style.opacity='0'; rest.forEach(function(e){ e.style.opacity='0'; }); }
   function showAll(){ stage.style.opacity=''; h1.style.opacity=''; rest.forEach(function(e){ e.style.opacity=''; }); }
   function finish(){
-    if(done) return; done=true; timers.forEach(clearTimeout);
-    anims.forEach(function(a){ try{ a.cancel(); }catch(e){} });
-    showAll(); if(fx&&fx.parentNode) fx.parentNode.removeChild(fx);
+    if(done) return; done=true; timers.forEach(clearTimeout); timers=[];
+    anims.forEach(function(a){ try{ a.cancel(); }catch(e){} }); anims=[];
+    showAll();
     removeEventListener('keydown',finish); removeEventListener('pointerdown',finish);
   }
   function go(a,kf,opt){ var an=a.animate(kf,opt); anims.push(an); return an; }
-  function center(r){ return {x:r.left+r.width/2+scrollX, y:r.top+r.height/2+scrollY}; }
-  function start(){
-    if(done) return;
+  function play(){
+    done=false; timers=[]; anims=[]; hide();
     addEventListener('keydown',finish); addEventListener('pointerdown',finish);
-    fx=document.createElement('div'); fx.setAttribute('aria-hidden','true'); fx.style.cssText='position:absolute;left:0;top:0;width:0;height:0;z-index:400;pointer-events:none;'; document.body.appendChild(fx);
-    // 1. hand slides in from the left (clipped by the profile card edge on desktop)
-    stage.style.opacity='';
-    go(stage,[{transform:'translateX(-190px)',opacity:0},{transform:'translateX(0)',opacity:1}],{duration:1150,easing:'cubic-bezier(.2,.8,.25,1)',fill:'backwards'});
-    // 2. once the hand has arrived, the title fades in, then the rest
     later(function(){
-      h1.style.opacity=''; go(h1,[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:1100,easing:'ease-out',fill:'backwards'});
-      rest.forEach(function(e){ e.style.opacity=''; go(e,[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:1100,easing:'ease-out',fill:'backwards'}); });
-      later(finish,1300);
-    },1000);
+      stage.style.opacity='';
+      go(stage,[{transform:'translateX(-190px)',opacity:0},{transform:'translateX(0)',opacity:1}],{duration:1150,easing:'cubic-bezier(.2,.8,.25,1)',fill:'backwards'});
+      later(function(){
+        h1.style.opacity=''; go(h1,[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:1100,easing:'ease-out',fill:'backwards'});
+        rest.forEach(function(e){ e.style.opacity=''; go(e,[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'translateY(0)'}],{duration:1100,easing:'ease-out',fill:'backwards'}); });
+        later(finish,1300);
+      },1000);
+      later(finish,8000);                                  // safety net
+    },200);
   }
-  hide(); stage.style.opacity='0';
-  later(finish,14000);                                   // safety net
+  hide();
   var b=document.getElementById('bootScreen');
-  function begin(){ later(start,250); }
+  function begin(){ play(); watch(); }
+  function watch(){
+    if(!('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function(en){
+      var r=en[0].intersectionRatio;
+      if(r<0.02) left=true;                                // fully scrolled away
+      else if(left && r>0.3 && done){ left=false; play(); } // came back: replay
+    },{threshold:[0,0.02,0.3]}).observe(hero);
+  }
   if(!b || b.classList.contains('hide')) begin();
   else { var mo=new MutationObserver(function(){ if(b.classList.contains('hide')){ mo.disconnect(); begin(); } }); mo.observe(b,{attributes:true,attributeFilter:['class']}); }
+  setTimeout(function(){ if(!timers.length && done && stage.style.opacity==='0') showAll(); },16000);   // never leave the hero hidden
 })();
-
 </script>
 <script>
 (function(){
