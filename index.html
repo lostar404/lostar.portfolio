@@ -4016,9 +4016,9 @@ cm.addEventListener('click',function(){
     if(!('IntersectionObserver' in window)) return;
     new IntersectionObserver(function(en){
       var r=en[0].intersectionRatio;
-      if(r<0.02) left=true;                                // fully scrolled away
-      else if(left && r>0.3 && done){ left=false; play(); } // came back: replay
-    },{threshold:[0,0.02,0.3]}).observe(hero);
+      if(r<0.02){ left=true; if(done) hide(); }            // fully scrolled away: reset while nobody can see it
+      else if(left && r>0.12 && done){ left=false; play(); } // came back: replay
+    },{threshold:[0,0.02,0.12]}).observe(hero);
   }
   if(!b || b.classList.contains('hide')) begin();
   else { var mo=new MutationObserver(function(){ if(b.classList.contains('hide')){ mo.disconnect(); begin(); } }); mo.observe(b,{attributes:true,attributeFilter:['class']}); }
