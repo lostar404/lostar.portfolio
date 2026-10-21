@@ -1469,6 +1469,27 @@
     .hero{margin-top:26px;}
     .vh-tilt{-webkit-mask-image:none; mask-image:none;}
   }
+  /* section transitions: a soft nebula fade with drifting star dust and a small crosshair marker -- no hard rules */
+  .sec-div{position:relative; height:110px; margin:-26px 0; pointer-events:none; color:var(--hud); z-index:1;
+    background:
+      radial-gradient(1.2px 1.2px at 8% 38%, rgba(214,222,250,.9) 50%, transparent 52%),
+      radial-gradient(1px 1px at 17% 66%, rgba(214,222,250,.7) 50%, transparent 52%),
+      radial-gradient(1.4px 1.4px at 27% 30%, rgba(190,215,255,.85) 50%, transparent 52%),
+      radial-gradient(1px 1px at 35% 72%, rgba(214,222,250,.6) 50%, transparent 52%),
+      radial-gradient(1px 1px at 41% 44%, rgba(214,222,250,.7) 50%, transparent 52%),
+      radial-gradient(1.2px 1.2px at 63% 36%, rgba(214,222,250,.8) 50%, transparent 52%),
+      radial-gradient(1px 1px at 71% 68%, rgba(190,215,255,.7) 50%, transparent 52%),
+      radial-gradient(1.4px 1.4px at 80% 28%, rgba(214,222,250,.85) 50%, transparent 52%),
+      radial-gradient(1px 1px at 88% 60%, rgba(214,222,250,.65) 50%, transparent 52%),
+      radial-gradient(1.2px 1.2px at 94% 42%, rgba(214,222,250,.8) 50%, transparent 52%),
+      radial-gradient(ellipse 55% 42% at 50% 50%, rgba(110,96,210,.16), transparent 72%);
+    animation:sdTwinkle 7s ease-in-out infinite alternate;}
+  .sec-div svg{position:absolute; left:50%; top:50%; width:24px; height:24px; margin:-12px 0 0 -12px; opacity:.55;}
+  @keyframes sdTwinkle{ from{opacity:.65;} to{opacity:1;} }
+  @media (min-width:961px){ .sec-div.sd-m{display:none;} }
+  @media (prefers-reduced-motion:reduce){ .sec-div{animation:none;} }
+  footer{border-top:none;}
+  @media (max-width:960px){ .pfi-box{border-top-color:transparent !important; border-bottom-color:transparent !important; background:none !important;} .sec-div{height:84px; margin:-18px 0;} }
 </style>
 </head>
 <body>
@@ -1560,6 +1581,7 @@
   </div>
 </section>
 
+<div class="sec-div sd-m" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="4.2"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/></svg></div>
 <div class="pfi open" id="profile">
   <div class="pfi-clip">
     <div class="pfi-box">
@@ -1626,6 +1648,7 @@
   <div class="ft-row" id="ftRow"></div>
 </aside>
 </div><!-- /top-grid -->
+<div class="sec-div" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="4.2"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/></svg></div>
 
 
 <section class="section" id="work">
@@ -1813,6 +1836,7 @@
   </div>
 </section>
 
+<div class="sec-div" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="4.2"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/></svg></div>
 <section class="contact" id="contact">
   <div class="wrap">
     <div class="hud-label">// 03 — TRANSMIT</div>
@@ -1869,6 +1893,7 @@
   </div>
 </section>
 
+<div class="sec-div" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="4.2"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/></svg></div>
 <footer class="hud-line">
 <div class="visitor" id="visitor" hidden>
   <div class="hud-label"><span class="v-dot"></span>TRAVELERS LOGGED</div>
