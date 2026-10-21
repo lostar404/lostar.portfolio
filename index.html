@@ -4506,7 +4506,7 @@ cm.addEventListener('click',function(){
     var old=[].slice.call(feed.children), before=old.map(function(n){ return n.getBoundingClientRect().top; });
     var b=document.createElement('div'); b.className='cm-b';
     var inn=document.createElement('div'); inn.className='cm-b-in'; inn.style.animationDuration=(4.8+Math.random()*2)+'s'; inn.style.animationDelay=(-Math.random()*4)+'s';
-    var two=needsTwo(t), im=document.createElement('img'); im.alt=''; im.src=(two&&src2)?src2.src:src.src; if(two) b.classList.add('cm-b2'); var p=document.createElement('p'); p.textContent=t;
+    var chs=Array.from(t), two=chs.length>15, im=document.createElement('img'); im.alt=''; im.src=(two&&src2)?src2.src:src.src; if(two) b.classList.add('cm-b2'); var p=document.createElement('p'); if(two){ p.appendChild(document.createTextNode(chs.slice(0,15).join(''))); p.appendChild(document.createElement('br')); p.appendChild(document.createTextNode(chs.slice(15).join(''))); } else p.textContent=t;
     inn.appendChild(im); inn.appendChild(p); b.appendChild(inn); feed.insertBefore(b,feed.firstChild);
     if(animate && !reduce && b.animate){
       b.animate([{transform:'translateY(70px) scale(.7)',opacity:0},{transform:'translateY(-8px) scale(1.03)',opacity:1,offset:.7},{transform:'translateY(0) scale(1)',opacity:1}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'});
