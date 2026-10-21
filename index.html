@@ -1550,7 +1550,7 @@
   @media (min-width:1900px){ .feat-wrap{max-width:1440px;} }
   /* featured works: a row of ten rounded cards spreads out, three are drawn, flip and settle into the display area */
   .ft-stage{position:relative;}
-  .ft-stage .ft-row{max-width:780px; margin:0 auto;}
+  .ft-stage .ft-row{max-width:1040px; margin:0 auto;}
   .ft-frame{border-radius:16px;}
   .ft-card{transition:opacity .4s ease;}
   .ft-armed .ft-card{opacity:0;}
@@ -1615,6 +1615,7 @@
     .ft-replay button:hover:not(:disabled){background:rgba(143,227,199,.2);}
     .ft-replay button:disabled{opacity:.35; cursor:default;}
   }
+  .ft-card.ft-bust .ft-frame img, .ft-fl-art.ft-bust img{object-fit:cover; object-position:50% 0%; transform:scale(1.18); transform-origin:50% 0%;}
 </style>
 </head>
 <body>
@@ -3562,13 +3563,20 @@
         if(a && a.stickers[2]) out.push({ star: mk, src: a.stickers[2].src, title: a.name });
         if(b && b.stickers[0]) out.push({ star: mk, src: b.stickers[0].src, title: b.name });
         if(v) out.push(v);
-        if(out.length === 3) picks = out;
+        if(out.length === 3){
+          // two more 啟航星 portraits, shown as upper-body crops
+          var vw = vk >= 0 ? (LOG[vk].works || []) : [];
+          ['迷航星．全身立繪', '迷航星．正面立繪'].forEach(function(t){
+            for(var q = 0; q < vw.length; q++) if(vw[q].title === t && vw[q].src){ out.push({ star: vk, src: vw[q].src, title: t, bust: true }); break; }
+          });
+          picks = out;
+        }
       })();
-      picks = picks.slice(0, 3);   // show three
+      picks = picks.slice(0, 5);   // show up to five
       if(!picks.length) return;
       row.style.setProperty('--n', picks.length);
       picks.forEach(function(p){
-        var c = document.createElement('button'); c.type = 'button'; c.className = 'ft-card';
+        var c = document.createElement('button'); c.type = 'button'; c.className = 'ft-card' + (p.bust ? ' ft-bust' : '');
         c.setAttribute('aria-label', p.title + '，' + stars[p.star].zh);
         c.innerHTML = '<span class="ft-frame"><img decoding="async" alt=""></span><span class="ft-name"></span><span class="ft-star"></span>';
         c.querySelector('img').src = p.src;
@@ -4276,7 +4284,7 @@ cm.addEventListener('click',function(){
   if(!panel||!stage||!deck||!row||!deck.animate) return;
   var cards=[].slice.call(row.querySelectorAll('.ft-card')); if(cards.length<3) return;
   if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ deck.classList.add('gone'); return; }
-  var N=10, CW=100, CH=125, TOP=22, PICK=[2,5,8], timers=[], anims=[], fl=[], left=true;
+  var N=10, CW=100, CH=125, TOP=22, PICK=[1,3,5,7,9], timers=[], anims=[], fl=[], left=true;
   function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
   function go(el,kf,opt){ var a=el.animate(kf,opt); anims.push(a); return a; }
   function clear(){ timers.forEach(clearTimeout); timers=[]; anims.forEach(function(a){ try{ a.cancel(); }catch(e){} }); anims=[]; fl.forEach(function(f){ if(f.parentNode) f.parentNode.removeChild(f); }); fl=[]; deck.innerHTML=''; }
@@ -4303,7 +4311,7 @@ cm.addEventListener('click',function(){
         var sr=stage.getBoundingClientRect(), tr=fr.getBoundingClientRect(), ex=tr.left-sr.left, ey=tr.top-sr.top, ew=tr.width, eh=tr.height;
         var sx=xs[idx], sy=deck.offsetTop+TOP, s=CW/ew;
         var f=document.createElement('div'); f.className='ft-fl'; f.style.width=ew+'px'; f.style.height=eh+'px';
-        f.innerHTML='<div class="ft-fl-in"><div class="ft-dk-face"></div><div class="ft-fl-art ft-frame"><img decoding="async" alt=""></div></div>';
+        f.innerHTML='<div class="ft-fl-in"><div class="ft-dk-face"></div><div class="ft-fl-art ft-frame'+(card.classList.contains('ft-bust')?' ft-bust':'')+'"><img decoding="async" alt=""></div></div>';
         f.querySelector('img').src=img.src; stage.appendChild(f); fl.push(f);
         els[idx].style.visibility='hidden';
         go(f,[{transform:tx(sx,sy,s)},{transform:tx(sx,sy-34,s*1.1),offset:.28},{transform:tx(ex,ey,1)}],{duration:520,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
@@ -4317,7 +4325,7 @@ cm.addEventListener('click',function(){
             },100);
           }
         },520);
-      }, spreadEnd+k*150);
+      }, spreadEnd+k*110);
     });
   }
   arm();
