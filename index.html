@@ -1690,6 +1690,7 @@
       border:1px solid rgba(143,227,199,.6); background:linear-gradient(135deg, rgba(60,70,150,.88), rgba(30,36,90,.92)); color:#fff; box-shadow:0 6px 22px rgba(70,90,200,.45); -webkit-tap-highlight-color:transparent; transition:transform .25s ease, opacity .25s ease;}
     .cm-fab svg{width:26px; height:26px;}
     .cm-fab:active{transform:scale(.93);}
+    body:has(#bootScreen:not(.hide)) .cm-fab{opacity:0 !important; pointer-events:none !important; transform:scale(.8);}
     body.cm-open .cm-fab, body.pf-sheet .cm-fab{opacity:0; pointer-events:none; transform:scale(.8);}
     .cm-backdrop{display:block; position:fixed; inset:0; z-index:1090; background:transparent; pointer-events:none;}
     body.cm-open .cm-backdrop{pointer-events:auto;}
