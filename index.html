@@ -4250,12 +4250,12 @@ cm.addEventListener('click',function(){
     for(var i=0;i<N;i++){
       var d=document.createElement('div'); d.className='ft-dk'; d.innerHTML='<div class="ft-dk-face"></div>'; deck.appendChild(d); els.push(d);
       var xi=left0+i*span/(N-1); xs.push(xi); d.style.transform=tx(left0);
-      go(d,[{transform:tx(left0),opacity:0},{opacity:1,offset:.12},{transform:tx(xi),opacity:1}],{duration:550,delay:i*50,easing:'cubic-bezier(.2,.8,.25,1)',fill:'forwards'});
+      go(d,[{transform:tx(left0),opacity:0},{opacity:1,offset:.12},{transform:tx(xi),opacity:1}],{duration:380,delay:i*30,easing:'cubic-bezier(.2,.8,.25,1)',fill:'forwards'});
     }
-    var spreadEnd=550+(N-1)*50+300, landed=0;
+    var spreadEnd=380+(N-1)*30+150, landed=0;
     // the others fade away once the picks have left
     els.forEach(function(d,i){ if(PICK.indexOf(i)>-1) return;
-      later(function(){ go(d,[{transform:tx(xs[i]),opacity:1},{transform:tx(xs[i],16,.92),opacity:0}],{duration:300,delay:(i%5)*25,easing:'ease-in',fill:'forwards'}); }, spreadEnd+400); });
+      later(function(){ go(d,[{transform:tx(xs[i]),opacity:1},{transform:tx(xs[i],16,.92),opacity:0}],{duration:250,delay:(i%5)*15,easing:'ease-in',fill:'forwards'}); }, spreadEnd+250); });
     PICK.forEach(function(idx,k){
       later(function(){
         var card=cards[k], fr=card.querySelector('.ft-frame'), img=card.querySelector('img'); if(!fr) return;
@@ -4265,18 +4265,18 @@ cm.addEventListener('click',function(){
         f.innerHTML='<div class="ft-fl-in"><div class="ft-dk-face"></div><div class="ft-fl-art ft-frame"><img decoding="async" alt=""></div></div>';
         f.querySelector('img').src=img.src; stage.appendChild(f); fl.push(f);
         els[idx].style.visibility='hidden';
-        go(f,[{transform:tx(sx,sy,s)},{transform:tx(sx,sy-34,s*1.1),offset:.28},{transform:tx(ex,ey,1)}],{duration:780,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
-        go(f.firstChild,[{transform:'rotateY(0deg)'},{transform:'rotateY(0deg)',offset:.2},{transform:'rotateY(180deg)'}],{duration:780,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
+        go(f,[{transform:tx(sx,sy,s)},{transform:tx(sx,sy-34,s*1.1),offset:.28},{transform:tx(ex,ey,1)}],{duration:520,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
+        go(f.firstChild,[{transform:'rotateY(0deg)'},{transform:'rotateY(0deg)',offset:.2},{transform:'rotateY(180deg)'}],{duration:520,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
         later(function(){
           card.classList.add('ft-shown'); if(f.parentNode) f.parentNode.removeChild(f);
           if(++landed===PICK.length){
             later(function(){
-              var a=go(deck,[{height:deck.offsetHeight+'px',marginTop:'14px'},{height:'0px',marginTop:'0px'}],{duration:400,easing:'ease-in-out',fill:'forwards'});
+              var a=go(deck,[{height:deck.offsetHeight+'px',marginTop:'14px'},{height:'0px',marginTop:'0px'}],{duration:280,easing:'ease-in-out',fill:'forwards'});
               a.onfinish=function(){ deck.classList.add('gone'); panel.classList.remove('ft-armed'); try{ a.cancel(); }catch(e){} };
-            },150);
+            },100);
           }
-        },780);
-      }, spreadEnd+k*240);
+        },520);
+      }, spreadEnd+k*150);
     });
   }
   arm();
