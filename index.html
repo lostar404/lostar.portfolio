@@ -159,14 +159,14 @@
   .navlinks{align-self:stretch;}
   .nav-dd{position:relative; align-self:stretch; display:flex; margin:0 4px;}
   @media (max-width:600px){ .nav-dd-t .dd-pre{display:none;} .nav-dd-t{padding:0 12px; gap:7px;} .nav-dd-t small{display:none;} .navlinks a[href="#work"]{display:none;} .nav-dd{margin:0 2px;} .nav-dd-menu{right:-60px;} .navlinks{gap:8px !important;} }
-  .nav-dd-t{position:relative; display:flex; align-items:center; gap:12px; height:100%; padding:0 22px 0 20px; border:0; border-left:1px solid rgba(190,215,255,.28); border-right:1px solid rgba(190,215,255,.28); border-radius:0; background:linear-gradient(180deg,rgba(143,227,199,0) 0,rgba(143,227,199,.07) 100%); font:inherit; color:#e8eeff; letter-spacing:inherit; cursor:pointer; white-space:nowrap; transition:background .25s, color .25s;}
+  .nav-dd-t{position:relative; display:flex; align-items:center; gap:12px; height:100%; padding:0 22px 0 20px; border:0; border-radius:0; background:none; font:inherit; color:#e8eeff; letter-spacing:inherit; cursor:pointer; white-space:nowrap; transition:background .25s, color .25s;}
   .nav-dd-t::before,.nav-dd-t::after{content:""; position:absolute; width:7px; height:7px; border:1px solid #8fe3c7; opacity:.75; pointer-events:none;}
   .nav-dd-t::before{left:-1px; top:9px; border-width:1px 0 0 1px;}
   .nav-dd-t::after{right:-1px; bottom:9px; border-width:0 1px 1px 0;}
   .nav-dd-t .dd-tx{display:flex; flex-direction:column; align-items:flex-start; gap:5px; line-height:1;}
   .nav-dd-t small{font:500 9px/1 var(--mono); letter-spacing:.24em; color:#8fe3c7; opacity:.85;}
   .nav-dd-t b{font:500 var(--fs-ui,15px)/1 inherit; font-family:inherit; letter-spacing:.14em; font-weight:500;}
-  .nav-dd-t:hover,.nav-dd.open .nav-dd-t{background:linear-gradient(180deg,rgba(143,227,199,.04) 0,rgba(143,227,199,.2) 100%); color:#fff;}
+  .nav-dd-t:hover,.nav-dd.open .nav-dd-t{background:none; color:#fff;}
   .nav-dd-t:hover{box-shadow:inset 0 -2px 0 rgba(143,227,199,.7);}
   .nav-dd.open .nav-dd-t{box-shadow:inset 0 -2px 0 #8fe3c7, 0 6px 22px -6px rgba(143,227,199,.5);}
   .nav-dd-t i{font-style:normal; display:inline-block; font-size:11px; color:#8fe3c7; transition:transform .25s ease;}
