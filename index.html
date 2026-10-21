@@ -3914,8 +3914,6 @@ cm.addEventListener('click',function(){
       var X=hr.left-sr.left+p[0]*hr.width, Y=hr.top-sr.top+p[1]*hr.height, f=0;
       if(mouse){ var d=Math.hypot(mouse.x-(X+sr.left), mouse.y-(Y+sr.top)); f=Math.max(0,1-d/300); }
       var n=(.3+f*2.4+vel*14)*dt; while(n>0){ if(rnd()<n && parts.length<50) parts.push({x:X+(rnd()-.5)*6,y:Y+(rnd()-.5)*6,vx:(rnd()-.5)*12-3,vy:(rnd()-.2)*8+2,l:0,L:1.1+rnd()*1.2,r:.6+rnd()*1,c:cols[(rnd()*5)|0]}); n-=1; }
-      var gr=7+f*10, g=tx.createRadialGradient(X,Y,0,X,Y,gr); g.addColorStop(0,'rgba(190,235,255,'+(.10+f*.26)+')'); g.addColorStop(1,'rgba(150,170,255,0)');
-      tx.globalCompositeOperation='lighter'; tx.fillStyle=g; tx.fillRect(X-gr,Y-gr,gr*2,gr*2);
     });
     tx.globalCompositeOperation='lighter';
     for(var i=parts.length-1;i>=0;i--){ var q=parts[i]; q.l+=dt; if(q.l>q.L){ parts.splice(i,1); continue; }
