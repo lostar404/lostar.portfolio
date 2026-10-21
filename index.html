@@ -1600,6 +1600,7 @@
     .cm-form{display:block; pointer-events:auto; position:relative; padding:12px 12px 10px; border:1px solid rgba(143,227,199,.3); border-radius:12px; background:rgba(9,11,26,.72); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
     .cm-form label{display:block; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); margin-bottom:8px;}
     .cm-form textarea{display:block; width:100%; height:58px; resize:none; box-sizing:border-box; padding:8px 10px; border-radius:8px; border:1px solid rgba(160,175,255,.28); background:rgba(255,255,255,.05); color:var(--text); font:inherit; font-size:13px; line-height:1.4; outline:none;}
+    .cm-msg{min-height:0; margin-top:6px; font-size:12px; color:#ff9c9c;}
     .cm-form textarea:focus{border-color:rgba(143,227,199,.6);}
     .cm-row{display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-family:var(--mono); font-size:var(--fs-micro); color:var(--muted);}
     .cm-form button{cursor:pointer; padding:6px 14px; border-radius:8px; border:1px solid rgba(143,227,199,.55); background:rgba(143,227,199,.1); color:var(--hud); font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); transition:background .2s;}
@@ -1637,6 +1638,8 @@
   <form class="cm-form" id="cmForm" autocomplete="off">
     <label for="cmText">// LEAVE A NOTE · 留言</label>
     <textarea id="cmText" maxlength="30" placeholder="留一句話給迷航星…" rows="2"></textarea>
+    <input id="cmHp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+    <div class="cm-msg" id="cmMsg" role="status"></div>
     <div class="cm-row"><span id="cmCnt">0/30</span><button type="submit">SEND ➤</button></div>
   </form>
   <img decoding="async" id="cmFrameSrc" alt="" hidden src="images/img-04.webp">
@@ -4317,23 +4320,25 @@ cm.addEventListener('click',function(){
 })();
 </script>
 <script>
-/* comment dock: a sent note is dropped into the dialog frame, rises from the box and keeps floating */
+/* comment dock: notes live in Supabase (table public.notes); a note is dropped into the dialog frame, rises from the box and keeps floating */
 (function(){
-  var form=document.getElementById('cmForm'), feed=document.getElementById('cmFeed'), ta=document.getElementById('cmText'), cnt=document.getElementById('cmCnt'), src=document.getElementById('cmFrameSrc');
+  var SB_URL='https://gbwoznjcujkafuzbkqhl.supabase.co', SB_KEY='sb_publishable_Qfpe4W_udlA_030K78jxpA_MkCcY12u';
+  var form=document.getElementById('cmForm'), feed=document.getElementById('cmFeed'), ta=document.getElementById('cmText'), cnt=document.getElementById('cmCnt'), src=document.getElementById('cmFrameSrc'), msg=document.getElementById('cmMsg'), hp=document.getElementById('cmHp');
   if(!form||!feed||!ta||!src) return;
-  var MAX=5, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var MAX=5, reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, seen={}, lastId=0, lastSent=0, busy=false;
+  var H={apikey:SB_KEY, Authorization:'Bearer '+SB_KEY};
+  function say(t){ if(msg) msg.textContent=t||''; }
   ta.addEventListener('input',function(){ cnt.textContent=ta.value.length+'/30'; });
   ta.addEventListener('keydown',function(e){ if(e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); form.requestSubmit ? form.requestSubmit() : send(); } });
   form.addEventListener('submit',function(e){ e.preventDefault(); send(); });
-  function send(){
-    var t=ta.value.replace(/\s+/g,' ').trim(); if(!t) return;
-    ta.value=''; cnt.textContent='0/30';
+
+  function addBubble(t,animate){
     var old=[].slice.call(feed.children), before=old.map(function(n){ return n.getBoundingClientRect().top; });
     var b=document.createElement('div'); b.className='cm-b';
     var inn=document.createElement('div'); inn.className='cm-b-in'; inn.style.animationDuration=(4.8+Math.random()*2)+'s'; inn.style.animationDelay=(-Math.random()*4)+'s';
     var im=document.createElement('img'); im.alt=''; im.src=src.src; var p=document.createElement('p'); p.textContent=t;
     inn.appendChild(im); inn.appendChild(p); b.appendChild(inn); feed.insertBefore(b,feed.firstChild);
-    if(!reduce && b.animate){
+    if(animate && !reduce && b.animate){
       b.animate([{transform:'translateY(70px) scale(.7)',opacity:0},{transform:'translateY(-8px) scale(1.03)',opacity:1,offset:.7},{transform:'translateY(0) scale(1)',opacity:1}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'});
       old.forEach(function(n,i){ var d=before[i]-n.getBoundingClientRect().top; if(d) n.animate([{transform:'translateY('+d+'px)'},{transform:'translateY(0)'}],{duration:700,easing:'cubic-bezier(.2,.8,.25,1)'}); });
     }
@@ -4343,6 +4348,32 @@ cm.addEventListener('click',function(){
       else l.parentNode.removeChild(l);
     });
   }
+  function take(rows,animate){   /* rows: ascending by id */
+    var fresh=rows.filter(function(r){ return !seen[r.id]; });
+    fresh.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,animate); }, animate?k*450:0); });
+  }
+  function load(first){
+    var q=SB_URL+'/rest/v1/notes?select=id,body&order=id.desc&limit='+(first?MAX:20);
+    fetch(q,{headers:H}).then(function(r){ return r.ok?r.json():Promise.reject(r.status); }).then(function(rows){
+      rows=rows.slice().reverse();
+      if(first){ var n=0; rows.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,true); }, 500+k*420); }); }
+      else take(rows,true);
+    }).catch(function(){});
+  }
+  function send(){
+    if(busy) return;
+    var t=ta.value.replace(/\s+/g,' ').trim(); if(!t) return;
+    if(hp && hp.value) return;
+    var wait=8000-(Date.now()-lastSent); if(wait>0){ say('請稍等 '+Math.ceil(wait/1000)+' 秒再送出'); return; }
+    busy=true; say('');
+    fetch(SB_URL+'/rest/v1/notes',{method:'POST',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=representation'},H),body:JSON.stringify({body:t.slice(0,30)})})
+      .then(function(r){ return r.ok?r.json():Promise.reject(r.status); })
+      .then(function(rows){ var r=rows&&rows[0]; if(r&&!seen[r.id]){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; } lastSent=Date.now(); ta.value=''; cnt.textContent='0/30'; addBubble(t,true); })
+      .catch(function(){ say('送出失敗，請稍後再試'); })
+      .then(function(){ busy=false; });
+  }
+  load(true);
+  setInterval(function(){ if(!document.hidden && window.innerWidth>=1600) load(false); },15000);
 })();
 </script>
 </body>
