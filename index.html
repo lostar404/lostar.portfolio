@@ -1521,7 +1521,7 @@
   /* fullscreen (>=1600px): avatar + XP and the explorer profile become a wider, always-visible left dock; everything else is centred in the remaining space */
   .side-shade{display:none;}
   @media (min-width:1600px){
-    body{padding-left:346px;}
+    body{padding-left:376px;}
     .side-tag{display:none !important;}
     body{padding-top:72px;}
     header{position:fixed; top:0; left:0; right:0; margin-left:0;}
@@ -1529,11 +1529,11 @@
     .top-grid{grid-template-columns:minmax(0,1fr) !important; overflow-x:visible;}
     .top-grid .hero{grid-column:1 !important;}
     .top-grid .live-status:not([hidden]){grid-column:1 !important;}
-    .top-grid .pfi{position:fixed !important; left:28px; top:72px; bottom:16px; width:298px; grid-column:auto; grid-row:auto !important; padding:0 !important; display:block !important; overflow-y:auto; overflow-x:hidden; z-index:45; scrollbar-width:thin; scrollbar-color:rgba(143,227,199,.28) transparent;}
+    .top-grid .pfi{position:fixed !important; left:28px; top:72px; bottom:16px; width:328px; grid-column:auto; grid-row:auto !important; padding:0 !important; display:block !important; overflow-y:auto; overflow-x:hidden; z-index:45; scrollbar-width:thin; scrollbar-color:rgba(143,227,199,.28) transparent;}
     .top-grid .pfi::after{display:none;}
     .top-grid .pfi-clip{overflow:visible;}
     .top-grid .pfi-box{background:linear-gradient(180deg, rgba(14,17,40,.97), rgba(8,10,24,.98)) !important; padding:46px 22px 20px;}
-    .side-shade{display:block; position:fixed; top:0; bottom:0; left:326px; width:60px; z-index:44; pointer-events:none;
+    .side-shade{display:block; position:fixed; top:0; bottom:0; left:356px; width:60px; z-index:44; pointer-events:none;
       background:linear-gradient(90deg, rgba(0,0,8,.85) 0, rgba(0,0,8,.5) 28%, rgba(0,0,8,.18) 62%, rgba(0,0,8,0) 100%);}
     .hero .vh{width:min(100%,860px) !important; max-width:none; margin:4px auto 0 !important; clip-path:none !important;}
     .vh-tilt{-webkit-mask-image:linear-gradient(270deg,#000 80%,transparent 99%) !important; mask-image:linear-gradient(270deg,#000 80%,transparent 99%) !important;}
@@ -1579,6 +1579,12 @@
     body{padding-right:300px;}
     .cm-slot{display:block; position:fixed; right:16px; top:72px; bottom:16px; width:268px; z-index:30; pointer-events:none;}
     .side-rail{right:30px;}
+  }
+  @media (min-width:1600px){
+    /* the dock already scrolls by itself: no second scroller inside it */
+    .top-grid .pfi .ps-scroll{max-height:none !important; overflow:visible !important; -webkit-mask-image:none !important; mask-image:none !important; padding-right:0;}
+    .top-grid .pfi .ps-more{display:none !important;}
+    .top-grid .pfi{overscroll-behavior:auto;}
   }
 </style>
 </head>
@@ -4280,6 +4286,25 @@ cm.addEventListener('click',function(){
     if(r<0.02){ if(!left){ left=true; reset(); } }
     else if(left && r>=0.3){ left=false; play(); }
   },{threshold:[0,0.02,0.3]}).observe(panel);
+})();
+</script>
+<script>
+/* wide layout: wheel over the profile dock scrolls the dock first, and hands over to the page the moment the dock hits its top/bottom */
+(function(){
+  var dock=document.querySelector('.top-grid .pfi'); if(!dock) return;
+  dock.addEventListener('wheel',function(e){
+    if(window.innerWidth<1600 || e.ctrlKey) return;
+    var max=dock.scrollHeight-dock.clientHeight, dy=e.deltaY;
+    if(e.deltaMode===1) dy*=16; else if(e.deltaMode===2) dy*=dock.clientHeight;
+    var atTop=dock.scrollTop<=0, atEnd=dock.scrollTop>=max-1;
+    var sc=document.scrollingElement||document.documentElement;
+    var host=(document.body.scrollHeight>document.body.clientHeight+2 && getComputedStyle(document.body).overflowY!=='visible')?document.body:sc;
+    var pageY=Math.max(host.scrollTop,window.pageYOffset||0);
+    if(max<=0 || (dy<0&&(atTop||pageY>0)) || (dy>0&&atEnd)){
+      e.preventDefault();
+      host.scrollBy({top:dy,behavior:'instant'});
+    }
+  },{passive:false});
 })();
 </script>
 </body>
