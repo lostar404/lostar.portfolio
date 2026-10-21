@@ -156,6 +156,18 @@
   .section-head .hud-label{display:block; margin-bottom:8px;}
   .navlinks{display:flex; gap:28px; font-size:var(--fs-ui); color:var(--muted);}
   .navlinks a:hover{color:var(--star);}
+  .nav-dd{position:relative;}
+  @media (max-width:600px){ .nav-dd-t .dd-pre{display:none;} .nav-dd-menu{right:-60px;} .navlinks{gap:8px !important;} }
+  .nav-dd-t{background:none; border:0; padding:0; font:inherit; color:inherit; letter-spacing:inherit; cursor:pointer;}
+  .nav-dd-t:hover,.nav-dd.open .nav-dd-t{color:var(--star);}
+  .nav-dd-t i{font-style:normal; display:inline-block; font-size:.8em; transition:transform .25s ease;}
+  .nav-dd.open .nav-dd-t i{transform:rotate(180deg);}
+  .nav-dd-menu{position:absolute; top:calc(100% + 14px); right:-12px; min-width:210px; padding:8px; border:1px solid rgba(143,227,199,.28); border-radius:12px; background:rgba(9,12,28,.96); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 14px 40px rgba(0,0,10,.55); opacity:0; transform:translateY(-8px); visibility:hidden; pointer-events:none; transition:opacity .22s ease, transform .22s ease, visibility 0s .22s; z-index:70;}
+  .nav-dd.open .nav-dd-menu{opacity:1; transform:none; visibility:visible; pointer-events:auto; transition:opacity .22s ease, transform .22s ease, visibility 0s;}
+  .nav-dd-menu button{display:flex; align-items:center; gap:10px; width:100%; padding:9px 10px; border:0; border-radius:8px; background:none; color:#dfe6ff; font:500 14px/1.2 var(--sans); text-align:left; cursor:pointer;}
+  .nav-dd-menu button:hover,.nav-dd-menu button:focus-visible{background:rgba(143,227,199,.12); outline:none;}
+  .nav-dd-menu small{font:500 10px/1 var(--mono); letter-spacing:.12em; color:#8fe3c7; min-width:22px;}
+  .nav-dd-menu em{margin-left:auto; font:400 10px/1 var(--mono); font-style:normal; color:var(--muted); letter-spacing:.06em;}
 
   .milkyway{
     position:fixed; inset:-10%; z-index:-2; pointer-events:none;
@@ -1803,6 +1815,7 @@
       </div>
     </div>
     <div class="navlinks">
+      <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-pre">作品</span>星系 <i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
       <a href="#work">作品</a>
       <a href="#profile">關於</a>
       <a href="#contact">聯絡</a>
@@ -3442,6 +3455,15 @@
     $('lgBadge').addEventListener('click', requestClose);
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
+    (function(){ var dd=$('navDd'), btn=$('navDdBtn'), menu=$('navDdMenu'); if(!dd||!btn||!menu) return;
+      stars.forEach(function(st,i){ var b=document.createElement('button'); b.type='button'; b.setAttribute('role','menuitem');
+        b.innerHTML='<small>'+st.no+'</small><span></span><em></em>'; b.children[1].textContent=st.zh; b.children[2].textContent=st.en||''; b.addEventListener('click',function(){ shut(); if(detailOpen){ stepTo(i); } else openDetail(i,{noFly:true}); }); menu.appendChild(b); });
+      function stepTo(i){ selectStar(i); fillDetail(i,true); setHash(i,true); }
+      function shut(){ dd.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+      btn.addEventListener('click',function(e){ e.stopPropagation(); var o=dd.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false'); });
+      document.addEventListener('click',function(e){ if(!dd.contains(e.target)) shut(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape') shut(); });
+    })();
     $('lgPrevCard').addEventListener('click', function(){ stepDetail(-1); });
     $('lgNextCard').addEventListener('click', function(){ stepDetail(1); });
     detailEl.addEventListener('scroll', function(){ lgBar.classList.toggle('scrolled', detailEl.scrollTop > 60); }, { passive: true });
