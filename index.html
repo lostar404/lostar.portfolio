@@ -1447,6 +1447,10 @@
   #vhDust{-webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; mix-blend-mode:screen;}
   #vhTrail{position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;}
   @media (prefers-reduced-motion:reduce){ .vh-glow{animation:none;} }
+  /* wrist: the hand is split at its narrowest point into two soft-masked layers; only the hand layer swings */
+  .vh-part{position:absolute; inset:0;}
+  .vh-arm{-webkit-mask-image:linear-gradient(90deg,#000 30%,transparent 40%); mask-image:linear-gradient(90deg,#000 30%,transparent 40%);}
+  .vh-hnd{-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 40%); mask-image:linear-gradient(90deg,transparent 30%,#000 40%); mix-blend-mode:plus-lighter; transform-origin:35% 75%; will-change:transform;}
   /* hand: larger, its arm runs back behind the profile card so it reaches out of it */
   @media (min-width:961px){
     .top-grid .hero{overflow:visible !important;} .hero .plate, .hero .plate-inner{overflow:visible;}
@@ -3875,8 +3879,13 @@ cm.addEventListener('click',function(){
   var dx=dust.getContext('2d'), tx=trail.getContext('2d'), rnd=Math.random;
   var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var maskVal='url("'+hand.src+'")'; glow.style.backgroundImage=maskVal; dust.style.webkitMaskImage=maskVal; dust.style.maskImage=maskVal;
+  var flip=tilt.querySelector('.vh-flip'), pA=document.createElement('div'), pB=document.createElement('div'), dust2=null, dx2=null;
+  pA.className='vh-part vh-arm'; pB.className='vh-part vh-hnd'; pB.setAttribute('aria-hidden','true');
+  var cl=flip.cloneNode(true); [].forEach.call(cl.querySelectorAll('[id]'),function(e){ e.removeAttribute('id'); }); cl.querySelector('img').alt='';
+  dust2=cl.querySelector('canvas'); dx2=dust2.getContext('2d');
+  tilt.insertBefore(pA,flip); pA.appendChild(flip); tilt.appendChild(pB); pB.appendChild(cl);
   var dpr=Math.min(2,window.devicePixelRatio||1), W=0,H=0,SW=0,SH=0, vis=false, running=false;
-  function size(){ W=tilt.offsetWidth; H=tilt.offsetHeight; dust.width=W*dpr; dust.height=H*dpr; SW=stage.clientWidth; SH=stage.clientHeight; trail.width=SW*dpr; trail.height=SH*dpr; }
+  function size(){ W=tilt.offsetWidth; H=tilt.offsetHeight; dust.width=W*dpr; dust.height=H*dpr; dust2.width=dust.width; dust2.height=dust.height; SW=stage.clientWidth; SH=stage.clientHeight; trail.width=SW*dpr; trail.height=SH*dpr; }
   size(); addEventListener('resize',size);
   var cols=['#ffffff','#bfe6ff','#d9c2ff','#ffd0ec','#8fe3ff'];
   var stars=[]; for(var i=0;i<120;i++) stars.push({x:rnd(),y:rnd(),z:.25+rnd()*.75,ph:rnd()*6.28,sp:.8+rnd()*2.2,c:cols[i%5],big:i<12});
@@ -3923,7 +3932,8 @@ cm.addEventListener('click',function(){
     vel=Math.min(.6,(Math.abs(ry-ox)+Math.abs(rx-oy))*1.2);
     if(title) title.style.translate='0 '+(Math.sin(t*1.1)*-3.5).toFixed(1)+'px';
     tilt.style.transform='rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg)';
-    drawDust(t,dt,px,py); drawTrail(dt);
+    drawDust(t,dt,px,py); dx2.clearRect(0,0,dust2.width,dust2.height); dx2.drawImage(dust,0,0); drawTrail(dt);
+    pB.style.transform='rotate('+(Math.sin(t*.9)*2.4).toFixed(3)+'deg)';
     if(reduce){ running=false; return; }
     requestAnimationFrame(frame);
   }
