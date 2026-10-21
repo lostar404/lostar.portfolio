@@ -1660,6 +1660,14 @@
   /* mobile: no orbiting star-dust around the black hole (the purple glow stays) */
   @media (max-width:960px){ .bh-dustwrap{display:none !important;} }
   @media (max-width:960px){ .ghost-img, .trail-canvas{display:none !important;} }
+  /* RGB colour cycling: the ring around the avatar and the fill inside the XP bar */
+  .pl-avatar::after{
+    background:conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,0) 195deg, #ff3b6b 245deg, #ffd23b 280deg, #3bff8a 315deg, #3bb6ff 345deg, #c03bff 358deg, rgba(255,255,255,0) 360deg) !important;
+    filter:hue-rotate(0deg) drop-shadow(0 0 5px rgba(255,255,255,0.8)); animation:pl-spin 2s linear infinite, pl-hue 5s linear infinite !important;}
+  @keyframes pl-hue{to{filter:hue-rotate(360deg) drop-shadow(0 0 5px rgba(255,255,255,0.8));}}
+  .pl-xp i{background:linear-gradient(90deg,#ff3b6b,#ffd23b,#3bff8a,#3bb6ff,#c03bff,#ff3b6b) !important; background-size:200% 100% !important; animation:pl-xpflow 4s linear infinite;}
+  @keyframes pl-xpflow{to{background-position:-200% 0;}}
+  @media (prefers-reduced-motion: reduce){ .pl-avatar::after, .pl-xp i{animation:none !important;} }
 </style>
 </head>
 <body>
