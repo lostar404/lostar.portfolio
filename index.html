@@ -1482,6 +1482,10 @@
   #work > .wrap, .contact > .wrap{position:relative; z-index:1;}
   footer{border-top:none;}
   @media (max-width:960px){ .pfi-box{border-top-color:transparent !important; border-bottom-color:transparent !important; background:none !important;} }
+  .pfi{position:relative;}
+  .sg-01{z-index:0;}
+  .pfi-clip{position:relative; z-index:1;}
+  @media (min-width:961px){ .sg-01{display:none;} }
 </style>
 </head>
 <body>
@@ -1575,11 +1579,12 @@
 </section>
 
 <div class="pfi open" id="profile">
+  <div class="sec-ghost sg-01" aria-hidden="true">01</div>
   <div class="pfi-clip">
     <div class="pfi-box">
       <div class="pfi-head">
         <div class="pfi-left">
-          <div class="hud-label pfi-hud"><span>// EXPLORER PROFILE</span> <span class="pfi-dot">·</span> <span>探索者檔案</span></div>
+          <div class="hud-label pfi-hud"><span>// 01 — EXPLORER PROFILE</span> <span class="pfi-dot">·</span> <span>探索者檔案</span></div>
           <div class="pfi-who">
             <div class="pfi-photo"><img decoding="async" src="images/img-07.jpg" alt="海邊手持乾燥花的側臉人像"></div>
             <div class="pfi-names">
