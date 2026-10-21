@@ -1444,7 +1444,7 @@
   .vh-glow, .vh-tilt img, .vh-tilt canvas{position:absolute; inset:0; width:100%; height:100%; display:block; max-width:none;}
   .vh-glow{background-size:100% 100%; filter:blur(8px) brightness(1.9) saturate(1.5); opacity:.4; mix-blend-mode:screen; animation:vhBreathe 5.5s ease-in-out infinite alternate;}
   @keyframes vhBreathe{from{opacity:.18;} to{opacity:.6;}}
-  #vhDust{-webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; mix-blend-mode:screen;}
+  #vhDust, .vh-hnd canvas{-webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; mix-blend-mode:screen;}
   #vhTrail{position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none;}
   @media (prefers-reduced-motion:reduce){ .vh-glow{animation:none;} }
   /* wrist: the hand is split at its narrowest point into two soft-masked layers; only the hand layer swings */
