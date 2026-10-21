@@ -1578,7 +1578,7 @@
   .cm-slot{display:none;}
   .pf-fold,.pf-stand{display:none;}
   @media (min-width:1600px){
-    .top-grid .pfi, .side-shade, .pf-fold{transition:transform .7s cubic-bezier(.55,0,.25,1), visibility 0s;}
+    .top-grid .pfi, .side-shade, .pf-fold{transition:transform .7s cubic-bezier(.55,0,.25,1), visibility 0s; will-change:transform; backface-visibility:hidden;}
     body.pf-folded .top-grid .pfi, body.pf-folded .side-shade, body.pf-folded .pf-fold{transform:translateX(-440px); visibility:hidden; pointer-events:none; transition:transform .7s cubic-bezier(.55,0,.25,1), visibility 0s .7s;}
     .pf-fold{display:flex; align-items:center; justify-content:center; position:fixed; left:356px; top:50%; margin-top:-44px; z-index:46; width:22px; height:88px; padding:0; border-radius:0 14px 14px 0; border:1px solid rgba(143,227,199,.38); border-left:0; background:linear-gradient(180deg,rgba(18,26,52,.95),rgba(9,12,28,.95)); color:#8fe3c7; font:400 20px/1 var(--mono); cursor:pointer; box-shadow:6px 0 18px rgba(80,120,255,.18);}
     .pf-fold:hover{background:linear-gradient(180deg,rgba(28,46,80,.98),rgba(14,22,46,.98));}
@@ -4628,7 +4628,7 @@ cm.addEventListener('click',function(){
   (function(){ var f=document.getElementById('pfFold'), st=document.getElementById('pfStand'), fb=document.getElementById('workFullbody'), tx=document.getElementById('pfFoldTx');
     if(!f||!st||!fb) return; var fig=document.createElement('div'); fig.className='pf-fig'; var im=document.createElement('img'); im.alt=''; im.src=fb.src; fig.appendChild(im);
     var orb=document.createElement('button'); orb.type='button'; orb.className='pf-orb'; orb.setAttribute('aria-label','展開探索者檔案'); var tg=document.createElement('span'); tg.className='pf-orb-tag'; tg.textContent='探索者檔案'; fig.appendChild(orb); fig.appendChild(tg); st.appendChild(fig);
-    function set(v){ document.body.classList.toggle('pf-folded',v); f.setAttribute('aria-label',v?'展開探索者檔案':'收合探索者檔案'); }
+    function set(v){ window.__rafHold=true; clearTimeout(set.t); set.t=setTimeout(function(){ if(!document.body.classList.contains('cm-open') && window.__rafRelease) window.__rafRelease(); },1300); document.body.classList.toggle('pf-folded',v); f.setAttribute('aria-label',v?'展開探索者檔案':'收合探索者檔案'); }
     f.addEventListener('click',function(){ set(!document.body.classList.contains('pf-folded')); });
     orb.addEventListener('click',function(){ set(false); });
   })();
