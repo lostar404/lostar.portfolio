@@ -1688,17 +1688,19 @@
     .cm-fab svg{width:26px; height:26px;}
     .cm-fab:active{transform:scale(.93);}
     body.cm-open .cm-fab, body.pf-sheet .cm-fab{opacity:0; pointer-events:none; transform:scale(.8);}
-    .cm-backdrop{display:block; position:fixed; inset:0; z-index:1090; background:rgba(3,4,12,.55); opacity:0; pointer-events:none; transition:opacity .3s ease;}
-    body.cm-open .cm-backdrop{opacity:1; pointer-events:auto;}
+    .cm-backdrop{display:block; position:fixed; inset:0; z-index:1090; background:transparent; pointer-events:none;}
+    body.cm-open .cm-backdrop{pointer-events:auto;}
     .cm-slot{position:fixed !important; left:0; right:0; bottom:var(--cmkb,0px); top:auto !important; width:auto !important; height:min(74vh,540px); z-index:1100; box-sizing:border-box; padding:14px 14px calc(14px + env(safe-area-inset-bottom)); gap:10px;
-      border-radius:22px 22px 0 0; border-top:1px solid rgba(143,227,199,.35); background:linear-gradient(180deg, rgba(14,17,44,.96), rgba(6,8,20,.98));
-      transform:translateY(105%); visibility:hidden; pointer-events:none; transition:transform .4s cubic-bezier(.2,.8,.25,1), visibility 0s linear .4s;}
-    body.cm-open .cm-slot{transform:none; visibility:visible; pointer-events:auto; transition:transform .4s cubic-bezier(.2,.8,.25,1), visibility 0s;}
+      border:0; border-radius:0; background:none; box-shadow:none;
+      transform:translateY(110%); opacity:0; visibility:hidden; pointer-events:none; transition:transform .45s cubic-bezier(.4,0,.2,1), opacity .35s ease, visibility 0s linear .45s;}
+    body.cm-open .cm-slot{transform:none; opacity:1; visibility:visible; pointer-events:none; transition:transform .45s cubic-bezier(.2,.8,.25,1), opacity .3s ease, visibility 0s;}
+    body.cm-open .cm-form, body.cm-open .cm-x{pointer-events:auto;}
+    .cm-feed{pointer-events:none;}
     .cm-feed{align-items:center !important; overflow:hidden !important;}
     .cm-b{width:min(290px,86vw) !important;}
-    .cm-form{width:100% !important; align-self:stretch !important; background:rgba(255,255,255,.04) !important;}
+    .cm-form{width:100% !important; align-self:stretch !important; background:rgba(9,11,26,.78) !important;}
     .cm-form textarea{font-size:16px !important;}
-    .cm-x{display:block; position:absolute; top:10px; right:12px; z-index:2; cursor:pointer; padding:6px 12px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:11px; letter-spacing:.14em;}
+    .cm-x{display:block; position:absolute; top:7px; right:10px; z-index:2; cursor:pointer; padding:4px 10px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:11px; letter-spacing:.14em;}
   }
 </style>
 </head>
@@ -1729,10 +1731,10 @@
 <button type="button" class="cm-fab" id="cmFab" aria-label="留言" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-4 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></button>
 <div class="cm-backdrop" id="cmBackdrop"></div>
 <aside class="cm-slot" id="cmSlot" aria-label="留言">
-  <button type="button" class="cm-x" id="cmX" aria-label="關閉留言">✕ CLOSE</button>
   <div class="cm-feed" id="cmFeed" aria-live="polite"></div>
   <form class="cm-form" id="cmForm" autocomplete="off">
     <label for="cmText">// LEAVE A NOTE · 留言</label>
+    <button type="button" class="cm-x" id="cmX" aria-label="關閉留言">✕ CLOSE</button>
     <textarea id="cmText" maxlength="30" placeholder="留一句話給迷航星…" rows="2"></textarea>
     <input id="cmHp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
     <div class="cm-msg" id="cmMsg" role="status"></div>
