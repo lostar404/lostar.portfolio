@@ -1480,9 +1480,6 @@
     font-family:var(--serif); font-weight:700; font-size:clamp(8rem,26vw,15rem); line-height:1; letter-spacing:var(--ls-ui);
     color:transparent; -webkit-text-stroke:1px rgba(190,200,245,.15); text-shadow:0 0 80px rgba(122,79,194,.18);}
   #work > .wrap, .contact > .wrap{position:relative; z-index:1;}
-  .rv{opacity:0; transform:translateY(24px); transition:opacity .9s ease, transform .9s cubic-bezier(.22,.9,.3,1);}
-  .rv.in{opacity:1; transform:none;}
-  @media (prefers-reduced-motion:reduce){ .rv{opacity:1; transform:none; transition:none;} }
   footer{border-top:none;}
   @media (max-width:960px){ .pfi-box{border-top-color:transparent !important; border-bottom-color:transparent !important; background:none !important;} }
 </style>
@@ -4069,11 +4066,6 @@ cm.addEventListener('click',function(){
     function req(){ if(!tick){ tick=true; requestAnimationFrame(update); } }
     addEventListener('scroll',req,{passive:true}); addEventListener('resize',req); update(); setTimeout(update,1200);
   }
-  /* 2. blocks rise in as they arrive */
-  var sel=['#work .section-head','#work .view-toggle','#contact .wrap > *'], els=[].slice.call(document.querySelectorAll(sel.join(',')));
-  if(!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-  var io=new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{rootMargin:'0px 0px -8% 0px',threshold:0.05});
-  els.forEach(function(e){ e.classList.add('rv'); io.observe(e); });
 })();
 </script>
 </body>
