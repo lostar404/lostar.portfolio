@@ -1588,7 +1588,7 @@
   }
   /* comment dock (>=1600px): note box pinned bottom-right; sent notes rise as floating dialog frames */
   .cm-feed,.cm-form{display:none;}
-  @media (min-width:1600px){
+  @media (min-width:1600px), (max-width:960px){
     .cm-slot{display:flex !important; flex-direction:column; justify-content:flex-end; gap:14px;}
     .cm-feed{display:flex; flex-direction:column-reverse; align-items:flex-end; gap:6px; flex:1; min-height:0; overflow:visible; position:relative;}
     .cm-b{position:relative; width:290px; flex:none; margin-right:0; will-change:transform,opacity;}
@@ -1679,6 +1679,27 @@
     .top-grid .feat-wrap{grid-column:1; max-width:none;}
     .top-grid #work{grid-column:1;}
   }
+  /* ===== mobile: floating note button + bottom sheet ===== */
+  .cm-fab,.cm-backdrop,.cm-x{display:none;}
+  @media (min-width:961px) and (max-width:1599px){ .cm-slot{display:none !important;} }
+  @media (max-width:960px){
+    .cm-fab{display:flex; align-items:center; justify-content:center; position:fixed; right:16px; bottom:calc(18px + env(safe-area-inset-bottom)); z-index:1000; width:54px; height:54px; border-radius:50%; cursor:pointer; padding:0;
+      border:1px solid rgba(143,227,199,.6); background:linear-gradient(135deg, rgba(60,70,150,.88), rgba(30,36,90,.92)); color:#fff; box-shadow:0 6px 22px rgba(70,90,200,.45); -webkit-tap-highlight-color:transparent; transition:transform .25s ease, opacity .25s ease;}
+    .cm-fab svg{width:26px; height:26px;}
+    .cm-fab:active{transform:scale(.93);}
+    body.cm-open .cm-fab, body.pf-sheet .cm-fab{opacity:0; pointer-events:none; transform:scale(.8);}
+    .cm-backdrop{display:block; position:fixed; inset:0; z-index:1090; background:rgba(3,4,12,.55); opacity:0; pointer-events:none; transition:opacity .3s ease;}
+    body.cm-open .cm-backdrop{opacity:1; pointer-events:auto;}
+    .cm-slot{position:fixed !important; left:0; right:0; bottom:var(--cmkb,0px); top:auto !important; width:auto !important; height:min(74vh,540px); z-index:1100; box-sizing:border-box; padding:14px 14px calc(14px + env(safe-area-inset-bottom)); gap:10px;
+      border-radius:22px 22px 0 0; border-top:1px solid rgba(143,227,199,.35); background:linear-gradient(180deg, rgba(14,17,44,.96), rgba(6,8,20,.98));
+      transform:translateY(105%); visibility:hidden; pointer-events:none; transition:transform .4s cubic-bezier(.2,.8,.25,1), visibility 0s linear .4s;}
+    body.cm-open .cm-slot{transform:none; visibility:visible; pointer-events:auto; transition:transform .4s cubic-bezier(.2,.8,.25,1), visibility 0s;}
+    .cm-feed{align-items:center !important; overflow:hidden !important;}
+    .cm-b{width:min(290px,86vw) !important;}
+    .cm-form{width:100% !important; align-self:stretch !important; background:rgba(255,255,255,.04) !important;}
+    .cm-form textarea{font-size:16px !important;}
+    .cm-x{display:block; position:absolute; top:10px; right:12px; z-index:2; cursor:pointer; padding:6px 12px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:11px; letter-spacing:.14em;}
+  }
 </style>
 </head>
 <body>
@@ -1705,7 +1726,10 @@
   <a href="#contact" data-sec="2"><span>TRANSMIT</span><i></i></a>
 </nav>
 <div class="side-shade" aria-hidden="true"></div>
+<button type="button" class="cm-fab" id="cmFab" aria-label="留言" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-4 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></button>
+<div class="cm-backdrop" id="cmBackdrop"></div>
 <aside class="cm-slot" id="cmSlot" aria-label="留言">
+  <button type="button" class="cm-x" id="cmX" aria-label="關閉留言">✕ CLOSE</button>
   <div class="cm-feed" id="cmFeed" aria-live="polite"></div>
   <form class="cm-form" id="cmForm" autocomplete="off">
     <label for="cmText">// LEAVE A NOTE · 留言</label>
@@ -4505,7 +4529,7 @@ cm.addEventListener('click',function(){
       .then(function(){ busy=false; });
   }
   load(true);
-  setInterval(function(){ if(!document.hidden && window.innerWidth>=1600) load(false); },15000);
+  setInterval(function(){ if(!document.hidden && (window.innerWidth>=1600 || document.body.classList.contains('cm-open'))) load(false); },15000);
 })();
 </script>
 <script>
@@ -4528,6 +4552,22 @@ cm.addEventListener('click',function(){
     if(!mq.matches) shut();
   }
   place(); if(mq.addEventListener) mq.addEventListener('change',place); else mq.addListener(place);
+})();
+</script>
+<script>
+/* mobile note sheet: floating button opens a bottom sheet that holds the same bubbles + input as the desktop column */
+(function(){
+  var fab=document.getElementById('cmFab'), bd=document.getElementById('cmBackdrop'), x=document.getElementById('cmX'), ta=document.getElementById('cmText'), mq=window.matchMedia('(max-width:960px)');
+  if(!fab) return;
+  function open(){ if(!mq.matches) return; document.body.classList.add('cm-open'); }
+  function shut(){ document.body.classList.remove('cm-open'); document.documentElement.style.removeProperty('--cmkb'); document.getElementById('cmSlot').style.removeProperty('--cmkb'); if(ta) ta.blur(); }
+  fab.addEventListener('click',open); if(bd) bd.addEventListener('click',shut); if(x) x.addEventListener('click',shut);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') shut(); });
+  if(mq.addEventListener) mq.addEventListener('change',function(){ if(!mq.matches) shut(); });
+  /* keep the sheet above the on-screen keyboard */
+  var vv=window.visualViewport, slot=document.getElementById('cmSlot');
+  function kb(){ if(!vv||!slot) return; var d=Math.max(0,window.innerHeight-vv.height-vv.offsetTop); slot.style.setProperty('--cmkb',(document.body.classList.contains('cm-open')?d:0)+'px'); }
+  if(vv){ vv.addEventListener('resize',kb); vv.addEventListener('scroll',kb); }
 })();
 </script>
 </body>
