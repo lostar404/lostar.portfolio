@@ -2229,6 +2229,15 @@
       });
     });
 
+    // ---- classify by what each collection is FOR (matches the services list); 啟航星 keeps its own name ----
+    var USE_TAG = { '元宇宙': 'Vtuber 立繪', '貼圖星': 'LINE 貼圖', '萬象星': '插畫・漫畫', '牡羊 41': '角色設計・委託' };
+    stars.forEach(function(st, k){
+      if(USE_TAG[st.zh]){
+        st.en = USE_TAG[st.zh];
+        var lab = items[k] && items[k].querySelector('.star-label .medium'); if(lab) lab.textContent = st.en;
+      }
+    });
+
     var currentView = 'orbit';
     var selected = DEFAULT_STAR;
     var gridEl = document.getElementById('workGrid');
@@ -2288,11 +2297,11 @@
     }
 
     var DESC = {
-      '貼圖星': '可愛又無理取鬧的奇怪生物們，在這裡又會碰撞出甚麼新的火花呢?',
+      '貼圖星': 'LINE 貼圖：可愛又無理取鬧的奇怪生物們，在這裡又會碰撞出甚麼新的火花呢?',
       '啟航星': '一切開始的地方，看看這個故事的主角是誰吧!',
-      '元宇宙': '穿過入口，走進另一個世界，看看那裡的風景。',
-      '萬象星': '各式各樣的創作在這裡匯聚，每一件都是不同的光。',
-      '牡羊 41': '一顆安靜發亮的小星，藏著一點新的嘗試。'
+      '元宇宙': 'Vtuber 立繪：穿過入口，每一扇門後都住著一位角色。',
+      '萬象星': '插畫與漫畫：日常小品、賀卡與各式創作，在這裡匯聚。',
+      '牡羊 41': '角色設計與委託：Q 版、客製角色，把想像變成角色。'
     };
     var descEl = document.getElementById('ringDesc'), rdText = document.getElementById('rdText'), rdGo = document.getElementById('rdGo'), rpOpen = document.getElementById('rpOpen');
     var descOpen = false;
@@ -2358,7 +2367,7 @@
     (function(){
       var k = -1; stars.forEach(function(st, n){ if(st.zh === '元宇宙') k = n; });
       if(k < 0) return;
-      LOG[k].summary = '這顆星球充滿了多元宇宙的入口，讓我們看看會遇到哪些有趣的朋友吧！';
+      LOG[k].summary = '這裡收錄 Vtuber 立繪：每一扇門後都住著一位角色，讓我們看看會遇到哪些有趣的朋友吧！';
       LOG[k].text = [
         '這顆星球上有好多扇門，每一扇都通往不同的世界。',
         '推開其中一扇，就會遇見住在裡面的角色。他們有自己的名字、個性，也有各自的故事。',
@@ -2366,6 +2375,15 @@
         '每個系列就是一扇門。點進去，看看門後住著誰吧。'
       ];
     })();
+
+    // ---- 貼圖星 / 萬象星 / 牡羊 41: one-line purpose + short record ----
+    [['貼圖星', 'LINE 貼圖系列都收在這裡，每個系列都是一群有個性的小生物。', ['這裡放的是可以在 LINE 使用的貼圖系列。', '每個系列都有自己的角色與口頭禪，點進去可以一張一張翻看。']],
+     ['萬象星', '插畫與漫畫：日常小品、賀卡與各式創作。', ['這裡收的是不屬於其他星球的插畫與漫畫。', '有旅行中的日常小事，也有節慶賀卡與主題插畫。']],
+     ['牡羊 41', '角色設計與委託：Q 版與客製角色。', ['這裡放角色設計與委託作品，例如 Q 版與指定風格的客製角色。', '如果你也想把腦中的角色畫出來，可以從聯絡區告訴我。']]
+    ].forEach(function(r){
+      var k = -1; stars.forEach(function(st, n){ if(st.zh === r[0]) k = n; });
+      if(k < 0) return; LOG[k].summary = r[1]; LOG[k].text = r[2];
+    });
 
     // ---- works registry ----
     // Add every new piece with addWork(categoryName, {...}) AT THE END of this list.
@@ -2559,7 +2577,7 @@
     (function(){
       addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-39.webp' });
       addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-40.webp' });
-      addWork('萬象星', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-41.webp' });
+      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-41.webp' });
       addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-42.webp' });
       addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-43.webp' });
     })();
