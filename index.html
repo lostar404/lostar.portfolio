@@ -1659,6 +1659,7 @@
   .ps-more{display:none !important;}
   /* mobile: no orbiting star-dust around the black hole (the purple glow stays) */
   @media (max-width:960px){ .bh-dustwrap{display:none !important;} }
+  @media (max-width:960px){ .ghost-img, .trail-canvas{display:none !important;} }
 </style>
 </head>
 <body>
@@ -2320,6 +2321,7 @@
 
     function fireMeteorTrail(dur){
       if(!trailLayer) return;
+      if(window.matchMedia && window.matchMedia('(max-width:960px)').matches) return;   // no planet trails on mobile
       var planets = [];
       items.forEach(function(btn){
         var p = btn.querySelector('.planet-img');
