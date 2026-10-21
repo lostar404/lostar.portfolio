@@ -307,6 +307,8 @@
   .ho2::before{background:var(--hud); box-shadow:0 0 14px 2px rgba(143,227,199,0.55); width:10px; height:10px; margin-left:-5px; top:-5px;}
   .ho3{width:min(150vw, 900px); height:min(150vw, 900px); animation:ho-spin 140s linear infinite;}
   .ho3::before{background:var(--gold); box-shadow:0 0 14px 2px rgba(217,199,154,0.55);}
+  .hero-orbits.js .ho2::before{display:none;}
+  .ho-dot{position:absolute; left:0; top:0; width:10px; height:10px; margin:-5px 0 0 -5px; border-radius:50%; background:var(--hud); box-shadow:0 0 14px 2px rgba(143,227,199,0.55); will-change:transform;}
   @keyframes ho-spin{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
   .hero-cta{
     display:inline-flex; align-items:center; gap:10px; margin-top:34px; padding:13px 26px; color:var(--text);
@@ -4008,6 +4010,24 @@ cm.addEventListener('click',function(){
     setTimeout(fire, r(2200,6500));
   }
   setTimeout(fire, 2500);
+})();
+</script>
+<script>
+(function(){
+  /* the green orb on the outer ring is driven from JS so it keeps moving even where the CSS rotation stalls (iOS Safari) */
+  var box=document.querySelector('.hero-orbits'), ring=box&&box.querySelector('.ho2'); if(!box||!ring) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var dot=document.createElement('span'); dot.className='ho-dot'; box.appendChild(dot); box.classList.add('js');
+  var vis=true; if('IntersectionObserver' in window) new IntersectionObserver(function(e){ vis=e[0].isIntersecting; if(vis) requestAnimationFrame(tick); }).observe(box);
+  var t0=performance.now();
+  function tick(now){
+    if(!vis) return;
+    var W=box.clientWidth, H=box.clientHeight, R=ring.offsetWidth/2, per=(innerWidth<=760?28:84)*1000;
+    var a=-Math.PI/2 - ((now-t0)/per)*Math.PI*2;
+    dot.style.transform='translate('+(W*.5+Math.cos(a)*R).toFixed(1)+'px,'+(H*.46+Math.sin(a)*R).toFixed(1)+'px)';
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
