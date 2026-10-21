@@ -1654,6 +1654,9 @@
     @keyframes pfNudge{0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)}}
   }
   @media (prefers-reduced-motion:reduce){ .pf-open,.pf-go{animation:none !important;} }
+  /* experience list is always fully expanded: no inner scroller, no scroll hint */
+  .ps-scroll, .ps-wrap:not(.route-on) .ps-scroll{max-height:none !important; overflow:visible !important; -webkit-mask-image:none !important; mask-image:none !important; padding-right:0;}
+  .ps-more{display:none !important;}
 </style>
 </head>
 <body>
