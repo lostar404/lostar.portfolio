@@ -640,8 +640,11 @@
   .rp-en{margin-top:2px;}
   .rp-dots{display:flex; justify-content:center; gap:2px; margin-top:6px;}
   .rp-dot{width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; -webkit-tap-highlight-color:transparent;}
-  .rp-dot::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--muted); opacity:.55; transition:all .25s ease;}
-  .rp-dot.is-active::before{width:20px; border-radius:4px; background:var(--rainbow); opacity:1;}
+  .rp-dot{position:relative;}
+  .rp-dot::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--muted); opacity:.55; transition:opacity .2s ease;}
+  .rp-dot::after{content:""; position:absolute; left:50%; top:50%; width:20px; height:7px; margin:-3.5px 0 0 -10px; border-radius:4px; background:var(--rainbow); opacity:0; transform:scaleX(.35); transition:opacity .2s ease, transform .25s ease; pointer-events:none;}
+  .rp-dot.is-active::before{opacity:0;}
+  .rp-dot.is-active::after{opacity:1; transform:none;}
   .h-m{display:none;}
   @media (max-width:760px){
     .ring-pager{display:block; margin-top:42px;}
