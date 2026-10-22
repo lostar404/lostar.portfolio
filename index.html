@@ -158,6 +158,16 @@
   .navlinks{display:flex; gap:28px; font-size:var(--fs-ui); color:var(--muted);}
   .navlinks a:hover{color:var(--star);}
   .navlinks{align-self:stretch;}
+  .nav-tabs{display:none;}
+  @media (min-width:961px){
+    .nav-tabs{display:flex; align-items:center; gap:30px; position:absolute; left:50%; top:0; height:100%; transform:translateX(-50%);}
+    .nav-tabs button{position:relative; height:100%; padding:0 2px; border:0; background:none; font:500 var(--fs-ui,15px)/1 var(--sans); letter-spacing:.08em; color:rgba(210,205,225,.62); cursor:pointer; transition:color .2s;}
+    .nav-tabs button::after{content:""; position:absolute; left:0; right:0; bottom:16px; height:2px; border-radius:1px; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform:scaleX(0); transition:transform .3s ease;}
+    .nav-tabs button:hover{color:#fff;}
+    .nav-tabs button.on{color:#fff; font-weight:700;}
+    .nav-tabs button.on::after{transform:scaleX(1);}
+    .nav-dd{display:none !important;}
+  }
   .nav-dd{position:relative; align-self:stretch; display:flex; margin:0 4px;}
   @media (max-width:960px){ .nav-dd{display:none !important;} }
   .nav-dd-t{position:relative; display:flex; align-items:center; gap:12px; height:100%; padding:0 22px 0 20px; border:0; border-radius:0; background:none; font:inherit; color:#e8eeff; letter-spacing:inherit; cursor:pointer; white-space:nowrap; transition:background .25s, color .25s;}
@@ -1824,6 +1834,7 @@
         </div>
       </div>
     </div>
+    <div class="nav-tabs" id="navTabs" role="tablist" aria-label="作品星系"></div>
     <div class="navlinks">
       <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-tx"><small>STAR MAP</small><b><span class="dd-pre">作品</span>星系</b></span><i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
       <a href="#work">作品</a>
@@ -2579,6 +2590,7 @@
     function hasHover(){ return !!(window.matchMedia && window.matchMedia('(hover: hover)').matches); }
 
     function refreshSelection(){
+      if(window.__navTabsSync) window.__navTabsSync(selected);
       if(rpName && stars[selected]){
         rpName.textContent = stars[selected].zh;
         rpEn.textContent = stars[selected].en + '  ·  MAG ' + stars[selected].mag;
@@ -3465,6 +3477,11 @@
     $('lgBadge').addEventListener('click', requestClose);
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
+    (function(){ var box=$('navTabs'); if(!box) return; var btns=[];
+      stars.forEach(function(st,i){ var b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.textContent=st.zh; b.addEventListener('click',function(){ if(detailOpen){ selectStar(i); fillDetail(i,true); setHash(i,true); } else { selectStar(i); openDetail(i,{noFly:true}); } }); box.appendChild(b); btns.push(b); });
+      window.__navTabsSync=function(k){ btns.forEach(function(b,i){ b.classList.toggle('on',i===k); b.setAttribute('aria-selected',i===k?'true':'false'); }); };
+      window.__navTabsSync(selected);
+    })();
     (function(){ var dd=$('navDd'), btn=$('navDdBtn'), menu=$('navDdMenu'); if(!dd||!btn||!menu) return;
       stars.forEach(function(st,i){ var b=document.createElement('button'); b.type='button'; b.setAttribute('role','menuitem');
         b.innerHTML='<small>'+st.no+'</small><span></span><em></em>'; b.children[1].textContent=st.zh; b.children[2].textContent=st.en||''; b.addEventListener('click',function(){ shut(); if(detailOpen){ stepTo(i); } else openDetail(i,{noFly:true}); }); menu.appendChild(b); });
