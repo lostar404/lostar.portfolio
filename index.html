@@ -792,6 +792,15 @@
   .sp-cap span{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud); opacity:.85;}
   .sp-cap p{margin:4px 0 0; color:var(--muted); line-height:var(--lh-body); font-size:var(--fs-body);}
   .lg-sec[hidden]{display:none;}
+  .lg-intro{position:fixed; inset:0; z-index:650; background:#02030a; display:flex; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:opacity .6s ease, visibility 0s .6s;}
+  .lg-intro[hidden]{display:none;}
+  .lg-intro.on{opacity:1; visibility:visible; transition:opacity .5s ease;}
+  .lg-intro video{height:100%; max-width:100%; aspect-ratio:9/16; object-fit:contain; background:#02030a;}
+  .lg-intro-skip,.lg-intro-snd{position:absolute; top:calc(16px + env(safe-area-inset-top)); height:40px; padding:0 16px; border:1px solid rgba(255,255,255,.55); background:rgba(5,8,22,.55); color:#fff; font:600 12px/1 var(--mono); letter-spacing:.18em; cursor:pointer; transition:background .2s;}
+  .lg-intro-skip{left:16px;} .lg-intro-snd{right:16px; border-color:rgba(255,255,255,.3); color:rgba(255,255,255,.8);}
+  .lg-intro-skip:hover,.lg-intro-snd:hover{background:rgba(143,227,199,.2);}
+  .lg-intro-bar{position:absolute; left:0; bottom:0; height:2px; width:100%; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform-origin:0 50%; transform:scaleX(0);}
+  body.intro-on .cm-fab{display:none !important;}
   .lg-film-grid{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:48px; align-items:center;}
   .lg-film-box{position:relative; width:100%; aspect-ratio:9/16; background:#05060f; border:1px solid var(--line-soft); overflow:hidden; box-shadow:0 18px 50px rgba(40,60,160,.28);}
   .lg-film-box video{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#05060f;}
@@ -2313,6 +2322,13 @@
   </div>
 </div>
 
+<div class="lg-intro" id="lgIntro" hidden aria-label="起源影片">
+  <video id="lgIntroVid" playsinline preload="auto" poster="video/origin-poster.jpg"></video>
+  <button type="button" class="lg-intro-skip" id="lgIntroSkip">跳過 SKIP ▸▸</button>
+  <button type="button" class="lg-intro-snd" id="lgIntroSnd" aria-label="切換聲音">SOUND ON</button>
+  <i class="lg-intro-bar" id="lgIntroBar"></i>
+</div>
+
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="作品放大檢視">
   <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="關閉">✕</button>
   <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="上一張">‹</button>
@@ -3515,7 +3531,24 @@
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
     (function(){ var sec=$('lgFilmSec'), v=$('lgFilm'), box=$('lgFilmBox'), pl=$('lgFilmPlay'), dur=$('lgFilmDur'); if(!sec||!v||!pl) return;
       var ready=false, started=false, pr=new Image(); pr.onload=function(){ ready=true; if(detailEl && detailEl.classList.contains('is-origin')) sec.hidden=false; }; pr.onerror=function(){ ready=false; }; pr.src='video/origin-poster.jpg';
-      window.__filmSync=function(isOrigin){ sec.hidden=!(isOrigin&&ready); if(!isOrigin){ try{ v.pause(); }catch(e){} box.classList.remove('playing'); } };
+      var IKEY='lostar-origin-intro-seen', intro=$('lgIntro'), iv=$('lgIntroVid'), iskip=$('lgIntroSkip'), isnd=$('lgIntroSnd'), ibar=$('lgIntroBar'), introOn=false, wasOrigin=false, endT;
+      function seen(){ try{ return window.localStorage.getItem(IKEY)==='1'; }catch(e){ return false; } }
+      function mark(){ try{ window.localStorage.setItem(IKEY,'1'); }catch(e){} }
+      function endIntro(){ if(!introOn) return; introOn=false; try{ iv.pause(); }catch(e){} intro.classList.remove('on'); document.body.classList.remove('intro-on'); if(!document.body.classList.contains('cm-open') && window.__rafRelease) window.__rafRelease(); clearTimeout(endT); endT=setTimeout(function(){ if(!introOn){ intro.hidden=true; iv.removeAttribute('src'); try{ iv.load(); }catch(e){} } },700); if(typeof replayOrigin==='function'){ try{ replayOrigin(); }catch(e){} } }
+      function startIntro(){
+        var rm=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, sd=navigator.connection && navigator.connection.saveData;
+        if(!ready || seen() || rm || sd || !intro || !iv) return;
+        clearTimeout(endT); intro.hidden=false; void intro.offsetWidth; intro.classList.add('on'); document.body.classList.add('intro-on'); introOn=true; window.__rafHold=true;
+        try{ v.pause(); }catch(e){} box.classList.remove('playing');
+        iv.muted=false; isnd.textContent='SOUND ON'; iv.src='video/origin.mp4'; ibar.style.transform='scaleX(0)';
+        var pp=iv.play(); if(pp&&pp.then){ pp.then(function(){ mark(); }).catch(function(){ endIntro(); }); }
+      }
+      iv.addEventListener('timeupdate',function(){ if(iv.duration) ibar.style.transform='scaleX('+Math.min(1,iv.currentTime/iv.duration)+')'; });
+      iv.addEventListener('ended',endIntro); iv.addEventListener('error',function(){ if(introOn) endIntro(); });
+      iskip.addEventListener('click',function(){ mark(); endIntro(); });
+      isnd.addEventListener('click',function(){ iv.muted=!iv.muted; isnd.textContent=iv.muted?'SOUND OFF':'SOUND ON'; });
+      document.addEventListener('keydown',function(e){ if(introOn && (e.key==='Escape'||e.key===' ')){ e.preventDefault(); e.stopPropagation(); mark(); endIntro(); } },true);
+      window.__filmSync=function(isOrigin){ sec.hidden=!(isOrigin&&ready); if(!isOrigin){ try{ v.pause(); }catch(e){} box.classList.remove('playing'); endIntro(); } else if(!wasOrigin){ startIntro(); } wasOrigin=isOrigin; };
       v.addEventListener('loadedmetadata',function(){ if(isFinite(v.duration)){ var d=Math.round(v.duration); dur.textContent=Math.floor(d/60)+':'+String(d%60).padStart(2,'0'); } });
       v.addEventListener('play',function(){ box.classList.add('playing'); });
       v.addEventListener('pause',function(){ if(!v.ended && !v.seeking) { v.controls=true; } });
