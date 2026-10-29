@@ -9,7 +9,7 @@ function create(canvas,opt){
   opt=opt||{}; var base=opt.base||'live2d/';
   return fetch(base+'rig.json').then(function(r){return r.json();}).then(function(rig){
     return Promise.all(rig.layers.map(function(l){return load(base+l.id);})).then(function(imgs){
-      rig.layers.forEach(function(l,i){l.img=imgs[i]; l.ph=(i*2.399)%TAU; l.ang=0; l.vel=0; l.sx=l.x+l.w/2; l.sy=l.pv==='t'?l.y+2:l.y+l.h/2;});
+      rig.layers.forEach(function(l,i){l.img=imgs[i]; l.ph=(i*2.399)%TAU; l.ang=0; l.vel=0; l.sx=l.px!=null?l.px:l.x+l.w/2; l.sy=l.py!=null?l.py:(l.pv==='t'?l.y+2:l.y+l.h/2);});
       return new Rig(canvas,rig,opt);
     });
   });
@@ -27,7 +27,7 @@ function Rig(canvas,rig,opt){
   var react={t:-9}; // click reaction
   var mouthLayers={}, eyeL=null, eyeR=null;
   rig.layers.forEach(function(l){ if(/^mouth\d$/.test(l.role||'')) mouthLayers[l.role.slice(5)]=l; if(l.role==='eyeL')eyeL=l; if(l.role==='eyeR')eyeR=l; });
-  var PIV=rig.pivot, W=rig.w, H=rig.h;
+  var PIV=rig.pivot, W=rig.w, H=rig.h, U=(rig.sc||0.5)/0.5;
   var dpr=1, cw=0, ch=0, k=1;
   function resize(){
     var r=canvas.getBoundingClientRect(); dpr=Math.min(window.devicePixelRatio||1,2);
@@ -97,12 +97,12 @@ function Rig(canvas,rig,opt){
   function render(t){
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cw,ch);
     var ox=(cw-W*k)/2, oy=0; // bottom-crop: anchor top
-    var breath=Math.sin(t*1.5), bob=breath*1.6, bs=1+breath*.0035;
+    var breath=Math.sin(t*1.5), bob=breath*1.6*U, bs=1+breath*.0035;
     var yaw=S.yaw, pitch=S.pitch, roll=S.roll*.17; // rad (~10deg)
-    var hop=-(me._hop||0)*9;
-    var PXX=24, PXY=14;
+    var hop=-(me._hop||0)*9*U;
+    var PXX=24*U, PXY=14*U;
     // body base: scale about bottom, lean
-    var bodyRot=roll*.25+yaw*.015, bodyX=yaw*7;
+    var bodyRot=roll*.25+yaw*.015, bodyX=yaw*7*U;
     for(var i=0;i<rig.layers.length;i++){
       var l=rig.layers[i], g=l.g;
       if(l.role&&/^mouth\d$/.test(l.role)){ if(pickMouth()!==l) continue; }
@@ -118,16 +118,16 @@ function Rig(canvas,rig,opt){
         if(l.role==='eyeL'||l.role==='eyeR'){
           var o=l.role==='eyeL'?S.eyeL:S.eyeR; var sc=lerp(.06,1,clamp(o,0,1)); var cy=l.y+l.h*.52;
           // squash about eye line: translate to centre
-          dx+=S.gx*5; dy+=S.gy*3.5+(1-sc)*(l.h*.0);
+          dx+=S.gx*5*U; dy+=S.gy*3.5*U;
           ctx.translate(l.x+l.w/2+dx,cy+dy);ctx.scale(1,sc);
           ctx.drawImage(l.img,-l.w/2,-(cy-l.y),l.w,l.h);
           continue;
         }
-        if(l.role&&/^mouth\d$/.test(l.role)){ dy+=S.mouth*1.2; }
+        if(l.role&&/^mouth\d$/.test(l.role)){ dy+=S.mouth*1.2*U; }
       }else if(g==='stage'){
-        var f=Math.sin(t*.8+l.ph);dx=Math.sin(t*.5+l.ph)*3+(-yaw*8);dy=f*5;
+        var f=Math.sin(t*.8+l.ph);dx=(Math.sin(t*.5+l.ph)*3+(-yaw*8))*U;dy=f*5*U;
         ctx.translate(dx,dy);dx=dy=0;
-      }else if(l.role==='float'){ dy=Math.sin(t*.9+l.ph)*3; dx=Math.cos(t*.7+l.ph)*2; ctx.translate(dx,dy); dx=dy=0; }
+      }else if(l.role==='float'){ dy=Math.sin(t*.9+l.ph)*3*U; dx=Math.cos(t*.7+l.ph)*2*U; ctx.translate(dx,dy); dx=dy=0; }
       // strand / hanging sway (spring)
       if(l.sw){
         var tgt=clamp(-headVel*l.sw*.07-headVelY*l.sw*.02,-l.sw*.9,l.sw*.9)*Math.PI/180*18;
@@ -138,8 +138,9 @@ function Rig(canvas,rig,opt){
       }
       ctx.translate(x+dx,y+dy); if(rot)ctx.rotate(rot);
       if(l.op!==undefined&&l.op<1)ctx.globalAlpha=l.op;
+      if(l.bm)ctx.globalCompositeOperation=l.bm;
       ctx.drawImage(l.img,-(l.sx-l.x),-(l.sy-l.y),l.w,l.h);
-      ctx.globalAlpha=1;
+      ctx.globalAlpha=1; if(l.bm)ctx.globalCompositeOperation='source-over';
     }
   }
   var last=0,acc=0,minDt=(opt.fps?1000/opt.fps:0),raf=0;
