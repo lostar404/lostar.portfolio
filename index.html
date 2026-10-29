@@ -792,6 +792,18 @@
   .sp-cap span{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud); opacity:.85;}
   .sp-cap p{margin:4px 0 0; color:var(--muted); line-height:var(--lh-body); font-size:var(--fs-body);}
   .lg-sec[hidden]{display:none;}
+  .lg-film-grid{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:48px; align-items:center;}
+  .lg-film-box{position:relative; width:100%; aspect-ratio:9/16; background:#05060f; border:1px solid var(--line-soft); overflow:hidden; box-shadow:0 18px 50px rgba(40,60,160,.28);}
+  .lg-film-box video{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#05060f;}
+  .lg-film-play{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; border:0; padding:0; cursor:pointer; background:linear-gradient(180deg,rgba(5,6,18,.05),rgba(5,6,18,.55)); color:#fff; font:600 11px/1 var(--mono); letter-spacing:.3em; transition:opacity .3s ease;}
+  .lg-film-play i{display:block; width:68px; height:68px; border-radius:50%; border:1.5px solid rgba(255,255,255,.85); background:rgba(10,14,40,.45) radial-gradient(circle,rgba(143,227,199,.0) 0,rgba(143,227,199,.0) 100%); box-shadow:0 0 22px rgba(143,227,199,.5); position:relative; transition:transform .25s ease;}
+  .lg-film-play i::after{content:""; position:absolute; left:27px; top:20px; border-left:20px solid #fff; border-top:14px solid transparent; border-bottom:14px solid transparent;}
+  .lg-film-play:hover i{transform:scale(1.08);}
+  .lg-film-box.playing .lg-film-play{opacity:0; pointer-events:none;}
+  .lg-film-quote{font-family:var(--serif); font-size:clamp(20px,2.4vw,28px); line-height:1.5; margin:0 0 16px; color:#e8eeff;}
+  .lg-film-desc{color:var(--muted); line-height:var(--lh-long); font-size:var(--fs-body); margin:0 0 28px; max-width:34em;}
+  .lg-film-info .lg-data{max-width:420px;}
+  @media (max-width:900px){ .lg-film-grid{grid-template-columns:1fr; gap:28px; justify-items:center;} .lg-film-box{width:min(78vw,340px);} .lg-film-info{width:100%;} .lg-film-info .lg-data{max-width:none;} }
   .lg-sec{padding:64px 0 28px; border-top:1px solid var(--line-soft); opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease;}
   .lg-sec.in{opacity:1; transform:none;}
   .lg-sec-head{display:flex; align-items:baseline; gap:18px; margin-bottom:30px;}
@@ -2252,6 +2264,25 @@
       </div>
       <div class="lg-invite-slot" id="lgInviteSlot"></div>
     </section>
+    <section class="lg-sec lg-film" id="lgFilmSec" hidden>
+      <div class="lg-sec-head"><span class="hud-label">// 00 — ORIGIN</span><h2>起源</h2></div>
+      <div class="lg-film-grid">
+        <div class="lg-film-box hud-bracket" id="lgFilmBox">
+          <video id="lgFilm" playsinline preload="metadata" poster="video/origin-poster.jpg" controlsList="nodownload" disablePictureInPicture></video>
+          <button type="button" class="lg-film-play" id="lgFilmPlay" aria-label="播放起源影片"><i></i><span>PLAY</span></button>
+        </div>
+        <div class="lg-film-info">
+          <p class="lg-film-quote">「尚未找到，不代表不存在。」</p>
+          <p class="lg-film-desc">一段關於迷航星誕生的短片：碎裂的隕石、無法辨識的訊號，以及他第一次睜開的眼睛。</p>
+          <dl class="lg-data hud-bracket">
+            <dt>TITLE</dt><dd>ORIGIN · 起源</dd>
+            <dt>DURATION</dt><dd id="lgFilmDur">0:22</dd>
+            <dt>FORMAT</dt><dd>9:16 VERTICAL</dd>
+            <dt>RECORDED BY</dt><dd>X-404</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
     <section class="lg-sec">
       <div class="lg-sec-head"><span class="hud-label">// 01 — RECORD</span><h2>紀錄</h2></div>
       <div class="lg-record">
@@ -3327,6 +3358,7 @@
       $('dtNo').textContent = no + ' // DISCOVERY';
       $('dtName').textContent = s.zh;
       $('dtEn').textContent = s.en;
+      if(window.__filmSync) window.__filmSync(isOrigin);
       var say = $('lgSay'); if(say) say.textContent = isOrigin ? (LOG[i].summary || '') : '';
       if(isOrigin) replayOrigin();
       $('lgSum').textContent = LOG[i].summary || '（一句話簡介待補）這顆星球是 X-404 在星圖空白處留下的一筆新座標。';
@@ -3411,7 +3443,7 @@
     }
 
     function finishClose(){
-      detailOpen = false;
+      detailOpen = false; if(window.__filmSync) window.__filmSync(false);
       detailEl.classList.remove('open');
       detailEl.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
@@ -3481,6 +3513,15 @@
     $('lgBadge').addEventListener('click', requestClose);
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
+    (function(){ var sec=$('lgFilmSec'), v=$('lgFilm'), box=$('lgFilmBox'), pl=$('lgFilmPlay'), dur=$('lgFilmDur'); if(!sec||!v||!pl) return;
+      var ready=false, started=false, pr=new Image(); pr.onload=function(){ ready=true; if(detailEl && detailEl.classList.contains('is-origin')) sec.hidden=false; }; pr.onerror=function(){ ready=false; }; pr.src='video/origin-poster.jpg';
+      window.__filmSync=function(isOrigin){ sec.hidden=!(isOrigin&&ready); if(!isOrigin){ try{ v.pause(); }catch(e){} box.classList.remove('playing'); } };
+      v.addEventListener('loadedmetadata',function(){ if(isFinite(v.duration)){ var d=Math.round(v.duration); dur.textContent=Math.floor(d/60)+':'+String(d%60).padStart(2,'0'); } });
+      v.addEventListener('play',function(){ box.classList.add('playing'); });
+      v.addEventListener('pause',function(){ if(!v.ended && !v.seeking) { v.controls=true; } });
+      v.addEventListener('ended',function(){ box.classList.remove('playing'); v.controls=false; });
+      pl.addEventListener('click',function(){ if(!started){ started=true; v.src='video/origin.mp4'; try{ track('play/origin','播放起源影片'); }catch(e){} } v.controls=true; var pp=v.play(); if(pp&&pp.catch) pp.catch(function(){}); });
+    })();
     (function(){ var box=$('navTabs'); if(!box) return; var btns=[];
       stars.forEach(function(st,i){ var b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.textContent=st.zh; b.addEventListener('click',function(){ if(detailOpen){ selectStar(i); fillDetail(i,true); setHash(i,true); } else { selectStar(i); openDetail(i,{noFly:true}); } }); box.appendChild(b); btns.push(b); });
       window.__navTabsSync=function(k){ btns.forEach(function(b,i){ b.classList.toggle('on',i===k); b.setAttribute('aria-selected',i===k?'true':'false'); }); };
