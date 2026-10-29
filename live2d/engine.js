@@ -24,9 +24,18 @@ function Rig(canvas,rig,opt){
   var prevYaw=0, headVel=0, headVelY=0, prevPitch=0;
   var src={cam:0,pointer:0}; // timestamps of last input
   var ptr={x:0,y:0}, blink={next:2.2,t:-1,dbl:false};
-  var react={t:-9}; // click reaction
+  var react={t:-9}, gz={x:0,y:0,next:0}; // click reaction
   var mouthLayers={}, eyeL=null, eyeR=null;
   rig.layers.forEach(function(l){ if(/^mouth\d$/.test(l.role||'')) mouthLayers[l.role.slice(5)]=l; if(l.role==='eyeL')eyeL=l; if(l.role==='eyeR')eyeR=l; });
+  var eyeU={L:{parts:[],iris:[],first:-1},R:{parts:[],iris:[],first:-1}};
+  rig.layers.forEach(function(l,i){ var m=/^eye([LR]):(\w+)$/.exec(l.role||''); if(!m) return; var u=eyeU[m[1]]; if(u.first<0)u.first=i;
+    if(m[2]==='white')u.white=l; else if(m[2]==='iris')u.iris.push(l); else if(m[2]==='brow')u.brow=l; else u.parts.push(l); });
+  ['L','R'].forEach(function(sd){ var u=eyeU[sd]; if(!u.white||!u.iris.length)return; var all=[u.white].concat(u.iris), x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    all.forEach(function(l){x0=Math.min(x0,l.x);y0=Math.min(y0,l.y);x1=Math.max(x1,l.x+l.w);y1=Math.max(y1,l.y+l.h);});
+    u.bx=Math.floor(x0)-1;u.by=Math.floor(y0)-1;u.bw=Math.ceil(x1-x0)+3;u.bh=Math.ceil(y1-y0)+3;
+    u.mask=document.createElement('canvas');u.mask.width=u.bw;u.mask.height=u.bh;var mc=u.mask.getContext('2d');
+    mc.drawImage(u.white.img,u.white.x-u.bx,u.white.y-u.by,u.white.w,u.white.h); mc.drawImage(u.iris[0].img,u.iris[0].x-u.bx,u.iris[0].y-u.by,u.iris[0].w,u.iris[0].h);
+    u.oc=document.createElement('canvas');u.oc.width=u.bw;u.oc.height=u.bh;u.octx=u.oc.getContext('2d'); u.ok=true; });
   var PIV=rig.pivot, W=rig.w, H=rig.h, U=(rig.sc||0.5)/0.5;
   var dpr=1, cw=0, ch=0, k=1;
   function resize(){
@@ -43,7 +52,7 @@ function Rig(canvas,rig,opt){
     src.cam=performance.now();
     P.yaw=clamp(f.yaw,-1,1);P.pitch=clamp(f.pitch,-1,1);P.roll=clamp(f.roll,-1,1);
     P.eyeL=f.eyeL;P.eyeR=f.eyeR;P.mouth=clamp(f.mouth,0,1);P.smile=clamp(f.smile,0,1);
-    P.gx=P.yaw*.4;P.gy=P.pitch*.4;
+    P.gx=f.gx!==undefined?clamp(f.gx,-1,1):P.yaw*.4;P.gy=f.gy!==undefined?clamp(f.gy,-1,1):P.pitch*.4;
   };
   this.react=function(){react.t=performance.now()/1000;};
   this.mode=function(){var n=performance.now(); return n-src.cam<400?'cam':(n-src.pointer<3500?'pointer':'idle');};
@@ -52,10 +61,11 @@ function Rig(canvas,rig,opt){
   function update(t,dt){
     var n=performance.now(), mode=me.mode();
     if(mode==='pointer'){
-      P.yaw=ptr.x*.9; P.pitch=ptr.y*.7; P.roll=ptr.x*.25; P.gx=ptr.x; P.gy=ptr.y; P.smile=.4; P.mouth=0;
+      P.yaw=ptr.x*.9; P.pitch=ptr.y*.7; P.roll=ptr.x*.25; P.gx=clamp(ptr.x*1.5,-1,1); P.gy=clamp(ptr.y*1.5,-1,1); P.smile=.4; P.mouth=0;
     }else if(mode==='idle'){
       P.yaw=Math.sin(t*.37)*.22+Math.sin(t*.91)*.06; P.pitch=Math.sin(t*.29+1)*.12; P.roll=Math.sin(t*.43+2)*.1;
-      P.gx=P.yaw*.6;P.gy=P.pitch*.6;P.smile=.35;P.mouth=0;
+      if(t>gz.next){gz.x=(Math.random()*2-1)*.55;gz.y=(Math.random()*2-1)*.25;gz.next=t+1.2+Math.random()*2.6;}
+      P.gx=P.yaw*.6+gz.x;P.gy=P.pitch*.6+gz.y;P.smile=.35;P.mouth=0;
     }
     if(mode!=='cam'){ // auto blink
       if(t>blink.next&&blink.t<0){blink.t=t;}
@@ -94,6 +104,21 @@ function Rig(canvas,rig,opt){
     ctx.drawImage(l.img,-(l.sx-l.x),-(l.sy-l.y),l.w,l.h);
     ctx.restore();
   }
+  function drawEyeUnit(u,o,dx,dy){
+    if(!u||!u.ok) return;
+    ctx.translate(dx,dy);
+    var sc=lerp(.07,1,clamp(o,0,1)), py=rig.eyePy||0;
+    ctx.save(); ctx.translate(0,py); ctx.scale(1,sc); ctx.translate(0,-py);
+    ctx.drawImage(u.white.img,u.white.x,u.white.y,u.white.w,u.white.h);
+    var oc=u.octx, gx=S.gx*11*U, gy=S.gy*5*U;
+    oc.globalCompositeOperation='source-over'; oc.clearRect(0,0,u.bw,u.bh);
+    for(var j=0;j<u.iris.length;j++){var q=u.iris[j]; oc.drawImage(q.img,q.x-u.bx+gx,q.y-u.by+gy,q.w,q.h);}
+    oc.globalCompositeOperation='destination-in'; oc.drawImage(u.mask,0,0); oc.globalCompositeOperation='source-over';
+    ctx.drawImage(u.oc,u.bx,u.by);
+    for(var m=0;m<u.parts.length;m++){var p=u.parts[m]; if(p.bm)ctx.globalCompositeOperation=p.bm; ctx.drawImage(p.img,p.x,p.y,p.w,p.h); if(p.bm)ctx.globalCompositeOperation='source-over';}
+    ctx.restore();
+    if(u.brow){ctx.drawImage(u.brow.img,u.brow.x,u.brow.y+(1-sc)*1.5*U,u.brow.w,u.brow.h);}
+  }
   function render(t){
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cw,ch);
     var ox=(cw-W*k)/2, oy=0; // bottom-crop: anchor top
@@ -106,6 +131,7 @@ function Rig(canvas,rig,opt){
     for(var i=0;i<rig.layers.length;i++){
       var l=rig.layers[i], g=l.g;
       if(l.role&&/^mouth\d$/.test(l.role)){ if(pickMouth()!==l) continue; }
+      if(l.role&&/^eye[LR]:/.test(l.role)&&eyeU[l.role[3]].first!==i) continue;
       ctx.setTransform(k,0,0,k,ox,oy);
       // body transform
       ctx.translate(PIV[0]+bodyX,H);ctx.rotate(bodyRot);ctx.scale(1,bs);ctx.translate(-PIV[0],-H+bob+hop*.5);
@@ -115,14 +141,7 @@ function Rig(canvas,rig,opt){
       }else if(g==='head'){
         ctx.translate(PIV[0],PIV[1]);ctx.rotate(roll);ctx.translate(-PIV[0],-PIV[1]);
         dx=yaw*PXX*l.d; dy=pitch*PXY*l.d+hop*.5;
-        if(l.role==='eyeL'||l.role==='eyeR'){
-          var o=l.role==='eyeL'?S.eyeL:S.eyeR; var sc=lerp(.06,1,clamp(o,0,1)); var cy=l.y+l.h*.52;
-          // squash about eye line: translate to centre
-          dx+=S.gx*5*U; dy+=S.gy*3.5*U;
-          ctx.translate(l.x+l.w/2+dx,cy+dy);ctx.scale(1,sc);
-          ctx.drawImage(l.img,-l.w/2,-(cy-l.y),l.w,l.h);
-          continue;
-        }
+        if(l.role&&/^eye[LR]:/.test(l.role)){ drawEyeUnit(eyeU[l.role[3]], l.role[3]==='L'?S.eyeL:S.eyeR, dx, dy); continue; }
         if(l.role&&/^mouth\d$/.test(l.role)){ dy+=S.mouth*1.2*U; }
       }else if(g==='stage'){
         var f=Math.sin(t*.8+l.ph);dx=(Math.sin(t*.5+l.ph)*3+(-yaw*8))*U;dy=f*5*U;
@@ -194,6 +213,8 @@ function startCamera(rigObj,videoEl,onStatus){
       rigObj.feedFace({
         yaw:-(yawRaw-n[0])*3.2, pitch:(pitchRaw-n[1])*3.4, roll:-(rollRaw-n[2])*2.2,
         eyeL:op(bs.eyeBlinkLeft||0), eyeR:op(bs.eyeBlinkRight||0),
+        gx:clamp((((bs.eyeLookInLeft||0)-(bs.eyeLookOutLeft||0))+((bs.eyeLookOutRight||0)-(bs.eyeLookInRight||0)))/2*2.2,-1,1),
+        gy:clamp((((bs.eyeLookDownLeft||0)-(bs.eyeLookUpLeft||0))+((bs.eyeLookDownRight||0)-(bs.eyeLookUpRight||0)))/2*2.2,-1,1),
         mouth:clamp((bs.jawOpen||0)/.5,0,1),
         smile:clamp(((bs.mouthSmileLeft||0)+(bs.mouthSmileRight||0))/2/.45,0,1)*.8+.15
       });
