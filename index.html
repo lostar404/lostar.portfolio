@@ -163,9 +163,8 @@
     .nav-tabs{display:flex; align-items:center; gap:30px; position:absolute; left:50%; top:0; height:100%; transform:translateX(-50%);}
     .nav-tabs button{position:relative; height:100%; padding:0 2px; border:0; background:none; font:500 var(--fs-ui,15px)/1 var(--sans); letter-spacing:.08em; color:rgba(210,205,225,.62); cursor:pointer; transition:color .2s;}
     .nav-tabs button::after{content:""; position:absolute; left:0; right:0; bottom:16px; height:2px; border-radius:1px; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform:scaleX(0); transition:transform .3s ease;}
-    .nav-tabs button:hover{color:#fff;}
-    .nav-tabs button.on{color:#fff; font-weight:700;}
-    .nav-tabs button.on::after{transform:scaleX(1);}
+    .nav-tabs button:hover, .nav-tabs button:focus-visible{color:#fff; outline:none;}
+    .nav-tabs button:hover::after, .nav-tabs button:focus-visible::after{transform:scaleX(1);}
     .nav-dd{display:none !important;}
   }
   .nav-dd{position:relative; align-self:stretch; display:flex; margin:0 4px;}
