@@ -3,7 +3,8 @@
 (function(){
 'use strict';
 var TAU=Math.PI*2, clamp=function(v,a,b){return v<a?a:v>b?b:v;}, lerp=function(a,b,t){return a+(b-a)*t;};
-function load(src){return new Promise(function(res,rej){var i=new Image();i.decoding='async';i.onload=function(){res(i)};i.onerror=function(){rej(new Error('img '+src))};i.src=src;});}
+var IMGC={};
+function load(src){ if(IMGC[src]) return IMGC[src]; return IMGC[src]=new Promise(function(res,rej){var i=new Image();i.decoding='async';i.onload=function(){res(i)};i.onerror=function(){delete IMGC[src];rej(new Error('img '+src))};i.src=src;});}
 
 function create(canvas,opt){
   opt=opt||{}; var base=opt.base||'live2d/';
