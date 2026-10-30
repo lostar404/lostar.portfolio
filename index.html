@@ -748,6 +748,8 @@
   .lg-live-stage canvas{position:absolute; left:0; top:0; width:100%; height:100%; display:block; opacity:0; transition:opacity .5s; cursor:pointer; touch-action:manipulation;
     filter:drop-shadow(0 0 26px rgba(170,180,255,0.3)); -webkit-mask-image:linear-gradient(180deg,#000 82%,transparent 100%); mask-image:linear-gradient(180deg,#000 82%,transparent 100%);}
   .lg-live-stage.live canvas{opacity:1;}
+  .lg-live-beta{margin:0; display:inline-flex; align-items:center; gap:var(--sp-2); padding:var(--sp-1) var(--sp-3); border:1px solid var(--gold); color:var(--gold); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); text-align:center;}
+  .lg-live-beta b{font-weight:var(--fw-bold,700); letter-spacing:.14em;}
   .lg-live-stage .lg-live-hint0{margin:0; font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); color:var(--muted); text-align:center;}
   .lg-live-ui{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:var(--sp-2);}
   .lg-live-btn{white-space:nowrap; display:inline-flex; align-items:center; gap:var(--sp-2); padding:var(--sp-2) var(--sp-3); background:rgba(13,15,34,.72); border:1px solid var(--line); color:var(--star); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-label); cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:border-color .2s,color .2s;}
@@ -2372,6 +2374,7 @@
     <section class="lg-sec lg-live-sec" id="lgLiveSec">
       <div class="lg-sec-head"><span class="hud-label">// 03 — LIVE</span><h2>互動</h2></div>
       <div class="lg-live-stage hud-bracket" id="lgLiveStage">
+        <p class="lg-live-beta"><b>BETA</b>此為簡易版本，非最終效果</p>
         <p class="lg-live-hint0">移動滑鼠或手指，看他的視線怎麼跟著你；點一下他會笑</p>
         <div class="lg-live-wrap" id="lgLiveWrap"><canvas id="lgLive" aria-label="迷航星 互動角色" role="img"></canvas></div>
         <div class="lg-live-ui" id="lgLiveUi" hidden><button type="button" class="lg-live-btn lg-live-zoom" id="lgLiveZoom"><span>⤢ 放大互動 FULL</span></button><button type="button" class="lg-live-btn" id="lgLiveBtn" aria-pressed="false"><i></i><span id="lgLiveTxt">面部追蹤 FACE TRACK</span></button><video class="lg-live-cam" id="lgLiveCam" muted playsinline hidden aria-hidden="true"></video><small class="lg-live-note" id="lgLiveNote">影像只在你的裝置上運算，不會上傳</small></div>
@@ -2389,7 +2392,7 @@
   </div>
 </div>
 
-<div class="lg-live-full" id="lgLiveFull" hidden role="dialog" aria-label="角色互動"><button type="button" class="lg-live-x" id="lgLiveX" aria-label="關閉">✕</button><p class="lg-live-hint">觸碰或拖曳，讓他的視線跟著你</p></div>
+<div class="lg-live-full" id="lgLiveFull" hidden role="dialog" aria-label="角色互動"><button type="button" class="lg-live-x" id="lgLiveX" aria-label="關閉">✕</button><p class="lg-live-hint">觸碰或拖曳，讓他的視線跟著你<br><span style="color:var(--gold)">此為簡易版本，非最終效果</span></p></div>
 <div class="lg-intro" id="lgIntro" hidden aria-label="起源影片">
   <video id="lgIntroVid" playsinline preload="auto" poster="video/origin-poster.jpg"></video>
   <button type="button" class="lg-intro-skip" id="lgIntroSkip">跳過 SKIP ▸▸</button>
