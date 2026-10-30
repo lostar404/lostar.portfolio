@@ -757,6 +757,14 @@
     .pal canvas{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:auto; cursor:pointer; -webkit-mask-image:linear-gradient(to bottom,#000 74%,transparent 98%); mask-image:linear-gradient(to bottom,#000 74%,transparent 98%);}
     .pal-bub{position:absolute; right:6%; bottom:calc(100% - 14px); width:max-content; max-width:100%; box-sizing:border-box; padding:var(--sp-2) var(--sp-3); border:1px solid var(--line); background:rgba(9,11,26,.88); color:var(--text); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); border-radius:10px 10px 2px 10px; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; pointer-events:none;}
     .pal-bub.on{opacity:1; transform:none;}
+    .pal-arc{position:absolute; left:50%; top:50%; width:0; height:0; z-index:2; pointer-events:none;}
+    .pal-it{--k:0; --s:.3; position:absolute; left:0; top:0; display:flex; align-items:baseline; gap:var(--sp-2); padding:var(--sp-2) var(--sp-4); white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:rgba(9,11,26,.92); color:var(--text); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); cursor:pointer; opacity:0; pointer-events:none;
+      transform:translate(calc(var(--x) * var(--k)), calc(var(--y) * var(--k))) translate(-50%,-50%) scale(var(--s)); transition:transform .42s cubic-bezier(.2,.9,.3,1.15), opacity .25s, border-color .2s, background .2s; transition-delay:calc(var(--i) * 45ms), calc(var(--i) * 45ms), 0s, 0s;}
+    .pal-it small{color:var(--hud); font-size:var(--fs-micro);}
+    .pal-it:hover,.pal-it:focus-visible{border-color:var(--hud); background:rgba(20,34,40,.95);}
+    .pal-arc.open .pal-it{--k:1; --s:1; opacity:1; pointer-events:auto;}
+    .pal-arc:not(.open) .pal-it{transition-delay:0s;}
+    .pal-arc.open ~ .pal-bub{opacity:0 !important;}
     .pal-x{position:absolute; right:0; top:0; width:28px; height:28px; display:flex; align-items:center; justify-content:center; padding:0; border:1px solid var(--line-soft); background:rgba(9,11,26,.7); color:var(--muted); font-size:var(--fs-label); border-radius:50%; cursor:pointer; pointer-events:auto; opacity:0; transition:opacity .2s;}
     .pal:hover .pal-x, .pal-x:focus-visible{opacity:1;}
     .pal.mini{width:72px; aspect-ratio:1; right:28px; bottom:28px;}
@@ -1907,7 +1915,7 @@
 <div class="cm-backdrop" id="cmBackdrop"></div>
 <button type="button" class="pf-fold" id="pfFold" aria-label="收合探索者檔案"><span id="pfFoldTx"></span>‹</button>
 <div class="pf-stand" id="pfStand" aria-hidden="true"></div>
-<div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
+<div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-arc" id="palArc" role="menu" aria-label="前往其他頁面"></div><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
 <aside class="cm-slot" id="cmSlot" aria-label="留言">
   <div class="cm-feed" id="cmFeed" aria-live="polite"></div>
   <form class="cm-form" id="cmForm" autocomplete="off">
@@ -3626,7 +3634,7 @@
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
     (function(){ /* 常駐小助理: bottom-right companion (desktop only), shares the rig engine & image cache */
-      var pal=$('pal'), cv=$('palCv'), bub=$('palBub'), xb=$('palX'); if(!pal||!cv) return;
+      var pal=$('pal'), cv=$('palCv'), bub=$('palBub'), xb=$('palX'), arc=$('palArc'); if(!pal||!cv) return;
       var mq=window.matchMedia('(min-width:1280px) and (hover:hover)'); var rig=null, loading=false, mini=false, bt=0, lastStar=-1, clicks=0;
       var KEY='lostar-pal-mini', reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
       try{ mini=localStorage.getItem(KEY)==='1'; }catch(e){}
@@ -3644,11 +3652,33 @@
       window.addEventListener('resize',function(){ if(!mq.matches){ run(); } else { init(); if(rig){ rig.resize(); run(); } } });
       document.addEventListener('visibilitychange',run);
       window.addEventListener('pointermove',function(e){ if(!rig||mini) return; var r=cv.getBoundingClientRect(); var cx=r.left+r.width*.5, cy=r.top+r.height*.28; rig.setPointer((e.clientX-cx)/(Math.max(window.innerWidth,600)*.4),(e.clientY-cy)/(Math.max(window.innerHeight,500)*.4)); },{passive:true});
-      cv.addEventListener('click',function(){ if(mini){ mini=false; try{ localStorage.setItem(KEY,'0'); }catch(e){} apply(); say('我回來了。'); return; } if(rig) rig.react(); say(CLICK[clicks++%CLICK.length]); });
-      xb.addEventListener('click',function(e){ e.stopPropagation(); mini=true; try{ localStorage.setItem(KEY,'1'); }catch(e){} bub.classList.remove('on'); apply(); });
+      var arcOn=false, arcT=0, TYPE={'啟航星':'原創角色','元宇宙':'元宇宙','貼圖星':'貼圖創作','萬象星':'插畫・漫畫','牡羊 41':'角色設計'};
+      function arcStop(){ clearTimeout(arcT); }
+      function arcTimer(){ clearTimeout(arcT); arcT=setTimeout(arcClose,3000); }
+      function arcClose(){ arcOn=false; clearTimeout(arcT); arc.classList.remove('open'); }
+      function arcOpen(){
+        var r=pal.getBoundingClientRect(), w=r.width||72, h=r.height||72, small=w<120;
+        var cx=small?w/2:w*.5, cy=small?h/2:h*.45, R=small?250:Math.max(190,w*.78), Ry=small?310:R;
+        arc.style.left=cx+'px'; arc.style.top=cy+'px'; arc.textContent='';
+        var items=[]; stars.forEach(function(st,i){ if(i!==lastStar) items.push({no:st.no,label:TYPE[st.zh]||st.zh,go:function(){ selectStar(i); fillDetail(i,true); setHash(i,true); }}); });
+        items.push({no:'←',label:'返回星環',go:function(){ requestClose(); }});
+        var a0=small?178:172, a1=small?102:98, n=items.length;
+        items.forEach(function(it,k){ var th=(n>1?a0+(a1-a0)*k/(n-1):135)*Math.PI/180;
+          var b=document.createElement('button'); b.type='button'; b.className='pal-it'; b.setAttribute('role','menuitem');
+          b.style.setProperty('--x',(R*Math.cos(th)).toFixed(1)+'px'); b.style.setProperty('--y',(-Ry*Math.sin(th)).toFixed(1)+'px'); b.style.setProperty('--i',k);
+          b.innerHTML='<small></small><span></span>'; b.children[0].textContent=it.no; b.children[1].textContent=it.label;
+          b.addEventListener('click',function(e){ e.stopPropagation(); arcClose(); it.go(); });
+          b.addEventListener('pointerenter',arcStop); b.addEventListener('pointerleave',arcTimer); b.addEventListener('focus',arcStop); b.addEventListener('blur',arcTimer);
+          arc.appendChild(b); });
+        bub.classList.remove('on'); void arc.offsetWidth; arcOn=true; arc.classList.add('open'); arcTimer();
+      }
+      cv.addEventListener('click',function(){ if(mini){ mini=false; try{ localStorage.setItem(KEY,'0'); }catch(e){} apply(); }
+        if(arcOn){ arcClose(); return; } if(rig) rig.react(); arcOpen(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&arcOn) arcClose(); });
+      xb.addEventListener('click',function(e){ e.stopPropagation(); arcClose(); mini=true; try{ localStorage.setItem(KEY,'1'); }catch(e){} bub.classList.remove('on'); apply(); });
       var cmT=$('cmText'); if(cmT){ cmT.addEventListener('focus',function(){ say('想對迷航星說什麼？',3500); }); }
       window.__palSync=function(i,open,isOrigin){ var show=!!(open&&!isOrigin); document.body.classList.toggle('pal-detail',show); run();
-        if(show){ if(i!==lastStar){ lastStar=i; say(LINES[i]||'',4000); } } else { lastStar=-1; bub.classList.remove('on'); } };
+        if(show){ if(i!==lastStar){ lastStar=i; say(LINES[i]||'',4000); } } else { lastStar=-1; bub.classList.remove('on'); } if(!show) arcClose(); };
     })();
     (function(){ /* 啟航星 half-body Live2D-style rig: lazy-loaded, idle / pointer follow, optional webcam face tracking */
       var fig=$('lgLiveStage'), wrap=$('lgLiveWrap'), cv=$('lgLive'), ui=$('lgLiveUi'), btn=$('lgLiveBtn'), txt=$('lgLiveTxt'), cam=$('lgLiveCam'), note=$('lgLiveNote');
