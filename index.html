@@ -744,6 +744,7 @@
     filter:drop-shadow(0 0 26px rgba(170,180,255,0.35)); -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%); mask-image:linear-gradient(180deg,#000 78%,transparent 100%);}
   .lg-fig.live canvas{opacity:1; animation:fig-in 1.1s .15s cubic-bezier(.2,.8,.2,1) both;}
   .lg-fig.live img{display:none;}
+  .lg-fig:not(.live):not(.nolive) img{visibility:hidden;}
   .lg-live-ui{position:absolute; right:2%; bottom:14px; z-index:3; display:flex; flex-direction:column; align-items:flex-end; gap:var(--sp-2); pointer-events:auto;}
   .lg-live-btn{white-space:nowrap; display:inline-flex; align-items:center; gap:var(--sp-2); padding:var(--sp-2) var(--sp-3); background:rgba(13,15,34,.72); border:1px solid var(--line); color:var(--star); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-label); cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:border-color .2s,color .2s;}
   .lg-live-btn i{width:7px; height:7px; border-radius:50%; background:var(--muted); transition:background .2s,box-shadow .2s;}
@@ -3596,8 +3597,10 @@
         loadScript().then(function(){ return LostarLive2D.create(cv,{base:'live2d/',fps:mobile?30:0}); }).then(function(r){
           rig=r; loading=false; fig.classList.add('live'); ui.hidden=false; r.resize();
           if(want && !reduce) r.start();
-        }).catch(function(){ loading=false; });
+        }).catch(function(){ loading=false; fig.classList.add('nolive'); });
       }
+      // warm the rig up in idle time so it is ready by the time the page is opened (no flash of the old still)
+      (function(){ function idle(f){ if(window.requestIdleCallback) requestIdleCallback(f,{timeout:2500}); else setTimeout(f,1500); } if(document.readyState==='complete') idle(init); else window.addEventListener('load',function(){ idle(init); }); })();
       btn.addEventListener('click',function(e){
         e.stopPropagation();
         if(camCtl){ camOff(); return; }
