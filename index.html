@@ -3626,7 +3626,7 @@
       var KEY='lostar-pal-mini', reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
       try{ mini=localStorage.getItem(KEY)==='1'; }catch(e){}
       var LINES={0:'這裡是我的起點。',1:'這是 Vtuber 立繪的區域。',2:'貼圖在這，看看有沒有喜歡的？',3:'萬象星，什麼都有一點。',4:'委託角色設計都收在這。'};
-      var CLICK=['嗨，我在這裡。','慢慢逛，不用急。','留言框就在我下面喔。','今天也要繼續探索嗎？'];
+      var CLICK=['嗨，我在這裡。','慢慢逛，不用急。','今天也要繼續探索嗎？'];
       function say(t,ms){ if(mini||!t) return; bub.textContent=t; bub.classList.add('on'); clearTimeout(bt); bt=setTimeout(function(){ bub.classList.remove('on'); },ms||4200); }
       function setView(){ if(!rig) return; if(mini) rig.setView({z:2.6,cx:765,cy:400,fy:.36}); else rig.setView({z:1.05,cx:765,cy:600,fy:.36}); rig.resize(); }
       function apply(){ pal.classList.toggle('mini',mini); setView(); run(); }
