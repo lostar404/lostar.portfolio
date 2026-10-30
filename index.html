@@ -755,7 +755,7 @@
     .pal.on{opacity:1; transform:none;}
     .pal.hide{display:none;}
     .pal canvas{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:auto; cursor:pointer; -webkit-mask-image:linear-gradient(to bottom,#000 74%,transparent 98%); mask-image:linear-gradient(to bottom,#000 74%,transparent 98%);}
-    .pal-bub{position:absolute; right:calc(100% - 10%); bottom:50%; width:max-content; max-width:260px; box-sizing:border-box; padding:var(--sp-2) var(--sp-3); border:1px solid var(--line); background:rgba(9,11,26,.88); color:var(--text); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); border-radius:10px 10px 2px 10px; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; pointer-events:none;}
+    .pal-bub{position:absolute; right:calc(100% - 10%); bottom:68%; width:max-content; max-width:260px; box-sizing:border-box; padding:var(--sp-2) var(--sp-3); border:1px solid var(--line); background:rgba(9,11,26,.88); color:var(--text); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); border-radius:10px 10px 2px 10px; opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; pointer-events:none;}
     .pal-bub.on{opacity:1; transform:none;}
     /* RPG-style choice window floating above the companion */
     .pal-arc{position:absolute; right:18px; bottom:calc(100% - 6px); width:calc(100% - 36px); min-width:190px; display:flex; flex-direction:column; gap:var(--sp-2); z-index:2; pointer-events:none;}
@@ -891,6 +891,7 @@
   .lg-intro-skip,.lg-intro-snd{position:absolute; top:calc(16px + env(safe-area-inset-top)); height:40px; padding:0 16px; border:1px solid rgba(255,255,255,.55); background:rgba(5,8,22,.55); color:#fff; font:600 var(--fs-meta)/1 var(--mono); letter-spacing:var(--ls-label); cursor:pointer; transition:background .2s;}
   .lg-intro-skip{left:16px;} .lg-intro-snd{right:16px; border-color:rgba(255,255,255,.3); color:rgba(255,255,255,.8);}
   .lg-intro-skip:hover,.lg-intro-snd:hover{background:rgba(143,227,199,.2);}
+  .lg-intro-snd{width:40px; padding:0; display:flex; align-items:center; justify-content:center;} .lg-intro-snd svg{width:24px; height:24px; display:block;}
   .lg-intro-bar{position:absolute; left:0; bottom:0; height:2px; width:100%; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform-origin:0 50%; transform:scaleX(0);}
   body.intro-on .cm-fab{display:none !important;}
   .lg-film-grid{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:48px; align-items:center;}
@@ -2435,7 +2436,7 @@
 <div class="lg-intro" id="lgIntro" hidden aria-label="起源影片">
   <video id="lgIntroVid" playsinline preload="auto" poster="video/origin-poster.jpg"></video>
   <button type="button" class="lg-intro-skip" id="lgIntroSkip">跳過 SKIP ▸▸</button>
-  <button type="button" class="lg-intro-snd" id="lgIntroSnd" aria-label="切換聲音">SOUND ON</button>
+  <button type="button" class="lg-intro-snd" id="lgIntroSnd" aria-label="關閉聲音" aria-pressed="false" title="聲音"></button>
   <i class="lg-intro-bar" id="lgIntroBar"></i>
 </div>
 
@@ -3668,7 +3669,7 @@
         arc.textContent='';
         var q=document.createElement('div'); q.className='pal-q'; q.textContent='// 要去哪裡呢？'; arc.appendChild(q);
         var items=[]; stars.forEach(function(st,i){ if(i!==lastStar) items.push({no:st.no,label:TYPE[st.zh]||st.zh,go:function(){ selectStar(i); fillDetail(i,true); setHash(i,true); }}); });
-        items.push({no:'←',label:'返回星環',go:function(){ requestClose(); }});
+        items.push({no:'←',label:'回到主頁',go:function(){ requestClose(); }});
         var n=items.length;
         items.forEach(function(it,k){
           var b=document.createElement('button'); b.type='button'; b.className='pal-it'; b.setAttribute('role','menuitem'); b.style.setProperty('--i',n-1-k);
@@ -3747,13 +3748,16 @@
         if(!ready || seen() || rm || sd || !intro || !iv) return;
         clearTimeout(endT); intro.hidden=false; void intro.offsetWidth; intro.classList.add('on'); document.body.classList.add('intro-on'); introOn=true; window.__rafHold=true;
         try{ v.pause(); }catch(e){} box.classList.remove('playing');
-        iv.muted=false; isnd.textContent='SOUND ON'; iv.src='video/origin.mp4'; ibar.style.transform='scaleX(0)';
+        iv.muted=false; setSnd(); iv.src='video/origin.mp4'; ibar.style.transform='scaleX(0)';
         var pp=iv.play(); if(pp&&pp.then){ pp.then(function(){ mark(); }).catch(function(){ endIntro(); }); }
       }
       iv.addEventListener('timeupdate',function(){ if(iv.duration) ibar.style.transform='scaleX('+Math.min(1,iv.currentTime/iv.duration)+')'; });
       iv.addEventListener('ended',endIntro); iv.addEventListener('error',function(){ if(introOn) endIntro(); });
       iskip.addEventListener('click',function(){ mark(); endIntro(); });
-      isnd.addEventListener('click',function(){ iv.muted=!iv.muted; isnd.textContent=iv.muted?'SOUND OFF':'SOUND ON'; });
+      var SND_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>', SND_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+      function setSnd(){ isnd.innerHTML=iv.muted?SND_OFF:SND_ON; isnd.setAttribute('aria-pressed',iv.muted?'true':'false'); isnd.setAttribute('aria-label',iv.muted?'開啟聲音':'關閉聲音'); isnd.title=iv.muted?'開啟聲音':'關閉聲音'; }
+      setSnd();
+      isnd.addEventListener('click',function(){ iv.muted=!iv.muted; setSnd(); });
       document.addEventListener('keydown',function(e){ if(introOn && (e.key==='Escape'||e.key===' ')){ e.preventDefault(); e.stopPropagation(); mark(); endIntro(); } },true);
       window.__filmSync=function(isOrigin){ sec.hidden=!(isOrigin&&ready); if(!isOrigin){ try{ v.pause(); }catch(e){} box.classList.remove('playing'); endIntro(); } else if(!wasOrigin){ startIntro(); } wasOrigin=isOrigin; };
       v.addEventListener('loadedmetadata',function(){ if(isFinite(v.duration)){ var d=Math.round(v.duration); dur.textContent=Math.floor(d/60)+':'+String(d%60).padStart(2,'0'); } });
