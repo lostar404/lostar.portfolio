@@ -3625,7 +3625,7 @@
       var mq=window.matchMedia('(min-width:1280px) and (hover:hover)'); var rig=null, loading=false, mini=false, bt=0, lastStar=-1, clicks=0;
       var KEY='lostar-pal-mini', reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
       try{ mini=localStorage.getItem(KEY)==='1'; }catch(e){}
-      var LINES={0:'這裡是我的起點。',1:'這是 Vtuber 立繪的區域。',2:'貼圖在這，看看有沒有喜歡的？',3:'萬象星，什麼都有一點。',4:'委託角色設計都收在這。'};
+      var LINES={0:'這裡是我的起點。',1:'歡迎來到元宇宙。',2:'貼圖在這，看看有沒有喜歡的？',3:'萬象星，什麼都有一點。',4:'委託角色設計都收在這。'};
       var CLICK=['嗨，我在這裡。','慢慢逛，不用急。','今天也要繼續探索嗎？'];
       function say(t,ms){ if(mini||!t) return; bub.textContent=t; bub.classList.add('on'); clearTimeout(bt); bt=setTimeout(function(){ bub.classList.remove('on'); },ms||4200); }
       function setView(){ if(!rig) return; if(mini) rig.setView({z:2.6,cx:765,cy:400,fy:.36}); else rig.setView({z:1.05,cx:765,cy:600,fy:.36}); rig.resize(); }
@@ -3723,7 +3723,7 @@
     })();
     (function(){ var box=$('navCat'); if(!box) return; var btns=[];
       // work TYPES (what the piece is) instead of planet names — a quick overview for visitors who just want the gist
-      var CAT={ '啟航星':['原創角色','迷航星主視覺與起源'], '元宇宙':['Vtuber 立繪','虛擬形象設計'], '貼圖星':['貼圖創作','LINE 貼圖'], '萬象星':['插畫・漫畫','自由創作與漫畫'], '牡羊 41':['角色設計','委託角色'] };
+      var CAT={ '啟航星':['原創角色','迷航星主視覺與起源'], '元宇宙':['元宇宙','虛擬形象設計'], '貼圖星':['貼圖創作','LINE 貼圖'], '萬象星':['插畫・漫畫','自由創作與漫畫'], '牡羊 41':['角色設計','委託角色'] };
       var t=document.createElement('button'); t.type='button'; t.className='nav-cat-t'; t.setAttribute('aria-haspopup','true'); t.setAttribute('aria-expanded','false'); t.innerHTML='作品類型<i>▾</i>';
       var menu=document.createElement('div'); menu.className='nav-cat-menu'; menu.setAttribute('role','menu');
       function shut(){ box.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
