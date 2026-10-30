@@ -735,24 +735,28 @@
 
   /* ---- 啟航星: standing figure woven into the record page ---- */
   .lg-fig{display:none;}
-  .lg.is-origin .lg-fig{display:block; position:absolute; right:3%; bottom:0; height:min(560px, 76vh); aspect-ratio:1492/1590; z-index:1; pointer-events:none;}
+  .lg.is-origin .lg-fig{display:block; position:absolute; right:3%; bottom:0; height:min(590px, 78vh); aspect-ratio:1171/1400; z-index:1; pointer-events:none;}
   .lg-fig::before{content:''; position:absolute; left:-30%; right:-30%; top:8%; bottom:12%; z-index:-1;
     background:radial-gradient(ellipse 50% 50% at 50% 42%, rgba(150,170,255,0.22), rgba(255,160,200,0.06) 45%, transparent 68%);}
   .lg-fig img{width:100%; height:100%; object-fit:contain; display:block; max-width:none; filter:drop-shadow(0 0 26px rgba(170,180,255,0.35)); animation:fig-in 1.1s .15s cubic-bezier(.2,.8,.2,1) both; -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%); mask-image:linear-gradient(180deg,#000 78%,transparent 100%);}
-  /* ---- 啟航星: half-body Live2D-style rig (canvas replaces the static figure once loaded) ---- */
-  .lg-fig canvas{position:absolute; left:0; top:0; width:100%; height:100%; display:block; opacity:0; transition:opacity .5s; pointer-events:auto; cursor:pointer; touch-action:manipulation;
-    filter:drop-shadow(0 0 26px rgba(170,180,255,0.35)); -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%); mask-image:linear-gradient(180deg,#000 78%,transparent 100%);}
-  .lg-fig.live canvas{opacity:1; animation:fig-in 1.1s .15s cubic-bezier(.2,.8,.2,1) both;}
-  .lg-fig.live img{display:none;}
-  .lg-fig:not(.live):not(.nolive) img{visibility:hidden;}
-  .lg-live-ui{position:absolute; right:2%; bottom:14px; z-index:3; display:flex; flex-direction:column; align-items:flex-end; gap:var(--sp-2); pointer-events:auto;}
+  /* ---- 啟航星: half-body Live2D-style rig lives in its own section at the bottom of the works area ---- */
+  .lg-live-sec{display:none;}
+  .lg.is-origin .lg-live-sec{display:block;}
+  .lg-live-stage{position:relative; display:flex; flex-direction:column; align-items:center; gap:var(--sp-4); padding:var(--sp-8) var(--sp-4) var(--sp-5); border:1px solid var(--line-soft);
+    background:radial-gradient(ellipse 55% 65% at 50% 40%, rgba(120,130,255,.18), rgba(9,11,30,.25) 62%, transparent 78%), var(--panel);}
+  .lg-live-wrap{position:relative; width:min(100%, 520px); aspect-ratio:1492/1590;}
+  .lg-live-stage canvas{position:absolute; left:0; top:0; width:100%; height:100%; display:block; opacity:0; transition:opacity .5s; cursor:pointer; touch-action:manipulation;
+    filter:drop-shadow(0 0 26px rgba(170,180,255,0.3)); -webkit-mask-image:linear-gradient(180deg,#000 82%,transparent 100%); mask-image:linear-gradient(180deg,#000 82%,transparent 100%);}
+  .lg-live-stage.live canvas{opacity:1;}
+  .lg-live-stage .lg-live-hint0{margin:0; font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); color:var(--muted); text-align:center;}
+  .lg-live-ui{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:var(--sp-2);}
   .lg-live-btn{white-space:nowrap; display:inline-flex; align-items:center; gap:var(--sp-2); padding:var(--sp-2) var(--sp-3); background:rgba(13,15,34,.72); border:1px solid var(--line); color:var(--star); font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-label); cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:border-color .2s,color .2s;}
   .lg-live-btn i{width:7px; height:7px; border-radius:50%; background:var(--muted); transition:background .2s,box-shadow .2s;}
   .lg-live-btn:hover{border-color:var(--star);}
   .lg-live-btn[aria-pressed="true"]{border-color:var(--hud); color:var(--hud);}
   .lg-live-btn[aria-pressed="true"] i{background:var(--hud); box-shadow:0 0 8px var(--hud);}
   .lg-live-cam{width:96px; height:72px; object-fit:cover; transform:scaleX(-1); border:1px solid var(--line); background:#000;}
-  .lg-live-note{font:var(--fw-regular) var(--fs-micro)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); color:var(--muted);}
+  .lg-live-note{flex-basis:100%; text-align:center; font:var(--fw-regular) var(--fs-micro)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); color:var(--muted);}
   /* ---- Live2D full-screen interaction (phones: the inline figure is small) ---- */
   .lg-live-zoom{display:none;}
   @media (max-width:960px){ .lg-live-zoom{display:inline-flex;} }
@@ -1094,8 +1098,8 @@
     .sp{grid-template-columns:minmax(0,1fr); gap:34px;}
     .sp-col{display:contents;}
     .sp-col:nth-child(2){margin-top:0;}
-    .lg.is-origin .lg-fig{position:relative; right:auto; margin:26px auto 0; height:360px;}
-    .lg-live-ui{right:50%; transform:translateX(50%); align-items:center; bottom:6px; flex-direction:row; flex-wrap:wrap; justify-content:center; width:max-content; max-width:100%; gap:var(--sp-2);}
+    .lg.is-origin .lg-fig{position:relative; right:auto; margin:26px auto 0; height:420px;}
+    .lg-live-stage{padding:var(--sp-6) var(--sp-3) var(--sp-4);}
     .lg-live-note{flex-basis:100%; text-align:center;}
     .lg-live-full .lg-live-ui{flex-direction:column; flex-wrap:nowrap;}
     .lg.is-origin .lg-say{right:auto; left:4px; top:-18px; max-width:none; white-space:nowrap; font-size:var(--fs-body);}
@@ -2311,7 +2315,7 @@
   <div class="lg-main" id="lgMain">
     <section class="lg-hero">
       <div class="lg-bignum" id="lgBigNum" aria-hidden="true"></div>
-      <div class="lg-fig" id="lgFig"><div class="lg-say" id="lgSay" aria-hidden="true"></div><canvas id="lgLive" aria-hidden="true"></canvas><div class="lg-live-ui" id="lgLiveUi" hidden><button type="button" class="lg-live-btn lg-live-zoom" id="lgLiveZoom"><span>⤢ 放大互動 FULL</span></button><button type="button" class="lg-live-btn" id="lgLiveBtn" aria-pressed="false"><i></i><span id="lgLiveTxt">面部追蹤 FACE TRACK</span></button><video class="lg-live-cam" id="lgLiveCam" muted playsinline hidden aria-hidden="true"></video><small class="lg-live-note" id="lgLiveNote">影像只在你的裝置上運算，不會上傳</small></div><img decoding="async" id="lgFigImg" aria-hidden="true" alt="" src="images/img-19.webp"></div>
+      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img decoding="async" id="lgFigImg" alt="" src="images/img-19.webp"></div>
       <span class="hud-label" id="dtNo"></span>
       <h1 class="lg-name" id="dtName"></h1>
       <div class="lg-en" id="dtEn"></div>
@@ -2361,8 +2365,16 @@
       <div class="lg-sec-head"><span class="hud-label">// 02 — WORKS</span><h2>作品</h2></div>
       <div id="lgWorks"></div>
     </section>
+    <section class="lg-sec lg-live-sec" id="lgLiveSec">
+      <div class="lg-sec-head"><span class="hud-label">// 03 — LIVE</span><h2>互動</h2></div>
+      <div class="lg-live-stage hud-bracket" id="lgLiveStage">
+        <p class="lg-live-hint0">移動滑鼠或手指，看他的視線怎麼跟著你；點一下他會笑</p>
+        <div class="lg-live-wrap" id="lgLiveWrap"><canvas id="lgLive" aria-label="迷航星 互動角色" role="img"></canvas></div>
+        <div class="lg-live-ui" id="lgLiveUi" hidden><button type="button" class="lg-live-btn lg-live-zoom" id="lgLiveZoom"><span>⤢ 放大互動 FULL</span></button><button type="button" class="lg-live-btn" id="lgLiveBtn" aria-pressed="false"><i></i><span id="lgLiveTxt">面部追蹤 FACE TRACK</span></button><video class="lg-live-cam" id="lgLiveCam" muted playsinline hidden aria-hidden="true"></video><small class="lg-live-note" id="lgLiveNote">影像只在你的裝置上運算，不會上傳</small></div>
+      </div>
+    </section>
     <section class="lg-sec" id="lgProcessSec">
-      <div class="lg-sec-head"><span class="hud-label">// 03 — PROCESS</span><h2>製作紀錄</h2></div>
+      <div class="lg-sec-head"><span class="hud-label">// 04 — PROCESS</span><h2>製作紀錄</h2></div>
       <div class="lg-process" id="lgProcess"></div>
     </section>
     <nav class="lg-next" aria-label="其他探索紀錄">
@@ -3583,20 +3595,21 @@
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
     (function(){ /* 啟航星 half-body Live2D-style rig: lazy-loaded, idle / pointer follow, optional webcam face tracking */
-      var fig=$('lgFig'), cv=$('lgLive'), ui=$('lgLiveUi'), btn=$('lgLiveBtn'), txt=$('lgLiveTxt'), cam=$('lgLiveCam'), note=$('lgLiveNote');
+      var fig=$('lgLiveStage'), wrap=$('lgLiveWrap'), cv=$('lgLive'), ui=$('lgLiveUi'), btn=$('lgLiveBtn'), txt=$('lgLiveTxt'), cam=$('lgLiveCam'), note=$('lgLiveNote');
       if(!fig||!cv) return;
-      var rig=null, loading=false, want=false, camCtl=null, reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+      var rig=null, loading=false, want=false, vis=false, fullOn=false, camCtl=null, reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
       var mobile=/Mobi|Android/i.test(navigator.userAgent)||window.innerWidth<=960;
       var MSG={requesting:'請在瀏覽器允許使用鏡頭…',loading:'載入追蹤模型…',calib:'請正視鏡頭，校準中…',on:'追蹤中 · 再點一次關閉',noface:'找不到臉部，請面向鏡頭',denied:'鏡頭權限被拒絕，已改用滑鼠跟隨',nocam:'找不到鏡頭，已改用滑鼠跟隨',error:'追蹤載入失敗，已改用滑鼠跟隨'};
       function setBtn(on,msg){ btn.setAttribute('aria-pressed',on?'true':'false'); txt.textContent=msg||'面部追蹤 FACE TRACK'; }
       function camOff(msg){ if(camCtl){ camCtl.stop(); camCtl=null; } cam.hidden=true; setBtn(false,msg); }
       function onStatus(st){ if(st==='denied'||st==='nocam'||st==='error'){ camOff(MSG[st]); return; } setBtn(true,MSG[st]||''); cam.hidden=false; }
       function loadScript(){ return new Promise(function(res,rej){ if(window.LostarLive2D) return res(); var sc=document.createElement('script'); sc.src='live2d/engine.js'; sc.onload=res; sc.onerror=function(){rej(new Error('engine'));}; document.head.appendChild(sc); }); }
+      function run(){ if(!rig) return; if(document.hidden){ rig.stop(); return; } if(reduce){ rig.resize(); return; } if((want&&vis)||fullOn) rig.start(); else rig.stop(); }
       function init(){
         if(rig||loading) return; loading=true;
         loadScript().then(function(){ return LostarLive2D.create(cv,{base:'live2d/',fps:mobile?30:0}); }).then(function(r){
           rig=r; loading=false; fig.classList.add('live'); ui.hidden=false; r.resize();
-          if(want && !reduce) r.start();
+          run();
         }).catch(function(){ loading=false; fig.classList.add('nolive'); });
       }
       // warm the rig up in idle time so it is ready by the time the page is opened (no flash of the old still)
@@ -3613,22 +3626,23 @@
         rig.setPointer((e.clientX-cx)/(Math.max(window.innerWidth,600)*.4),(e.clientY-cy)/(Math.max(window.innerHeight,500)*.4)); }
       window.addEventListener('pointermove',ptr,{passive:true});
       window.addEventListener('resize',function(){ if(rig) rig.resize(); });
-      document.addEventListener('visibilitychange',function(){ if(!rig) return; if(document.hidden) rig.stop(); else if(want&&!reduce) rig.start(); });
-      var full=$('lgLiveFull'), zoomBtn=$('lgLiveZoom'), xBtn=$('lgLiveX'), fullOn=false;
+      document.addEventListener('visibilitychange',run);
+      if(window.IntersectionObserver) new IntersectionObserver(function(en){ vis=en[0].isIntersecting; run(); },{rootMargin:'80px'}).observe(fig); else vis=true;
+      var full=$('lgLiveFull'), zoomBtn=$('lgLiveZoom'), xBtn=$('lgLiveX');
       function openFull(){ if(!rig||fullOn) return; fullOn=true; full.hidden=false; full.insertBefore(cv,full.firstChild); full.appendChild(ui);
-        rig.setView({z:2.4,cx:765,cy:420,fy:.36}); if(!reduce) rig.start(); document.documentElement.style.overflow='hidden'; }
-      function closeFull(){ if(!fullOn) return; fullOn=false; fig.insertBefore(cv,fig.querySelector('.lg-live-ui')||null); fig.appendChild(ui); full.hidden=true;
-        rig.setView(null); document.documentElement.style.overflow=''; }
+        rig.setView({z:2.4,cx:765,cy:420,fy:.36}); document.documentElement.style.overflow='hidden'; run(); }
+      function closeFull(){ if(!fullOn) return; fullOn=false; wrap.appendChild(cv); fig.appendChild(ui); full.hidden=true;
+        rig.setView(null); document.documentElement.style.overflow=''; rig.resize(); run(); }
       zoomBtn.addEventListener('click',function(e){ e.stopPropagation(); openFull(); });
       xBtn.addEventListener('click',closeFull);
       document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeFull(); });
       window.addEventListener('pointerdown',function(e){ if(fullOn) ptr(e); },{passive:true});
       window.__liveSync=function(isOrigin){
         want=!!isOrigin;
-        if(isOrigin){ init(); if(rig){ rig.resize(); if(!reduce) rig.start(); } }
-        else { closeFull(); if(rig) rig.stop(); if(camCtl) camOff(); }
+        if(isOrigin){ init(); if(rig) rig.resize(); run(); }
+        else { closeFull(); run(); if(camCtl) camOff(); }
       };
-      window.__liveHold=function(h){ if(!rig) return; if(h) rig.stop(); else if(want&&!reduce) rig.start(); };
+      window.__liveHold=function(h){ if(h&&rig) rig.stop(); else run(); };
     })();
       (function(){ var sec=$('lgFilmSec'), v=$('lgFilm'), box=$('lgFilmBox'), pl=$('lgFilmPlay'), dur=$('lgFilmDur'); if(!sec||!v||!pl) return;
       var ready=false, started=false, pr=new Image(); pr.onload=function(){ ready=true; if(detailEl && detailEl.classList.contains('is-origin')) sec.hidden=false; }; pr.onerror=function(){ ready=false; }; pr.src='video/origin-poster.jpg';
