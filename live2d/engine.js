@@ -11,6 +11,8 @@ function create(canvas,opt){
   return fetch(base+'rig.json').then(function(r){return r.json();}).then(function(rig){
     return Promise.all(rig.layers.map(function(l){return load(base+l.id);})).then(function(imgs){
       rig.layers.forEach(function(l,i){l.img=imgs[i]; l.ph=(i*2.399)%TAU; l.ang=0; l.vel=0; l.sx=l.px!=null?l.px:l.x+l.w/2; l.sy=l.py!=null?l.py:(l.pv==='t'?l.y+2:l.y+l.h/2);});
+      // a shadow layer ('XX影子') must swing in lockstep with its owner ('XX'): share the phase so they never separate
+      rig.layers.forEach(function(l){ if(l.n&&/影子$/.test(l.n)){ var o=rig.layers.filter(function(m){return m.n===l.n.replace(/影子$/,'');})[0]; if(o) l.ph=o.ph; } });
       return new Rig(canvas,rig,opt);
     });
   });
@@ -140,7 +142,10 @@ function Rig(canvas,rig,opt){
       ctx.translate(PIV[0]+bodyX,H);ctx.rotate(bodyRot);ctx.scale(1,bs);ctx.translate(-PIV[0],-H+bob+hop*.5);
       var x=l.sx,y=l.sy,rot=0,sx=1,sy=1,dx=0,dy=0;
       if(g==='neck'){
-        ctx.translate(PIV[0],PIV[1]);ctx.rotate(roll*.4);ctx.translate(-PIV[0]+yaw*PXX*l.d,-PIV[1]+pitch*PXY*l.d);
+        // neck is skinned: the chin end follows the head, the collar end stays glued to the jacket (no gap opens at the collar)
+        ctx.translate(PIV[0],PIV[1]);ctx.rotate(roll*.4);ctx.translate(-PIV[0],-PIV[1]);
+        var NYT=480,NYB=735,NH=NYB-NYT, ndx=yaw*PXX*l.d, ndy=pitch*PXY*l.d, ns=clamp(1-ndy/NH,.7,1.3);
+        ctx.transform(1,0,-ndx/NH,ns,ndx*NYB/NH,NYB*(1-ns));
       }else if(g==='head'){
         ctx.translate(PIV[0],PIV[1]);ctx.rotate(roll);ctx.translate(-PIV[0],-PIV[1]);
         dx=yaw*PXX*l.d; dy=pitch*PXY*l.d+hop*.5;
