@@ -164,6 +164,26 @@
   .navlinks{display:flex; gap:28px; font-size:var(--fs-ui); color:var(--muted);}
   .navlinks a:hover{color:var(--star);}
   .navlinks{align-self:stretch;}
+  /* ---- header: one dropdown for work types (desktop only) ---- */
+  .nav-cat{display:none;}
+  @media (min-width:961px){
+    .nav-cat{display:block; position:absolute; left:50%; top:0; height:100%; transform:translateX(-50%); z-index:6;}
+    .nav-cat-t{position:relative; display:flex; align-items:center; gap:var(--sp-2); height:100%; padding:0 var(--sp-4); border:0; background:none; font:var(--fw-medium) var(--fs-ui)/1 var(--sans); letter-spacing:var(--ls-meta); color:rgba(210,205,225,.78); cursor:pointer; transition:color .2s;}
+    .nav-cat-t i{font-style:normal; font-size:var(--fs-label); color:var(--hud); transition:transform .25s ease;}
+    .nav-cat-t::after{content:""; position:absolute; left:var(--sp-4); right:var(--sp-4); bottom:16px; height:2px; border-radius:1px; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform:scaleX(0); transition:transform .3s ease;}
+    .nav-cat-t:hover,.nav-cat-t:focus-visible,.nav-cat.open .nav-cat-t{color:#fff; outline:none;}
+    .nav-cat-t:hover::after,.nav-cat-t:focus-visible::after,.nav-cat.open .nav-cat-t::after{transform:scaleX(1);}
+    .nav-cat.open .nav-cat-t i{transform:rotate(180deg);}
+    .nav-cat-menu{position:absolute; top:calc(100% - 4px); left:50%; width:300px; padding:var(--sp-2); border:1px solid var(--line); border-radius:12px; background:rgba(9,12,28,.97); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 18px 40px -12px rgba(0,0,0,.7);
+      opacity:0; visibility:hidden; pointer-events:none; transform:translate(-50%,-6px); transition:opacity .2s ease, transform .2s ease, visibility 0s .2s;}
+    .nav-cat.open .nav-cat-menu{opacity:1; visibility:visible; pointer-events:auto; transform:translate(-50%,0); transition:opacity .2s ease, transform .2s ease, visibility 0s;}
+    .nav-cat-menu button{display:grid; grid-template-columns:28px 1fr; column-gap:var(--sp-2); align-items:center; width:100%; padding:var(--sp-2) var(--sp-3); border:0; border-radius:8px; background:none; text-align:left; cursor:pointer; color:#dfe6ff;}
+    .nav-cat-menu button:hover,.nav-cat-menu button:focus-visible{background:rgba(143,227,199,.12); outline:none;}
+    .nav-cat-menu button.on{background:rgba(143,227,199,.08); box-shadow:inset 2px 0 0 var(--hud);}
+    .nav-cat-menu small{grid-row:1 / span 2; font:var(--fw-medium) var(--fs-label)/1 var(--mono); letter-spacing:var(--ls-meta); color:var(--hud);}
+    .nav-cat-menu b{font:var(--fw-medium) var(--fs-ui)/var(--lh-snug) var(--sans); letter-spacing:var(--ls-ui);}
+    .nav-cat-menu em{font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); font-style:normal; letter-spacing:var(--ls-ui); color:var(--muted);}
+  }
   .nav-tabs{display:none;}
   @media (min-width:961px){
     .nav-tabs{display:flex; align-items:center; gap:30px; position:absolute; left:50%; top:0; height:100%; transform:translateX(-50%);}
@@ -1878,7 +1898,7 @@
         </div>
       </div>
     </div>
-    <div class="nav-tabs" id="navTabs" role="tablist" aria-label="作品星系"></div>
+    <div class="nav-cat" id="navCat"></div>
     <div class="navlinks">
       <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-tx"><small>STAR MAP</small><b><span class="dd-pre">作品</span>星系</b></span><i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
       <a href="#work">作品</a>
@@ -3612,9 +3632,21 @@
       v.addEventListener('ended',function(){ box.classList.remove('playing'); v.controls=false; });
       pl.addEventListener('click',function(){ if(!started){ started=true; v.src='video/origin.mp4'; try{ track('play/origin','播放起源影片'); }catch(e){} } v.controls=true; var pp=v.play(); if(pp&&pp.catch) pp.catch(function(){}); });
     })();
-    (function(){ var box=$('navTabs'); if(!box) return; var btns=[];
-      stars.forEach(function(st,i){ var b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.textContent=st.zh; b.addEventListener('click',function(){ if(detailOpen){ selectStar(i); fillDetail(i,true); setHash(i,true); } else { selectStar(i); openDetail(i,{noFly:true}); } }); box.appendChild(b); btns.push(b); });
-      window.__navTabsSync=function(k){ btns.forEach(function(b,i){ b.classList.toggle('on',i===k); b.setAttribute('aria-selected',i===k?'true':'false'); }); };
+    (function(){ var box=$('navCat'); if(!box) return; var btns=[];
+      // work TYPES (what the piece is) instead of planet names — a quick overview for visitors who just want the gist
+      var CAT={ '啟航星':['原創角色','迷航星主視覺與起源'], '元宇宙':['Vtuber 立繪','虛擬形象設計'], '貼圖星':['貼圖創作','LINE 貼圖'], '萬象星':['插畫・漫畫','自由創作與漫畫'], '牡羊 41':['角色設計','委託角色'] };
+      var t=document.createElement('button'); t.type='button'; t.className='nav-cat-t'; t.setAttribute('aria-haspopup','true'); t.setAttribute('aria-expanded','false'); t.innerHTML='作品類型<i>▾</i>';
+      var menu=document.createElement('div'); menu.className='nav-cat-menu'; menu.setAttribute('role','menu');
+      function shut(){ box.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
+      stars.forEach(function(st,i){ var c=CAT[st.zh]||[st.zh,st.en||'']; var b=document.createElement('button'); b.type='button'; b.setAttribute('role','menuitem');
+        b.innerHTML='<small></small><b></b><em></em>'; b.children[0].textContent=st.no; b.children[1].textContent=c[0]; b.children[2].textContent=c[1];
+        b.addEventListener('click',function(){ shut(); if(detailOpen){ selectStar(i); fillDetail(i,true); setHash(i,true); } else { selectStar(i); openDetail(i,{noFly:true}); } });
+        menu.appendChild(b); btns.push(b); });
+      box.appendChild(t); box.appendChild(menu);
+      t.addEventListener('click',function(e){ e.stopPropagation(); var o=box.classList.toggle('open'); t.setAttribute('aria-expanded',o?'true':'false'); });
+      document.addEventListener('click',function(e){ if(!box.contains(e.target)) shut(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape') shut(); });
+      window.__navTabsSync=function(k){ btns.forEach(function(b,i){ b.classList.toggle('on',i===k); if(i===k) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); }); };
       window.__navTabsSync(selected);
     })();
     (function(){ var dd=$('navDd'), btn=$('navDdBtn'), menu=$('navDdMenu'); if(!dd||!btn||!menu) return;
