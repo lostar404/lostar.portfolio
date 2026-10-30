@@ -1098,7 +1098,11 @@
     .sp{grid-template-columns:minmax(0,1fr); gap:34px;}
     .sp-col{display:contents;}
     .sp-col:nth-child(2){margin-top:0;}
-    .lg.is-origin .lg-fig{position:relative; right:auto; margin:26px auto 0; height:420px;}
+    /* 啟航星 on phones: title first, then the main visual, then the data chips */
+    .lg.is-origin .lg-hero{display:flex; flex-direction:column;}
+    .lg.is-origin .lg-hero > .hud-label{order:1;} .lg.is-origin .lg-name{order:2;} .lg.is-origin .lg-en{order:3;}
+    .lg.is-origin .lg-fig{order:4; align-self:center; position:relative; right:auto; margin:44px auto 0; height:420px;}
+    .lg.is-origin .lg-sum{order:5;} .lg.is-origin .lg-chips{order:6;} .lg.is-origin .lg-invite-slot{order:7;}
     .lg-live-stage{padding:var(--sp-6) var(--sp-3) var(--sp-4);}
     .lg-live-note{flex-basis:100%; text-align:center;}
     .lg-live-full .lg-live-ui{flex-direction:column; flex-wrap:nowrap;}
