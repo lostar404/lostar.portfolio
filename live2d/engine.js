@@ -37,14 +37,15 @@ function Rig(canvas,rig,opt){
     mc.drawImage(u.white.img,u.white.x-u.bx,u.white.y-u.by,u.white.w,u.white.h); mc.drawImage(u.iris[0].img,u.iris[0].x-u.bx,u.iris[0].y-u.by,u.iris[0].w,u.iris[0].h);
     u.oc=document.createElement('canvas');u.oc.width=u.bw;u.oc.height=u.bh;u.octx=u.oc.getContext('2d'); u.ok=true; });
   var PIV=rig.pivot, W=rig.w, H=rig.h, U=(rig.sc||0.5)/0.5;
-  var dpr=1, cw=0, ch=0, k=1;
+  var dpr=1, cw=0, ch=0, k=1, view=null;
   function resize(){
     var r=canvas.getBoundingClientRect(); dpr=Math.min(window.devicePixelRatio||1,2);
     cw=Math.max(2,Math.round(r.width*dpr)); ch=Math.max(2,Math.round(r.height*dpr));
     if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}
-    k=Math.min(cw/W,ch/H);
+    k=view?(cw/W)*view.z:Math.min(cw/W,ch/H);
   }
   this.resize=resize;
+  this.setView=function(v){view=v||null;resize();};
 
   // ---- inputs ----
   this.setPointer=function(nx,ny){ptr.x=clamp(nx,-1,1);ptr.y=clamp(ny,-1,1);src.pointer=performance.now();};
@@ -122,6 +123,7 @@ function Rig(canvas,rig,opt){
   function render(t){
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cw,ch);
     var ox=(cw-W*k)/2, oy=0; // bottom-crop: anchor top
+    if(view){ox=cw/2-view.cx*k; oy=ch*view.fy-view.cy*k;}
     var breath=Math.sin(t*1.5), bob=breath*1.6*U, bs=1+breath*.0035;
     var yaw=S.yaw, pitch=S.pitch, roll=S.roll*.17; // rad (~10deg)
     var hop=-(me._hop||0)*9*U;

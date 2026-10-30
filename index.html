@@ -752,6 +752,16 @@
   .lg-live-btn[aria-pressed="true"] i{background:var(--hud); box-shadow:0 0 8px var(--hud);}
   .lg-live-cam{width:96px; height:72px; object-fit:cover; transform:scaleX(-1); border:1px solid var(--line); background:#000;}
   .lg-live-note{font:var(--fw-regular) var(--fs-micro)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); color:var(--muted);}
+  /* ---- Live2D full-screen interaction (phones: the inline figure is small) ---- */
+  .lg-live-zoom{display:none;}
+  @media (max-width:960px){ .lg-live-zoom{display:inline-flex;} }
+  .lg-live-full{position:fixed; inset:0; z-index:5000; background:radial-gradient(ellipse 80% 55% at 50% 38%, #1a1f45 0%, #090b1e 60%, #04050D 100%); touch-action:none; overflow:hidden;}
+  .lg-live-full[hidden]{display:none;}
+  .lg-live-full canvas{position:absolute; left:0; top:0; width:100%; height:100%; opacity:1; cursor:default; -webkit-mask-image:none; mask-image:none; filter:none; touch-action:none; animation:none;}
+  .lg-live-full .lg-live-zoom{display:none;}
+  .lg-live-full .lg-live-ui{position:absolute; right:50%; transform:translateX(50%); bottom:calc(var(--sp-6) + env(safe-area-inset-bottom)); align-items:center; z-index:3;}
+  .lg-live-x{position:absolute; top:calc(var(--sp-4) + env(safe-area-inset-top)); right:var(--sp-4); z-index:4; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:rgba(13,15,34,.72); color:var(--star); font:var(--fw-regular) var(--fs-body)/1 var(--sans); cursor:pointer;}
+  .lg-live-hint{position:absolute; top:calc(var(--sp-5) + env(safe-area-inset-top)); left:var(--sp-5); right:72px; margin:0; z-index:3; pointer-events:none; font:var(--fw-regular) var(--fs-label)/var(--lh-snug) var(--mono); letter-spacing:var(--ls-meta); color:var(--muted);}
   @keyframes fig-in{from{opacity:0; transform:translateX(34px);} to{opacity:1; transform:none;}}
   /* 啟航星: the greeting drifts out beside the figure's head, as if the main visual were speaking */
   .lg-say{display:none;}
@@ -1084,7 +1094,9 @@
     .sp-col{display:contents;}
     .sp-col:nth-child(2){margin-top:0;}
     .lg.is-origin .lg-fig{position:relative; right:auto; margin:26px auto 0; height:360px;}
-    .lg-live-ui{right:50%; transform:translateX(50%); align-items:center; bottom:6px;}
+    .lg-live-ui{right:50%; transform:translateX(50%); align-items:center; bottom:6px; flex-direction:row; flex-wrap:wrap; justify-content:center; width:max-content; max-width:100%; gap:var(--sp-2);}
+    .lg-live-note{flex-basis:100%; text-align:center;}
+    .lg-live-full .lg-live-ui{flex-direction:column; flex-wrap:nowrap;}
     .lg.is-origin .lg-say{right:auto; left:4px; top:-18px; max-width:none; white-space:nowrap; font-size:var(--fs-body);}
     .lg.is-origin .lg-hero{min-height:0;}
     .lg.is-origin .lg-sum, .lg.is-origin .lg-chips, .lg-invite-slot{max-width:none;}
@@ -2298,7 +2310,7 @@
   <div class="lg-main" id="lgMain">
     <section class="lg-hero">
       <div class="lg-bignum" id="lgBigNum" aria-hidden="true"></div>
-      <div class="lg-fig" id="lgFig"><div class="lg-say" id="lgSay" aria-hidden="true"></div><canvas id="lgLive" aria-hidden="true"></canvas><div class="lg-live-ui" id="lgLiveUi" hidden><button type="button" class="lg-live-btn" id="lgLiveBtn" aria-pressed="false"><i></i><span id="lgLiveTxt">面部追蹤 FACE TRACK</span></button><video class="lg-live-cam" id="lgLiveCam" muted playsinline hidden aria-hidden="true"></video><small class="lg-live-note" id="lgLiveNote">影像只在你的裝置上運算，不會上傳</small></div><img decoding="async" id="lgFigImg" aria-hidden="true" alt="" src="images/img-19.webp"></div>
+      <div class="lg-fig" id="lgFig"><div class="lg-say" id="lgSay" aria-hidden="true"></div><canvas id="lgLive" aria-hidden="true"></canvas><div class="lg-live-ui" id="lgLiveUi" hidden><button type="button" class="lg-live-btn lg-live-zoom" id="lgLiveZoom"><span>⤢ 放大互動 FULL</span></button><button type="button" class="lg-live-btn" id="lgLiveBtn" aria-pressed="false"><i></i><span id="lgLiveTxt">面部追蹤 FACE TRACK</span></button><video class="lg-live-cam" id="lgLiveCam" muted playsinline hidden aria-hidden="true"></video><small class="lg-live-note" id="lgLiveNote">影像只在你的裝置上運算，不會上傳</small></div><img decoding="async" id="lgFigImg" aria-hidden="true" alt="" src="images/img-19.webp"></div>
       <span class="hud-label" id="dtNo"></span>
       <h1 class="lg-name" id="dtName"></h1>
       <div class="lg-en" id="dtEn"></div>
@@ -2360,6 +2372,7 @@
   </div>
 </div>
 
+<div class="lg-live-full" id="lgLiveFull" hidden role="dialog" aria-label="角色互動"><button type="button" class="lg-live-x" id="lgLiveX" aria-label="關閉">✕</button><p class="lg-live-hint">觸碰或拖曳，讓他的視線跟著你</p></div>
 <div class="lg-intro" id="lgIntro" hidden aria-label="起源影片">
   <video id="lgIntroVid" playsinline preload="auto" poster="video/origin-poster.jpg"></video>
   <button type="button" class="lg-intro-skip" id="lgIntroSkip">跳過 SKIP ▸▸</button>
@@ -3598,10 +3611,19 @@
       window.addEventListener('pointermove',ptr,{passive:true});
       window.addEventListener('resize',function(){ if(rig) rig.resize(); });
       document.addEventListener('visibilitychange',function(){ if(!rig) return; if(document.hidden) rig.stop(); else if(want&&!reduce) rig.start(); });
+      var full=$('lgLiveFull'), zoomBtn=$('lgLiveZoom'), xBtn=$('lgLiveX'), fullOn=false;
+      function openFull(){ if(!rig||fullOn) return; fullOn=true; full.hidden=false; full.insertBefore(cv,full.firstChild); full.appendChild(ui);
+        rig.setView({z:2.4,cx:765,cy:420,fy:.36}); if(!reduce) rig.start(); document.documentElement.style.overflow='hidden'; }
+      function closeFull(){ if(!fullOn) return; fullOn=false; fig.insertBefore(cv,fig.querySelector('.lg-live-ui')||null); fig.appendChild(ui); full.hidden=true;
+        rig.setView(null); document.documentElement.style.overflow=''; }
+      zoomBtn.addEventListener('click',function(e){ e.stopPropagation(); openFull(); });
+      xBtn.addEventListener('click',closeFull);
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeFull(); });
+      window.addEventListener('pointerdown',function(e){ if(fullOn) ptr(e); },{passive:true});
       window.__liveSync=function(isOrigin){
         want=!!isOrigin;
         if(isOrigin){ init(); if(rig){ rig.resize(); if(!reduce) rig.start(); } }
-        else { if(rig) rig.stop(); if(camCtl) camOff(); }
+        else { closeFull(); if(rig) rig.stop(); if(camCtl) camOff(); }
       };
       window.__liveHold=function(h){ if(!rig) return; if(h) rig.stop(); else if(want&&!reduce) rig.start(); };
     })();
