@@ -3614,7 +3614,7 @@
         put({ left: from.left + (to.left - from.left) * e, top: from.top + (to.top - from.top) * e,
               width: from.width + (to.width - from.width) * e, height: from.height + (to.height - from.height) * e });
         if(t < 1){ requestAnimationFrame(step); }
-        else { c.remove(); if(done) done(); }
+        else { c.style.transition = 'opacity .18s ease'; c.style.opacity = '0'; setTimeout(function(){ c.remove(); }, 230); if(done) done(); }   // hand over with a short crossfade so any raster / size difference can't pop
       }
       requestAnimationFrame(step);
     }
@@ -3629,10 +3629,15 @@
       var to = anchor ? anchor.getBoundingClientRect() : null;
       document.documentElement.classList.remove('lg-covered');
       if(anchor && to && to.width > 0 && from.width > 0){
-        var prevVis = anchor.style.visibility;
-        anchor.style.visibility = 'hidden';
+        var prevOp = anchor.style.opacity;
+        anchor.style.opacity = '0.01';   // not visibility:hidden — the real planet stays painted, so its layer is re-rasterised at the final size while the clone covers it
+        try{ settleRefresh(); }catch(e){}
         dtImg.style.opacity = '0';
-        flyCloneLive(from, anchor, stars[detailIndex].src, 640, function(){ anchor.style.visibility = prevVis; dtImg.style.opacity = '1'; });
+        flyCloneLive(from, anchor, stars[detailIndex].src, 640, function(){
+          anchor.style.transition = 'opacity .18s ease, filter .3s ease, transform .3s ease'; anchor.style.opacity = prevOp;
+          setTimeout(function(){ anchor.style.transition = ''; anchor.style.opacity = prevOp; }, 260);
+          dtImg.style.opacity = '1';
+        });
       }
     }
 
