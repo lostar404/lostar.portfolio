@@ -603,7 +603,7 @@
   .wc-name{display:block; padding:0 .3em .1em .2em; font-family:var(--serif); font-style:italic; font-size:var(--fs-h3); font-weight:500;}
   .wc-en{display:block; margin-top:6px; font-family:var(--mono); font-size:var(--fs-meta); letter-spacing:var(--ls-ui); color:var(--muted);}
   .work-card.is-active .wc-name, .work-card:hover .wc-name, .work-card:focus-visible .wc-name{background:var(--rainbow); -webkit-background-clip:text; background-clip:text; color:transparent;}
-  .work-card:focus-visible::after{content:""; position:absolute; bottom:8px; left:32%; right:32%; height:1px; background:var(--rainbow);}
+  .work-card.is-tap::after, .work-card:focus-visible::after{content:""; position:absolute; bottom:8px; left:32%; right:32%; height:1px; background:var(--rainbow);}
   @media (hover:hover){ .work-card:hover::after{content:""; position:absolute; bottom:8px; left:32%; right:32%; height:1px; background:var(--rainbow);} }   /* the underline only follows a mouse; touch screens never show it */
 
   /* index (catalog) view */
@@ -2830,8 +2830,7 @@
       });
       var persist = !hasHover();   // touch: the chosen card / row stays lit; mouse: highlight on hover only
       cards.forEach(function(c, i){
-        c.classList.toggle('is-active', persist && i === selected);
-        c.setAttribute('aria-pressed', persist && i === selected ? 'true' : 'false');
+        c.setAttribute('aria-pressed', 'false');   // grid cards keep no selected state
       });
       rows.forEach(function(r, i){
         r.classList.toggle('is-active', persist && i === selected);
@@ -3639,7 +3638,7 @@
     }
 
     function finishClose(){
-      detailOpen = false; if(window.__filmSync) window.__filmSync(false); if(window.__liveSync) window.__liveSync(false); if(window.__palSync) window.__palSync(-1,false,false);
+      detailOpen = false; cards.forEach(function(c){ c.classList.remove('is-tap'); }); if(window.__filmSync) window.__filmSync(false); if(window.__liveSync) window.__liveSync(false); if(window.__palSync) window.__palSync(-1,false,false);
       detailEl.classList.remove('open');
       detailEl.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
@@ -4187,8 +4186,8 @@
         var cimg = card.querySelector('img'); cimg.loading = 'lazy'; cimg.decoding = 'async'; cimg.src = s.src;
         card.addEventListener('click', function(){
           if(busy) return;
-          if(hasHover()) openDetail(i);   // mouse: open straight away
-          else activate(i);               // touch: first tap selects, second opens
+          if(!hasHover()) card.classList.add('is-tap');   // touch: the underline lights up on the tapped card (cleared again when the detail page closes)
+          openDetail(i);                                  // one tap opens straight away, mouse or touch
         });
         gridEl.appendChild(card);
         cards.push(card);
