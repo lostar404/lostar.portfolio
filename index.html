@@ -1224,6 +1224,20 @@
   @media (prefers-reduced-motion:reduce){ .pn-orb::before{animation:none;} }
 
 
+  /* desktop header: 作品 / 關於 / 聯絡 share the 作品類型 look (plain label, glowing green underline that slides in on hover / open) */
+  @media (min-width:961px){
+    .navlinks{gap:0;}
+    .nav-st, .nav-ct-t.nav-st{position:relative; display:flex; align-items:center; align-self:stretch; height:100%; padding:0 var(--sp-4); border:0; background:none; font:var(--fw-medium) var(--fs-ui)/1 var(--sans); letter-spacing:var(--ls-meta); color:rgba(210,205,225,.78); text-decoration:none; cursor:pointer; white-space:nowrap; transition:color .2s;}
+    .nav-st small{display:none;}
+    .nav-st .dd-tx{display:block;}
+    .nav-st b{font:inherit; letter-spacing:inherit;}
+    .nav-st::after{content:""; position:absolute; left:var(--sp-4); right:var(--sp-4); bottom:16px; height:2px; border-radius:1px; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform:scaleX(0); transition:transform .3s ease;}
+    .navlinks .nav-st:hover, .navlinks .nav-st:focus-visible, .nav-ct.open .nav-st{color:#fff; outline:none;}
+    .nav-st:hover::after, .nav-st:focus-visible::after, .nav-ct.open .nav-st::after{transform:scaleX(1);}
+    .nav-ct{align-self:stretch;}
+    .ct-pop{top:calc(100% - 4px);}
+  }
+  .nav-st small{display:none;}
   /* header 聯絡: click to drop down the mail / Instagram pills */
   .nav-ct{position:relative; display:flex; align-items:center;}
   .nav-ct-t{font:inherit; color:inherit; background:none; border:none; padding:0; cursor:pointer; -webkit-tap-highlight-color:transparent;}
@@ -2001,10 +2015,10 @@
     <div class="nav-cat" id="navCat"></div>
     <div class="navlinks">
       <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-tx"><small>STAR MAP</small><b><span class="dd-pre">作品</span>星系</b></span><i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
-      <a href="#work">作品</a>
-      <a href="#profile">關於</a>
+      <a href="#work" class="nav-st"><span class="dd-tx"><small>WORKS</small><b>作品</b></span></a>
+      <a href="#profile" class="nav-st"><span class="dd-tx"><small>ABOUT</small><b>關於</b></span></a>
       <div class="nav-ct" id="navCt">
-        <button type="button" class="nav-ct-t" id="navCtBtn" aria-haspopup="true" aria-expanded="false" aria-controls="navCtPop">聯絡</button>
+        <button type="button" class="nav-ct-t nav-st" id="navCtBtn" aria-haspopup="true" aria-expanded="false" aria-controls="navCtPop"><span class="dd-tx"><small>TRANSMIT</small><b>聯絡</b></span></button>
         <div class="ct-pop" id="navCtPop" role="menu" aria-label="聯絡方式">
           <div class="ct-pop-list">
           <button type="button" class="ct-pill" id="ctMail" title="複製信箱" aria-label="複製信箱 Lostar404@gmail.com">
