@@ -436,6 +436,20 @@
   .ring .ring-item{transition:transform 0.9s cubic-bezier(.55,0,.25,1), opacity 0.8s ease 0.1s;}
   .ring.collapsed .ring-item{opacity:0;}
   .ring.collapsed .planet-img, .ring.collapsed .star-label{pointer-events:none;}
+  .ring.collapsed .planet-img{animation-play-state:paused;}
+  /* phones: while the ring is absorbing / releasing / turning, freeze every ambient CSS animation so the GPU only has the ring to do (they resume right where they stopped) */
+  @media (max-width:960px){
+    /* only the ambient things that can be on screen next to the ring are frozen (a page-wide * selector forced a full-document style recalc on every toggle) */
+    body.ring-busy #work *, body.ring-busy #work *::before, body.ring-busy #work *::after,
+    body.ring-busy .nebula-bg, body.ring-busy .scroll-tint, body.ring-busy .ship, body.ring-busy .cm-fab{animation-play-state:paused !important;}
+    /* ring lite: cheaper glow (a 34px blur on five huge 3D layers is what chokes phone GPUs), no per-window glint, no filter on the train */
+    .planet-img, .ring-item:hover .planet-img, .ring-item.is-hover .planet-img{filter:drop-shadow(0 0 9px rgba(200,190,240,.22)) !important;}
+    .ring-item.is-hover .planet-img{transform:none !important;}
+    .bh-img{filter:drop-shadow(0 0 12px rgba(122,79,194,.35)) !important;}
+    .tr-w{animation:none !important;}
+    .tr-car{filter:none !important;}
+  }
+  .trail-dot{display:none !important;}   /* legacy invisible anchors: 70 extra 3D layers that nothing reads any more */
   .ring-item{
     position:absolute; left:50%; top:50%; width:124px; margin-left:-62px; margin-top:-284px; pointer-events:none;
     transform-style:preserve-3d;
@@ -496,7 +510,7 @@
   .dot{border-radius:50%; background:radial-gradient(circle at 35% 30%, #FFFFFF, var(--star) 60%, transparent 100%); box-shadow:0 0 16px 3px rgba(203,211,242,0.3); transition:box-shadow 0.25s ease;}
   .planet-img{position:relative; width:350px; max-width:none; max-height:none; height:auto; display:block; flex-shrink:0; pointer-events:none; filter:drop-shadow(0 0 34px rgba(200,190,240,0.17)); transition:filter 0.3s ease, transform 0.3s ease; animation:planet-float 4.6s ease-in-out infinite;}
   .ring-item.is-hover .planet-img{transform:scale(1.07); filter:brightness(1.22) saturate(1.12) drop-shadow(0 0 53px rgba(215,205,255,0.5));}
-  @keyframes planet-float{ 0%,100%{ top:-10px; } 50%{ top:10px; } }
+  @keyframes planet-float{ 0%,100%{ translate:0 -10px; } 50%{ translate:0 10px; } }   /* compositor-only (was animating `top`, which forced layout every frame) */
   .ring-item:hover .planet-img{filter:drop-shadow(0 0 53px rgba(200,190,240,0.32));}
   .ring-item:nth-of-type(1) .planet-img{animation-duration:3.7s; animation-delay:-2.4s;}
   .ring-item:nth-of-type(2) .planet-img, .ring-item:nth-of-type(5) .planet-img{width:371px;}   /* 元宇宙 / 牡羊 41 +6% */
@@ -2630,6 +2644,9 @@
 
     var collapsed; // assigned below; declared early so updateBillboard can read it
     var busy = false;
+    var busyBodyT = 0;
+    function ringBusy(ms){ document.body.classList.add('ring-busy'); clearTimeout(busyBodyT); if(ms) busyBodyT = setTimeout(function(){ document.body.classList.remove('ring-busy'); }, ms); }
+    function ringIdle(){ clearTimeout(busyBodyT); busyBodyT = setTimeout(function(){ document.body.classList.remove('ring-busy'); }, 120); }
     function planetVisual(depth){ var tt = (depth + 1) / 2; return 0.6 + tt; }   // visual size: 0.6 (back) .. 2.1 (front)
     var FRONT_PUSH = 82;   // how far the front planet is pushed down
     function updateBillboard(ringAngle){
@@ -2672,7 +2689,7 @@
       lastEffective = effective;
       ring.style.transform = 'rotateY(' + effective + 'deg)';
       updateBillboard(effective);
-      clearTimeout(settleTimer); settleTimer = setTimeout(settleRefresh, 1150);
+      clearTimeout(settleTimer); settleTimer = setTimeout(settleRefresh, (window.matchMedia && matchMedia('(max-width:960px)').matches) ? 1800 : 1150);
     }
 
     function goToAngle(targetNormalized, silent){
@@ -2684,7 +2701,7 @@
       var delta = target - current;
       if(delta > 180) delta -= 360;
       if(delta < -180) delta += 360;
-      if(!silent && Math.abs(delta) > 1){ fireMeteorTrail(); }
+      if(!silent && Math.abs(delta) > 1){ fireMeteorTrail(); ringBusy(ringTransitionMs + 150); }
       currentRingAngle = currentRingAngle + delta;
       applyRing(currentRingAngle);
     }
@@ -4259,14 +4276,14 @@
             o.btn.style.transition = '';
             o.content.style.transition = '';
           });
-          busy = false;
+          busy = false; ringIdle();
         }
         requestAnimationFrame(frame);
       }
 
       blackHole.addEventListener('click', function(){
         if(busy) return;
-        busy = true;
+        busy = true; ringBusy();
         collapsed = !collapsed;
         if(collapsed) setDesc(false);
         if(stageEl) stageEl.classList.toggle('is-collapsed', collapsed);
