@@ -438,18 +438,7 @@
   .ring.collapsed .planet-img, .ring.collapsed .star-label{pointer-events:none;}
   .ring.collapsed .planet-img{animation-play-state:paused;}
   /* phones: while the ring is absorbing / releasing / turning, freeze every ambient CSS animation so the GPU only has the ring to do (they resume right where they stopped) */
-  @media (max-width:960px){
-    /* only the ambient things that can be on screen next to the ring are frozen (a page-wide * selector forced a full-document style recalc on every toggle) */
-    body.ring-busy #work *, body.ring-busy #work *::before, body.ring-busy #work *::after,
-    body.ring-busy .nebula-bg, body.ring-busy .scroll-tint, body.ring-busy .ship, body.ring-busy .cm-fab{animation-play-state:paused !important;}
-    /* ring lite: cheaper glow (a 34px blur on five huge 3D layers is what chokes phone GPUs), no per-window glint, no filter on the train */
-    .planet-img, .ring-item:hover .planet-img, .ring-item.is-hover .planet-img{filter:drop-shadow(0 0 9px rgba(200,190,240,.22)) !important;}
-    .ring-item.is-hover .planet-img{transform:none !important;}
-    .bh-img{filter:drop-shadow(0 0 12px rgba(122,79,194,.35)) !important;}
-    .tr-w{animation:none !important;}
-    .tr-car{filter:none !important;}
-  }
-  .trail-dot{display:none !important;}   /* legacy invisible anchors: 70 extra 3D layers that nothing reads any more */
+  @media (max-width:960px){ body.ring-busy *, body.ring-busy *::before, body.ring-busy *::after{animation-play-state:paused !important;} }
   .ring-item{
     position:absolute; left:50%; top:50%; width:124px; margin-left:-62px; margin-top:-284px; pointer-events:none;
     transform-style:preserve-3d;
@@ -2689,7 +2678,7 @@
       lastEffective = effective;
       ring.style.transform = 'rotateY(' + effective + 'deg)';
       updateBillboard(effective);
-      clearTimeout(settleTimer); settleTimer = setTimeout(settleRefresh, (window.matchMedia && matchMedia('(max-width:960px)').matches) ? 1800 : 1150);
+      clearTimeout(settleTimer); settleTimer = setTimeout(settleRefresh, 1150);
     }
 
     function goToAngle(targetNormalized, silent){
