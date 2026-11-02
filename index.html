@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<script>(function(){try{if('scrollRestoration' in history) history.scrollRestoration='manual';}catch(e){} function top(){ if(/^#log-/i.test(location.hash)) return; window.scrollTo(0,0); } top(); window.addEventListener('DOMContentLoaded',top); window.addEventListener('load',function(){ top(); setTimeout(top,120); setTimeout(top,500); }); window.addEventListener('pageshow',function(e){ if(e.persisted) top(); });})();</script>
+<script>(function(){try{if('scrollRestoration' in history) history.scrollRestoration='manual';}catch(e){} try{var nv=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0]; if(nv&&nv.type==='reload'&&/^#log-/i.test(location.hash)) history.replaceState(null,'',location.pathname+location.search);}catch(e){} function top(){ if(/^#log-/i.test(location.hash)) return; window.scrollTo(0,0); } top(); window.addEventListener('DOMContentLoaded',top); window.addEventListener('load',function(){ top(); setTimeout(top,120); setTimeout(top,500); }); window.addEventListener('pageshow',function(e){ if(e.persisted) top(); });})();</script>
 <script>(function(){var raf=window.requestAnimationFrame.bind(window),held=[];window.requestAnimationFrame=function(cb){if(window.__rafHold){held.push(cb);return -held.length;}return raf(cb);};window.__rafRelease=function(){window.__rafHold=false;var h=held;held=[];h.forEach(function(cb){raf(cb);});};})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1014,6 +1014,9 @@
   .stk-flow.ov .stk-card{position:relative; left:auto; top:auto; width:auto; margin-left:0; padding:0; transform:none !important; filter:none !important; opacity:1 !important; z-index:auto !important; pointer-events:auto !important; transition:none;}
   .stk-flow.ov .stk-card:not(.is-active) .stk-txt b{color:var(--muted);}
   .stk-flow.ov .stk-card:hover .stk-txt b{color:var(--text);}
+  /* grid view: the glowing bar under a figure only shows while the pointer is on it */
+  .stk-flow.ov .stk-card.is-active .stk-cover::before{background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.55), rgba(0,0,0,0) 70%);}
+  .stk-flow.ov .stk-card:hover .stk-cover::before{background:radial-gradient(ellipse at 50% 50%, rgba(143,227,255,.55), rgba(143,227,255,0) 70%);}
   .stk-flow.ov .stk-nav{display:none;}
   .stk-series.stk-flow.ov.big{grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));}
   @media (max-width:760px){ .stk-series.stk-flow.ov, .stk-series.stk-flow.ov.big{grid-template-columns:repeat(3, minmax(0, 1fr)); gap:18px 8px;} .stk-flow.ov .stk-card{width:auto; margin-left:0; top:auto;} .stk-flow.ov .stk-txt b{font-size:var(--fs-ui);} .stk-mode button{padding:4px 10px; font-size:var(--fs-label);} }
