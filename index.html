@@ -3650,11 +3650,20 @@
       }catch(e){}
     }
 
+    // scroll guard: the page behind the detail page must come back exactly where it was (some browsers reset it to the top on history.back())
+    var holdY = -1, holdUntil = 0;
+    window.addEventListener('scroll', function(){
+      if(holdY < 0) return;
+      if(Date.now() > holdUntil){ holdY = -1; return; }
+      var y = window.pageYOffset;
+      if(Math.abs(y - holdY) > 2 && (detailOpen || (y < 5 && holdY >= 5))){ window.scrollTo(0, holdY); }
+    }, { passive: true });
     var openedFromStrip = -1;
     function openDetail(i, opts){
       if(!detailEl || detailOpen) return;
       opts = opts || {};
       returnFocusEl = document.activeElement;
+      holdY = window.pageYOffset; holdUntil = Infinity;   // remember where the page was: nothing may move it while the detail page is open
       detailOpen = true;
       document.documentElement.classList.add('lg-covered');
       fillDetail(i, false);
@@ -3726,6 +3735,8 @@
           }
         }
       }catch(e){}
+      holdY = window.pageYOffset; holdUntil = Date.now() + 2000;   // the scroll position chosen above is final; revert any jump back to the top
+      setTimeout(function(){ if(holdY >= 5 && window.pageYOffset < 5) window.scrollTo(0, holdY); }, 60);
       var LGC = document.documentElement.classList;
       try{ setHoverPlanet(-1); }catch(e){}   // a sticky touch-hover (scale 1.07 + glow) would make the measured size differ from the resting one
       try{ if(anchor && currentView === 'orbit' && !collapsed && !busy && stars[detailIndex]){ selected = detailIndex; goToAngle(-stars[detailIndex].angle, true); } }catch(e){}   // the planet we are flying home to is, by definition, at the front of the ring
