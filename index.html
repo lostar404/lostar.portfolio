@@ -439,6 +439,9 @@
   .ring.collapsed .planet-img{animation-play-state:paused;}
   /* phones: while the ring is absorbing / releasing / turning, freeze every ambient CSS animation so the GPU only has the ring to do (they resume right where they stopped) */
   @media (max-width:960px){ body.ring-busy *, body.ring-busy *::before, body.ring-busy *::after{animation-play-state:paused !important;} }
+  /* battery: ambient CSS animations stop while their section is off-screen (.is-off, set by an IntersectionObserver) or hidden under the detail page */
+  .is-off, .is-off *, .is-off *::before, .is-off *::after{animation-play-state:paused !important;}
+  html.lg-covered .nebula-bg, html.lg-covered .scroll-tint, html.lg-covered .hero *, html.lg-covered #contact *, html.lg-covered footer *{animation-play-state:paused !important;}
   /* ---- phones / tablets: flat 2-D ring. No perspective, no preserve-3d, no 3-D layers: every planet is a plain 2-D transform driven from JS
      (same ellipse, same sizes and the same push-down as the 3-D ring), so what the browser measures is exactly what it draws ---- */
   .view-orbit.flat .ring-stage{perspective:none;}
@@ -1955,10 +1958,10 @@
     <div class="cm-msg" id="cmMsg" role="status"></div>
     <div class="cm-row"><span id="cmCnt">0/30</span><button type="submit">SEND ➤</button></div>
   </form>
-  <img decoding="async" id="cmFrameB1Src" alt="" hidden src="images/img-04.webp">
-  <img decoding="async" id="cmFrameB2Src" alt="" hidden src="images/img-05.webp">
-  <img decoding="async" id="cmFrame2Src" alt="" hidden src="images/img-06.webp">
-  <img decoding="async" id="cmFrameSrc" alt="" hidden src="images/img-07.webp">
+  <img loading="lazy" decoding="async" id="cmFrameB1Src" alt="" hidden src="images/img-04.webp">
+  <img loading="lazy" decoding="async" id="cmFrameB2Src" alt="" hidden src="images/img-05.webp">
+  <img loading="lazy" decoding="async" id="cmFrame2Src" alt="" hidden src="images/img-06.webp">
+  <img loading="lazy" decoding="async" id="cmFrameSrc" alt="" hidden src="images/img-07.webp">
 </aside>
 <div class="side-tag" aria-hidden="true"><span>LOSTAR · X-404</span><b id="sideProg">SCAN 000</b></div>
 <div class="milkyway"></div>
@@ -1971,9 +1974,9 @@
 <header>
   <nav class="wrap">
     <div class="player" id="player">
-      <div class="pl-avatar" role="button" tabindex="0" aria-label="發射太空船"><img decoding="async" src="images/img-08.png" alt="Xiaoyi 太空人頭盔"></div>
+      <div class="pl-avatar" role="button" tabindex="0" aria-label="發射太空船"><img loading="lazy" decoding="async" src="images/img-08.png" alt="Xiaoyi 太空人頭盔"></div>
       <div class="pl-info">
-        <div class="pl-name"><img decoding="async" class="pl-word" src="images/img-09.png" alt="LOSTAR 迷航星"><span class="pl-lv">LV.<i id="plLv">--</i></span></div>
+        <div class="pl-name"><img loading="lazy" decoding="async" class="pl-word" src="images/img-09.png" alt="LOSTAR 迷航星"><span class="pl-lv">LV.<i id="plLv">--</i></span></div>
         <div class="pl-xp-wrap" tabindex="0">
           <div class="pl-xp" role="progressbar" aria-label="經驗值" aria-valuemin="0" aria-valuemax="100" id="plBar"><i id="plXp"></i></div>
           <span class="pl-xp-txt" id="plXpTxt">EXP --%</span>
@@ -2024,7 +2027,7 @@
           <div class="vh-tilt" id="vhTilt">
             <div class="vh-flip">
               <div class="vh-glow" id="vhGlow" aria-hidden="true"></div>
-              <img decoding="async" id="vhHand" alt="填滿星空的手，托著上方的主視覺" src="images/img-10.webp">
+              <img loading="lazy" decoding="async" id="vhHand" alt="填滿星空的手，托著上方的主視覺" src="images/img-10.webp">
               <canvas id="vhDust" aria-hidden="true"></canvas>
             </div>
           </div>
@@ -2035,7 +2038,7 @@
   </div>
 </section>
 
-<div class="pf-open-wrap"><button type="button" class="pf-open" id="pfOpen" aria-haspopup="dialog"><span class="pf-ph"><img decoding="async" alt=""></span><span class="pf-tx"><small>◈ EXPLORER PROFILE</small><b>探索者檔案</b><em>蕭翔逸 ・ 簡介、經歷、專長</em></span><span class="pf-go" aria-hidden="true">›</span></button></div>
+<div class="pf-open-wrap"><button type="button" class="pf-open" id="pfOpen" aria-haspopup="dialog"><span class="pf-ph"><img loading="lazy" decoding="async" alt=""></span><span class="pf-tx"><small>◈ EXPLORER PROFILE</small><b>探索者檔案</b><em>蕭翔逸 ・ 簡介、經歷、專長</em></span><span class="pf-go" aria-hidden="true">›</span></button></div>
 <div class="pfi open" id="profile">
   <div class="sec-ghost sg-01" aria-hidden="true">01</div>
   <div class="pfi-clip">
@@ -2048,7 +2051,7 @@
             <p>創作者的簡歷、專長與經歷。</p>
           </div>
           <div class="pfi-who">
-            <div class="pfi-photo"><img decoding="async" src="images/img-11.jpg" alt="海邊手持乾燥花的側臉人像"></div>
+            <div class="pfi-photo"><img loading="lazy" decoding="async" src="images/img-11.jpg" alt="海邊手持乾燥花的側臉人像"></div>
             <div class="pfi-names">
               <h2>蕭翔逸<span>XiangYi Xiao</span></h2>
               <p class="pfi-role">插畫家 ・ 角色設計 ・ 貼圖企劃</p>
@@ -2278,7 +2281,7 @@
         <div class="idx-list" id="idxList"></div>
         <aside class="idx-preview hud-bracket" aria-live="polite">
           <span class="hud-label" id="ipNo">NO.01 // SELECTED</span>
-          <div class="ip-stage"><img decoding="async" id="ipImg" alt=""></div>
+          <div class="ip-stage"><img loading="lazy" decoding="async" id="ipImg" alt=""></div>
           <div class="ip-name" id="ipName"></div>
           <div class="ip-en" id="ipEn"></div>
           <div class="ip-meta hud-line" id="ipMeta"></div>
@@ -2339,7 +2342,7 @@
       <div class="ct-title">合作友星 <small>NEIGHBOR STARS</small></div>
       <div class="ct-partners" style="margin-top:0">
         <a class="pn-card" id="pnGuo" href="https://sakanaouo.github.io/" title="郭乃瑜 作品集" aria-label="郭乃瑜 作品集" target="_blank" rel="noopener noreferrer">
-          <span class="pn-orb"><img decoding="async" src="images/img-18.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
+          <span class="pn-orb"><img loading="lazy" decoding="async" src="images/img-18.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
           <span class="pn-txt"><b>郭乃瑜</b><em>具備數位多媒體與3D製作的跨領域背景。</em><small>VISIT PORTFOLIO ›</small></span>
         </a>
       </div>
@@ -2375,13 +2378,13 @@
       <button id="dtNext" type="button" aria-label="下一筆">›</button>
     </div>
     <button class="lg-badge" id="lgBadge" type="button" aria-label="返回星環">
-      <span class="lg-badge-orbit"></span><img decoding="async" id="dtImg" alt=""><span class="lg-badge-no" id="lgBadgeNo"></span>
+      <span class="lg-badge-orbit"></span><img loading="lazy" decoding="async" id="dtImg" alt=""><span class="lg-badge-no" id="lgBadgeNo"></span>
     </button>
   </header>
   <div class="lg-main" id="lgMain">
     <section class="lg-hero">
       <div class="lg-bignum" id="lgBigNum" aria-hidden="true"></div>
-      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img decoding="async" id="lgFigImg" alt="" src="images/img-19.webp"></div>
+      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img loading="lazy" decoding="async" id="lgFigImg" alt="" src="images/img-19.webp"></div>
       <span class="hud-label" id="dtNo"></span>
       <h1 class="lg-name" id="dtName"></h1>
       <div class="lg-en" id="dtEn"></div>
@@ -2445,8 +2448,8 @@
       <div class="lg-process" id="lgProcess"></div>
     </section>
     <nav class="lg-next" aria-label="其他探索紀錄">
-      <button class="lg-card" id="lgPrevCard" type="button"><img decoding="async" id="lgPrevImg" alt=""><span><small id="lgPrevNo"></small><b id="lgPrevName"></b></span></button>
-      <button class="lg-card right" id="lgNextCard" type="button"><img decoding="async" id="lgNextImg" alt=""><span><small id="lgNextNo"></small><b id="lgNextName"></b></span></button>
+      <button class="lg-card" id="lgPrevCard" type="button"><img loading="lazy" decoding="async" id="lgPrevImg" alt=""><span><small id="lgPrevNo"></small><b id="lgPrevName"></b></span></button>
+      <button class="lg-card right" id="lgNextCard" type="button"><img loading="lazy" decoding="async" id="lgNextImg" alt=""><span><small id="lgNextNo"></small><b id="lgNextName"></b></span></button>
     </nav>
     <div class="lg-end"><button class="lg-back" id="lgEndBack" type="button">← 返回星環</button></div>
   </div>
@@ -2463,14 +2466,14 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="作品放大檢視">
   <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="關閉">✕</button>
   <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="上一張">‹</button>
-  <img decoding="async" id="lbImg" alt="">
+  <img loading="lazy" decoding="async" id="lbImg" alt="">
   <div class="lb-cap" id="lbCap"></div>
   <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="下一張">›</button>
 </div>
 
 <div id="assetStore" hidden>
-  <img decoding="async" id="workFullbody" src="images/img-20.webp" alt="白髮少年回眸站姿全身設定">
-  <img decoding="async" id="coverArt" src="images/img-21.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
+  <img loading="lazy" decoding="async" id="workFullbody" src="images/img-20.webp" alt="白髮少年回眸站姿全身設定">
+  <img loading="lazy" decoding="async" id="coverArt" src="images/img-21.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
 </div>
 
 <script>
@@ -4151,7 +4154,7 @@
         set.forEach(function(p){
           var c = document.createElement('button'); c.type = 'button'; c.className = 'ft-card' + (p.bust ? ' ft-bust' : '');
           c.setAttribute('aria-label', p.title + '，' + stars[p.star].zh);
-          c.innerHTML = '<span class="ft-frame"><img decoding="async" alt=""></span><span class="ft-name"></span><span class="ft-star"></span>';
+          c.innerHTML = '<span class="ft-frame"><img loading="lazy" decoding="async" alt=""></span><span class="ft-name"></span><span class="ft-star"></span>';
           c.querySelector('img').src = p.src;
           c.querySelector('.ft-name').textContent = p.title;
           c.querySelector('.ft-star').textContent = stars[p.star].zh + ' · ' + stars[p.star].en.toUpperCase();
@@ -4181,7 +4184,7 @@
         card.className = 'work-card';
         card.setAttribute('aria-label', s.zh + ' ' + s.en);
         card.innerHTML = '<span class="wc-no">No.' + s.no + '</span>' +
-          '<span class="wc-stage"><img decoding="async" alt=""></span>' +
+          '<span class="wc-stage"><img loading="lazy" decoding="async" alt=""></span>' +
           '<span class="wc-text"><span class="wc-name">' + s.zh + '</span><span class="wc-en">' + s.en + '</span></span>';
         var cimg = card.querySelector('img'); cimg.loading = 'lazy'; cimg.decoding = 'async'; cimg.src = s.src;
         card.addEventListener('click', function(){
@@ -4518,6 +4521,13 @@
       var hi = parseInt(hashMatch[1], 10) - 1;
       if(stars[hi]){ selectStar(hi); openDetail(hi, { fly: false }); }
     }
+  })();
+
+  /* ---- battery: pause ambient CSS animations of sections that are not on screen ---- */
+  (function(){
+    if(!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ e.target.classList.toggle('is-off', !e.isIntersecting); }); }, { rootMargin: '160px 0px' });
+    [].slice.call(document.querySelectorAll('.hero, #work, #contact, footer')).forEach(function(t){ io.observe(t); });
   })();
 
   /* ---- player badge: level = age, EXP = progress through the current year of life ---- */
@@ -4933,7 +4943,7 @@ cm.addEventListener('click',function(){
         var sr=stage.getBoundingClientRect(), tr=fr.getBoundingClientRect(), ex=tr.left-sr.left, ey=tr.top-sr.top, ew=tr.width, eh=tr.height;
         var sx=xs[idx], sy=deck.offsetTop+TOP, s=CW/ew;
         var f=document.createElement('div'); f.className='ft-fl'; f.style.width=ew+'px'; f.style.height=eh+'px';
-        f.innerHTML='<div class="ft-fl-in"><div class="ft-dk-face"></div><div class="ft-fl-art ft-frame'+(card.classList.contains('ft-bust')?' ft-bust':'')+'"><img decoding="async" alt=""></div></div>';
+        f.innerHTML='<div class="ft-fl-in"><div class="ft-dk-face"></div><div class="ft-fl-art ft-frame'+(card.classList.contains('ft-bust')?' ft-bust':'')+'"><img loading="lazy" decoding="async" alt=""></div></div>';
         f.querySelector('img').src=img.src; stage.appendChild(f); fl.push(f);
         els[idx].style.visibility='hidden';
         go(f,[{transform:tx(sx,sy,s)},{transform:tx(sx,sy-34,s*1.1),offset:.28},{transform:tx(ex,ey,1)}],{duration:520,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'});
