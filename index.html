@@ -439,6 +439,18 @@
   .ring.collapsed .planet-img{animation-play-state:paused;}
   /* phones: while the ring is absorbing / releasing / turning, freeze every ambient CSS animation so the GPU only has the ring to do (they resume right where they stopped) */
   @media (max-width:960px){ body.ring-busy *, body.ring-busy *::before, body.ring-busy *::after{animation-play-state:paused !important;} }
+  /* ---- phones / tablets: flat 2-D ring. No perspective, no preserve-3d, no 3-D layers: every planet is a plain 2-D transform driven from JS
+     (same ellipse, same sizes and the same push-down as the 3-D ring), so what the browser measures is exactly what it draws ---- */
+  .view-orbit.flat .ring-stage{perspective:none;}
+  .view-orbit.flat .ring-tilt{transform:scale(var(--fit)); transform-style:flat;}
+  .view-orbit.flat .ring{transform-style:flat; transform:none !important; transition:none !important;}
+  .view-orbit.flat .ring-item{transform:none !important; transition:opacity .8s ease .1s; transform-style:flat; position:absolute; left:50%; top:50%; width:0; height:0; margin:0; padding:0;}
+  .view-orbit.flat .star-content{position:absolute; left:0; top:0; width:0; height:0; display:block; transform-style:flat; transition:none;}
+  .view-orbit.flat .planet-img{position:absolute; left:0; top:0; transform:translate(-50%,-50%); transition:filter .3s ease;}
+  .view-orbit.flat .ring-item.is-hover .planet-img{transform:translate(-50%,-50%) scale(1.07);}
+  .view-orbit.flat .star-label{display:none;}
+  .view-orbit.flat .blackhole, .view-orbit.flat .ring-stage:has(.bh-hit:hover) .blackhole{z-index:0; transform:scale(calc(var(--bh-grow,1) * 1.027 / 1.6));}
+  .view-orbit.flat .ring-stage:has(.bh-hit:hover) .blackhole{transform:scale(calc(var(--bh-grow,1) * 1.027 * 1.06 / 1.6));}
   .ring-item{
     position:absolute; left:50%; top:50%; width:124px; margin-left:-62px; margin-top:-284px; pointer-events:none;
     transform-style:preserve-3d;
@@ -2638,7 +2650,42 @@
     function ringIdle(){ clearTimeout(busyBodyT); busyBodyT = setTimeout(function(){ document.body.classList.remove('ring-busy'); }, 120); }
     function planetVisual(depth){ var tt = (depth + 1) / 2; return 0.6 + tt; }   // visual size: 0.6 (back) .. 2.1 (front)
     var FRONT_PUSH = 82;   // how far the front planet is pushed down
+    // ---- flat 2-D ring (phones / tablets) ----
+    var FLATMQ = window.matchMedia ? window.matchMedia('(max-width:960px)') : { matches:false };
+    function isFlat(){ return !!FLATMQ.matches; }
+    var flatAngle = 0, flatRaf = 0;
+    // pose of one planet at absolute orbit angle `deg` (0 = front), radius factor f (1 = on the ring, 0 = in the black hole); units = ring px before --fit
+    function flatPose(deg, f){
+      var rad = deg * Math.PI / 180, c = Math.cos(rad), sn = Math.sin(rad);
+      var y = -13.1 + 104 * c + (c > 0 ? 49 * c * c : 0);   // ellipse + front push, fitted to the old 3-D ring
+      var sc = 0.2751 + 0.1447 * c + 0.00884 * c * c;        // planet scale (back .. front), fitted to the old 3-D ring
+      return { x: (245 + 18 * c) * sn * f, y: y * f, sc: sc * (0.04 + 0.96 * f), c: c };
+    }
+    function flatPlace(ringAngle){
+      flatAngle = ringAngle;
+      items.forEach(function(btn){
+        var itemAngle = parseFloat(btn.getAttribute('data-angle')) || 0;
+        var content = btn.querySelector('.star-content');
+        var P = flatPose(itemAngle + ringAngle, collapsed ? 0 : 1);
+        if(collapsed){ P.sc = 0.01; P.x = 0; P.y = 0; }
+        content.style.transform = 'translate(' + P.x.toFixed(2) + 'px,' + P.y.toFixed(2) + 'px) scale(' + P.sc.toFixed(4) + ')';
+        btn.style.zIndex = Math.round(P.c * 1000);
+      });
+    }
+    // rotate the flat ring to `target` (JS-driven so planets travel round the ellipse, not in straight lines); instant while the detail page covers it
+    function flatGo(target){
+      cancelAnimationFrame(flatRaf);
+      var from = flatAngle, delta = target - from;
+      if(Math.abs(delta) < 0.01 || document.documentElement.classList.contains('lg-covered') || busy || collapsed){ flatPlace(target); return; }
+      var t0 = performance.now(), ms = ringTransitionMs;
+      (function step(now){
+        var pr = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - pr, 3.2);
+        flatPlace(from + delta * e);
+        if(pr < 1) flatRaf = requestAnimationFrame(step); else flatPlace(target);
+      })(t0);
+    }
     function updateBillboard(ringAngle){
+      if(isFlat()){ cancelAnimationFrame(flatRaf); flatPlace(ringAngle); return; }
       items.forEach(function(btn){
         var itemAngle = parseFloat(btn.getAttribute('data-angle')) || 0;
         var content = btn.querySelector('.star-content');
@@ -2662,6 +2709,7 @@
     // After the ring stops, give every planet a tiny scale kick (no transition) so the browser
     // re-rasterises the layers at their final on-screen size instead of keeping a stale, soft one.
     function settleRefresh(){
+      if(isFlat()) return;
       if(collapsed || (typeof busy !== 'undefined' && busy)) return;
       var cs = Array.prototype.map.call(items, function(b){ return b.querySelector('.star-content'); });
       cs.forEach(function(c){ c.style.transition = 'none'; });
@@ -2676,6 +2724,7 @@
     function applyRing(ringAngle){
       var effective = ringAngle + spinOffset;
       lastEffective = effective;
+      if(isFlat()){ flatGo(effective); return; }
       ring.style.transform = 'rotateY(' + effective + 'deg)';
       updateBillboard(effective);
       clearTimeout(settleTimer); settleTimer = setTimeout(settleRefresh, 1150);
@@ -2695,6 +2744,13 @@
       applyRing(currentRingAngle);
     }
 
+    (function(){
+      var vo = document.getElementById('viewOrbit');
+      function sync(){ if(vo) vo.classList.toggle('flat', isFlat()); }
+      sync();
+      if(FLATMQ.addEventListener) FLATMQ.addEventListener('change', function(){ sync(); applyRing(currentRingAngle); });
+      else if(FLATMQ.addListener) FLATMQ.addListener(function(){ sync(); applyRing(currentRingAngle); });
+    })();
     currentRingAngle = -parseFloat(items[DEFAULT_STAR].getAttribute('data-angle') || 0);
     applyRing(currentRingAngle);
 
@@ -4253,6 +4309,14 @@
             var u, f;
             if(entering){ u = -o.rank + w;      f = 1 - smooth01(u / SPIRAL_DEG); }
             else        { u = -o.rank - W + w;  f = smooth01((u + W) / SPIRAL_DEG); }
+            if(isFlat()){
+              var P = flatPose(u, f);
+              o.content.style.transform = 'translate(' + P.x.toFixed(2) + 'px,' + P.y.toFixed(2) + 'px) scale(' + P.sc.toFixed(4) + ')';
+              o.btn.style.opacity = Math.min(1, f * 5).toFixed(2);
+              o.btn.style.zIndex = Math.round(P.c * 1000);
+              swallowed += (1 - f);
+              return;
+            }
             var depth = Math.cos(u * Math.PI / 180);
             var r = ORBIT_R * f;
             o.btn.style.transform = 'rotateY(' + (u - ringEff).toFixed(2) + 'deg) translateZ(' + r.toFixed(1) + 'px)';
