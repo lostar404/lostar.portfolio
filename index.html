@@ -603,7 +603,8 @@
   .wc-name{display:block; padding:0 .3em .1em .2em; font-family:var(--serif); font-style:italic; font-size:var(--fs-h3); font-weight:500;}
   .wc-en{display:block; margin-top:6px; font-family:var(--mono); font-size:var(--fs-meta); letter-spacing:var(--ls-ui); color:var(--muted);}
   .work-card.is-active .wc-name, .work-card:hover .wc-name, .work-card:focus-visible .wc-name{background:var(--rainbow); -webkit-background-clip:text; background-clip:text; color:transparent;}
-  .work-card.is-active::after, .work-card:hover::after, .work-card:focus-visible::after{content:""; position:absolute; bottom:8px; left:32%; right:32%; height:1px; background:var(--rainbow);}
+  .work-card:focus-visible::after{content:""; position:absolute; bottom:8px; left:32%; right:32%; height:1px; background:var(--rainbow);}
+  @media (hover:hover){ .work-card:hover::after{content:""; position:absolute; bottom:8px; left:32%; right:32%; height:1px; background:var(--rainbow);} }   /* the underline only follows a mouse; touch screens never show it */
 
   /* index (catalog) view */
   .index-wrap{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr); gap:48px; align-items:start;}
