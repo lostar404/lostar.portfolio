@@ -1756,6 +1756,8 @@
     .feat-wrap{max-width:1100px; margin:0 auto; padding:0 28px 36px;}
   }
   @media (min-width:961px) and (max-width:1599px){ .top-grid #work .bh-hud{display:none;} }   /* the narrower column has no room for the side read-outs */
+  /* 961-1599px: once the profile card ends, the work galaxy spans the full width so it sits centred on the screen instead of leaning right */
+  @media (min-width:961px) and (max-width:1599px){ .top-grid .pfi{grid-row:1 / span 2 !important;} .top-grid #work{grid-column:1 / -1 !important; grid-row:3;} }
   @media (min-width:1600px){ .top-grid #work{grid-column:1;} .feat-wrap{max-width:1320px;} }
   @media (min-width:1900px){ .feat-wrap{max-width:1440px;} }
   /* featured works: a row of ten rounded cards spreads out, three are drawn, flip and settle into the display area */
