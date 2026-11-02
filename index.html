@@ -3617,6 +3617,7 @@
       var from = dtImg.getBoundingClientRect();
       finishClose();   // page scrollbar comes back here, which nudges the layout, so measure the target afterwards
       var LGC = document.documentElement.classList;
+      try{ setHoverPlanet(-1); }catch(e){}   // a sticky touch-hover (scale 1.07 + glow) would make the measured size differ from the resting one
       try{ if(anchor && currentView === 'orbit' && !collapsed && !busy && stars[detailIndex]){ selected = detailIndex; goToAngle(-stars[detailIndex].angle, true); } }catch(e){}   // the planet we are flying home to is, by definition, at the front of the ring
       try{ if(!collapsed && !busy){ updateBillboard(lastEffective); ring.style.transform = 'rotateY(' + lastEffective + 'deg)'; } }catch(e){}   // land every planet on its final transform while transitions are still off
       void ring.offsetWidth;
@@ -3628,7 +3629,11 @@
         try{ settleRefresh(); }catch(e){}
         dtImg.style.opacity = '0';
         flyCloneLive(from, anchor, stars[detailIndex].src, 640, function(){
-          void ring.offsetWidth; LGC.remove('lg-covered');   // ring transitions stay off until the clone has landed, so the real planet can never animate (grow) after the hand-over
+          // keep the ring's transitions OFF for a while after landing and keep re-asserting the final transforms, so nothing can animate (grow) under the hand-over — on iPhone Safari a late style change was visibly easing in over ~0.9s
+          var enforce = function(){ try{ if(!collapsed && !busy){ updateBillboard(lastEffective); } }catch(e){} };
+          enforce(); [100, 350, 800, 1300].forEach(function(ms){ setTimeout(enforce, ms); });
+          var uncover = function(){ clearTimeout(uT); document.removeEventListener('pointerdown', uncover, true); void ring.offsetWidth; LGC.remove('lg-covered'); };
+          var uT = setTimeout(uncover, 1600); document.addEventListener('pointerdown', uncover, true);
           anchor.style.transition = 'opacity .18s ease, filter .3s ease, transform .3s ease'; anchor.style.opacity = prevOp;
           setTimeout(function(){ anchor.style.transition = ''; anchor.style.opacity = prevOp; }, 260);
           dtImg.style.opacity = '1';
