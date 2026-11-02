@@ -3711,6 +3711,21 @@
       openedFromStrip = -1;
       var from = dtImg.getBoundingClientRect();
       finishClose();   // page scrollbar comes back here, which nudges the layout, so measure the target afterwards
+      // opened from the header menu / companion while the page was scrolled elsewhere (e.g. the very top)? bring the work galaxy back into view first, so the planet flies home to something on screen and "back" always lands on 作品星系
+      try{
+        var vEl = (typeof viewEls !== 'undefined' && viewEls[currentView]) || document.getElementById('viewOrbit');
+        if(vEl){
+          var vr = vEl.getBoundingClientRect(), vh = window.innerHeight || 800, mid = vr.top + Math.min(vr.height, vh) / 2;
+          if(mid < 60 || mid > vh - 60 || vr.bottom < 120 || vr.top > vh - 120){
+            var hd = document.querySelector('#work .section-head'), bar = document.querySelector('header');
+            var barH = bar ? bar.getBoundingClientRect().height : 72;
+            var want = vEl.getBoundingClientRect().top + window.pageYOffset - Math.max(barH + 16, (vh - Math.min(vEl.offsetHeight, vh - barH - 40)) / 2);
+            var cap = hd ? hd.getBoundingClientRect().top + window.pageYOffset - barH - 18 : want;   // never push the section heading under the header
+            window.scrollTo(0, Math.max(0, Math.min(want, cap > 0 ? Math.max(cap, 0) : want) ));
+            if(anchor) anchor = getAnchorImg(detailIndex);
+          }
+        }
+      }catch(e){}
       var LGC = document.documentElement.classList;
       try{ setHoverPlanet(-1); }catch(e){}   // a sticky touch-hover (scale 1.07 + glow) would make the measured size differ from the resting one
       try{ if(anchor && currentView === 'orbit' && !collapsed && !busy && stars[detailIndex]){ selected = detailIndex; goToAngle(-stars[detailIndex].angle, true); } }catch(e){}   // the planet we are flying home to is, by definition, at the front of the ring
