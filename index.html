@@ -3608,19 +3608,14 @@
       var t0 = performance.now();
       function put(r){ c.style.left = r.left + 'px'; c.style.top = r.top + 'px'; c.style.width = r.width + 'px'; c.style.height = r.height + 'px'; }
       put(from);
-      var handed = false, still = 0, last = null, tEnd = 0;
       function step(now){
         var t = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - t, 3.2);
         var to = anchor.getBoundingClientRect();
         put({ left: from.left + (to.left - from.left) * e, top: from.top + (to.top - from.top) * e,
               width: from.width + (to.width - from.width) * e, height: from.height + (to.height - from.height) * e });
         if(t < 1){ requestAnimationFrame(step); return; }
-        if(!handed){ handed = true; tEnd = now; if(done) done(); }   // the real planet fades in underneath while the clone keeps covering it
-        // keep shadowing the live planet until its size has stopped changing (a late re-raster / settle can't show as a pop)
-        var moved = last && (Math.abs(to.width - last.width) > 0.3);   // size only: the planet's idle float keeps moving it
-        still = moved ? 0 : still + 1; last = { width: to.width, left: to.left, top: to.top };
-        if(still >= 12 || now - tEnd > 1600){ c.style.transition = 'opacity .22s ease'; c.style.opacity = '0'; setTimeout(function(){ c.remove(); }, 260); }
-        else requestAnimationFrame(step);
+        if(done) done();
+        c.style.transition = 'opacity .12s ease .06s'; c.style.opacity = '0'; setTimeout(function(){ c.remove(); }, 260);
       }
       requestAnimationFrame(step);
     }
@@ -3633,6 +3628,7 @@
       var from = dtImg.getBoundingClientRect();
       finishClose();   // page scrollbar comes back here, which nudges the layout, so measure the target afterwards
       var LGC = document.documentElement.classList;
+      try{ if(anchor && currentView === 'orbit' && !collapsed && !busy && stars[detailIndex]){ selected = detailIndex; goToAngle(-stars[detailIndex].angle, true); } }catch(e){}   // the planet we are flying home to is, by definition, at the front of the ring
       try{ if(!collapsed && !busy){ updateBillboard(lastEffective); ring.style.transform = 'rotateY(' + lastEffective + 'deg)'; } }catch(e){}   // land every planet on its final transform while transitions are still off
       void ring.offsetWidth;
       var to = anchor ? anchor.getBoundingClientRect() : null;
