@@ -725,7 +725,8 @@
     display:flex; align-items:center; justify-content:center; transition:transform .35s ease; transform-origin:100% 50%;
     -webkit-tap-highlight-color:transparent;
   }
-  .lg-badge img{position:relative; z-index:1; width:62px; height:56px; object-fit:contain; max-width:none; display:block; filter:drop-shadow(0 0 12px rgba(200,190,240,0.24)); animation:planet-float 4.8s ease-in-out infinite; transition:opacity .25s ease;}
+  .lg-badge img{position:relative; z-index:1; width:62px; height:56px; object-fit:contain; max-width:none; display:block; filter:drop-shadow(0 0 12px rgba(200,190,240,0.24)); animation:badge-float 4.8s ease-in-out infinite; transition:opacity .25s ease;}
+  @keyframes badge-float{ 0%,100%{ translate:0 -3px; } 50%{ translate:0 3px; } }   /* the top-right planet drifts gently (±3px; the ring planets keep ±10px) */
   .lg-badge img.is-wide{width:80px; height:56px;}
   .lg-badge-orbit{position:absolute; left:50%; top:50%; width:84px; height:28px; border:1px solid var(--line); border-radius:50%; transform:translate(-50%,-50%) rotate(-14deg);}
   .lg-badge-no{position:absolute; left:50%; bottom:-9px; transform:translateX(-50%); font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-meta); color:var(--hud); white-space:nowrap;}
