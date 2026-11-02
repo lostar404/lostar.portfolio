@@ -3626,14 +3626,18 @@
       openedFromStrip = -1;
       var from = dtImg.getBoundingClientRect();
       finishClose();   // page scrollbar comes back here, which nudges the layout, so measure the target afterwards
+      var LGC = document.documentElement.classList;
+      try{ if(!collapsed && !busy){ updateBillboard(lastEffective); ring.style.transform = 'rotateY(' + lastEffective + 'deg)'; } }catch(e){}   // land every planet on its final transform while transitions are still off
+      void ring.offsetWidth;
       var to = anchor ? anchor.getBoundingClientRect() : null;
-      document.documentElement.classList.remove('lg-covered');
+      if(!(anchor && to && to.width > 0 && from.width > 0)) LGC.remove('lg-covered');
       if(anchor && to && to.width > 0 && from.width > 0){
         var prevOp = anchor.style.opacity;
         anchor.style.opacity = '0.01';   // not visibility:hidden — the real planet stays painted, so its layer is re-rasterised at the final size while the clone covers it
         try{ settleRefresh(); }catch(e){}
         dtImg.style.opacity = '0';
         flyCloneLive(from, anchor, stars[detailIndex].src, 640, function(){
+          void ring.offsetWidth; LGC.remove('lg-covered');   // ring transitions stay off until the clone has landed, so the real planet can never animate (grow) after the hand-over
           anchor.style.transition = 'opacity .18s ease, filter .3s ease, transform .3s ease'; anchor.style.opacity = prevOp;
           setTimeout(function(){ anchor.style.transition = ''; anchor.style.opacity = prevOp; }, 260);
           dtImg.style.opacity = '1';
