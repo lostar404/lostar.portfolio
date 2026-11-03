@@ -1912,6 +1912,18 @@
     .pp-ring{position:absolute; left:-38%; right:-38%; top:34%; bottom:34%; border-radius:50%; border:1.5px solid rgba(190,210,255,.55); transform:rotate(-18deg);}
     .pp-ring.r2{left:-62%; right:-62%; top:40%; bottom:40%; border-color:rgba(143,227,199,.4); border-style:dashed; transform:rotate(-18deg); animation:ppSpin 38s linear infinite;}
     .pp-moon{position:absolute; width:9%; aspect-ratio:1; border-radius:50%; background:#fff; box-shadow:0 0 10px 2px rgba(255,255,255,.8); left:50%; top:50%; margin:-4.5% 0 0 -4.5%; animation:ppOrbit 9s linear infinite;}
+    .pp-av{position:absolute; left:50%; bottom:-2%; width:112%; max-width:none; transform:translateX(-50%); filter:saturate(.85) contrast(1.08) brightness(.95) drop-shadow(2px 0 0 rgba(255,60,120,.35)) drop-shadow(-2px 0 0 rgba(60,220,255,.4)); animation:ppGlitch 6s steps(1) infinite;}
+    .pp-tint{position:absolute; inset:0; background:linear-gradient(180deg,rgba(40,200,255,.22),rgba(110,70,255,.28)); mix-blend-mode:color; pointer-events:none;}
+    .pp-scan{position:absolute; inset:0; background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px); mix-blend-mode:multiply; pointer-events:none; animation:ppFlick 4s linear infinite;}
+    .pp-scan::after{content:""; position:absolute; left:0; right:0; height:22%; top:-22%; background:linear-gradient(180deg,transparent,rgba(143,227,199,.22),transparent); animation:ppBand 4.5s linear infinite;}
+    .pp-ret{position:absolute; inset:13%; border:1px solid rgba(143,227,199,.35); border-radius:50%; pointer-events:none; -webkit-mask:conic-gradient(#000 0 12%,transparent 12% 25%,#000 25% 37%,transparent 37% 50%,#000 50% 62%,transparent 62% 75%,#000 75% 87%,transparent 87%); mask:conic-gradient(#000 0 12%,transparent 12% 25%,#000 25% 37%,transparent 37% 50%,#000 50% 62%,transparent 62% 75%,#000 75% 87%,transparent 87%);}
+    .pp-hud{position:absolute; top:11%; font:var(--fw-regular) var(--fs-micro)/1 var(--mono); font-style:normal; letter-spacing:var(--ls-label); color:var(--hud); pointer-events:none;}
+    .pp-hl{left:21%;} .pp-hl::before{content:""; display:inline-block; width:6px; height:6px; margin-right:5px; border-radius:50%; background:#ff5d7a; box-shadow:0 0 6px #ff5d7a; animation:ppBlink 1.2s steps(1) infinite;}
+    .pp-hr{right:21%;}
+    @keyframes ppBand{to{top:100%}}
+    @keyframes ppFlick{0%,100%{opacity:1}50%{opacity:.82}}
+    @keyframes ppBlink{50%{opacity:0}}
+    @keyframes ppGlitch{0%,92%,100%{transform:translateX(-50%)} 93%{transform:translateX(calc(-50% + 3px))} 94%{transform:translateX(calc(-50% - 2px))} 95%{transform:translateX(-50%)}}
     @keyframes ppSweep{to{transform:rotate(360deg)}}
     @keyframes ppFloat{0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,calc(-50% - 5px))}}
     @keyframes ppSpin{to{transform:rotate(342deg)}}
@@ -2189,14 +2201,14 @@
       <div class="pf-bar" aria-hidden="true"><span class="pb-l">拾星號 <b>GLEANER</b></span><span class="pb-c">探索者檔案 ・ CAPTAIN LOG</span></div>
       <div class="pfi-head">
         <div class="pfi-left">
-          <div class="pf-port" aria-hidden="true"><div class="pp-win"><i class="pp-sky"></i><i class="pp-sweep"></i><div class="pp-star"><i class="pp-ring r1"></i><i class="pp-ring r2"></i><i class="pp-core"></i><i class="pp-moon"></i></div></div><span class="pp-tag">前方航道 ・ 404 <em>未知星體</em></span></div>
+          <div class="pf-port" aria-hidden="true"><div class="pp-win"><i class="pp-sky"></i><i class="pp-sweep"></i><img loading="lazy" decoding="async" class="pp-av" alt="" src="images/img-11.webp"><i class="pp-tint"></i><i class="pp-scan"></i><i class="pp-ret"></i><i class="pp-hud pp-hl">REC</i><i class="pp-hud pp-hr">404</i></div><span class="pp-tag">404 <em>虛擬化身</em></span></div>
           <div class="section-head pfi-sh">
             <div class="hud-label">// 01 — EXPLORER PROFILE · ABOUT</div>
             <h2>探索者檔案</h2>
             <p>創作者的簡歷、專長與經歷。</p>
           </div>
           <div class="pfi-who">
-            <div class="pfi-photo"><img loading="lazy" decoding="async" src="images/img-11.jpg" alt="海邊手持乾燥花的側臉人像"></div>
+            <div class="pfi-photo"><img loading="lazy" decoding="async" src="images/img-12.jpg" alt="海邊手持乾燥花的側臉人像"></div>
             <div class="pfi-names">
               <h2>蕭翔逸<span>XiangYi Xiao</span></h2>
               <p class="pfi-role">插畫家 ・ 角色設計 ・ 貼圖企劃</p>
@@ -2280,12 +2292,12 @@
       <div class="trail-canvas" id="trailCanvas"></div>
       <div class="ring-tilt">
         <div class="blackhole" aria-hidden="true" style="--bh-grow:1.35; --bh-bright:1.3;">
-          <img decoding="async" class="bh-img" src="images/img-12.webp" alt="黑洞插畫">
+          <img decoding="async" class="bh-img" src="images/img-13.webp" alt="黑洞插畫">
         </div>
         <div class="ring collapsed" id="starRing">
           <button class="ring-item" type="button" data-angle="0" style="transform:rotateY(0deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-13.webp" alt="水星風格行星">
+              <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-14.webp" alt="水星風格行星">
               <div class="star-label"><div class="name">啟航星</div><div class="medium">Voyage Star</div></div>
             </div>
           </button>
@@ -2305,7 +2317,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(24deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="72" style="transform:rotateY(72deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-14.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-15.webp" alt="星環行星">
               <div class="star-label"><div class="name">元宇宙</div><div class="medium">Metaverse</div></div>
             </div>
           </button>
@@ -2325,7 +2337,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(96deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="144" style="transform:rotateY(144deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-15.webp" alt="森林行星">
+              <img decoding="async" class="planet-img" src="images/img-16.webp" alt="森林行星">
               <div class="star-label"><div class="name">貼圖星</div><div class="medium">Sticker Star</div></div>
             </div>
           </button>
@@ -2345,7 +2357,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(168deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="216" style="transform:rotateY(216deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-16.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-17.webp" alt="星環行星">
               <div class="star-label"><div class="name">萬象星</div><div class="medium">Spectrum</div></div>
             </div>
           </button>
@@ -2365,7 +2377,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(240deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="288" style="transform:rotateY(288deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-17.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-18.webp" alt="星環行星">
               <div class="star-label"><div class="name">牡羊 41</div><div class="medium">41 Arietis</div></div>
             </div>
           </button>
@@ -2474,7 +2486,7 @@
       <div class="ct-title">合作友星 <small>NEIGHBOR STARS</small></div>
       <div class="ct-partners" style="margin-top:0">
         <a class="pn-card" id="pnGuo" href="https://sakanaouo.github.io/" title="郭乃瑜 作品集" aria-label="郭乃瑜 作品集" target="_blank" rel="noopener noreferrer">
-          <span class="pn-orb"><img loading="lazy" decoding="async" src="images/img-18.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
+          <span class="pn-orb"><img loading="lazy" decoding="async" src="images/img-19.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
           <span class="pn-txt"><b>郭乃瑜</b><em>具備數位多媒體與3D製作的跨領域背景。</em><small>VISIT PORTFOLIO ›</small></span>
         </a>
       </div>
@@ -2516,7 +2528,7 @@
   <div class="lg-main" id="lgMain">
     <section class="lg-hero">
       <div class="lg-bignum" id="lgBigNum" aria-hidden="true"></div>
-      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img loading="lazy" decoding="async" id="lgFigImg" alt="" src="images/img-19.webp"></div>
+      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img loading="lazy" decoding="async" id="lgFigImg" alt="" src="images/img-20.webp"></div>
       <span class="hud-label" id="dtNo"></span>
       <h1 class="lg-name" id="dtName"></h1>
       <div class="lg-en" id="dtEn"></div>
@@ -2604,8 +2616,8 @@
 </div>
 
 <div id="assetStore" hidden>
-  <img loading="lazy" decoding="async" id="workFullbody" src="images/img-20.webp" alt="白髮少年回眸站姿全身設定">
-  <img loading="lazy" decoding="async" id="coverArt" src="images/img-21.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
+  <img loading="lazy" decoding="async" id="workFullbody" src="images/img-21.webp" alt="白髮少年回眸站姿全身設定">
+  <img loading="lazy" decoding="async" id="coverArt" src="images/img-22.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
 </div>
 
 <script>
@@ -3219,7 +3231,6 @@
     // metaverse: addCharacterSeries('角色名稱', { year:'2026', desc:'角色／系列說明', cover:'(選填) 封面圖', pinned:false }, [ { src:'…', title:'' }, … ]);
     function addCharacterSeries(name, meta, works){ pushSeries(META_NAME, name, meta, works, '角色系列'); }
     addCharacterSeries('許願神．新輝', { year: '', desc: '' }, [
-      { src: 'images/img-22.webp' },
       { src: 'images/img-23.webp' },
       { src: 'images/img-24.webp' },
       { src: 'images/img-25.webp' },
@@ -3227,25 +3238,26 @@
       { src: 'images/img-27.webp' },
       { src: 'images/img-28.webp' },
       { src: 'images/img-29.webp' },
-      { src: 'images/img-30.webp', title: '新輝 Q版 動圖' }
+      { src: 'images/img-30.webp' },
+      { src: 'images/img-31.webp', title: '新輝 Q版 動圖' }
     ]);
     addCharacterSeries('星鯊．魚', { year: '', desc: '' }, [
-      { src: 'images/img-31.webp' },
       { src: 'images/img-32.webp' },
-      { src: 'images/img-33.webp' }
+      { src: 'images/img-33.webp' },
+      { src: 'images/img-34.webp' }
     ]);
     addCharacterSeries('瑤幽', { year: '', desc: '' }, [
-      { src: 'images/img-34.webp' },
       { src: 'images/img-35.webp' },
-      { src: 'images/img-36.webp' }
+      { src: 'images/img-36.webp' },
+      { src: 'images/img-37.webp' }
     ]);
     addCharacterSeries('專題小夥伴', { year: '', desc: '大學專題時，為組員們畫的 Q 版形象。' }, [
-      { src: 'images/img-37.webp' },
       { src: 'images/img-38.webp' },
       { src: 'images/img-39.webp' },
       { src: 'images/img-40.webp' },
       { src: 'images/img-41.webp' },
       { src: 'images/img-42.webp' },
+      { src: 'images/img-43.webp' },
     ]);
 
     if(newIdx >= 0){
@@ -3254,11 +3266,11 @@
     }
 
     (function(){
-      addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-43.webp' });
-      addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-44.webp' });
-      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-45.webp' });
-      addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-46.webp' });
-      addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-47.webp' });
+      addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-44.webp' });
+      addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-45.webp' });
+      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-46.webp' });
+      addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-47.webp' });
+      addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-48.webp' });
     })();
 
     (function(){
@@ -3266,25 +3278,24 @@
       var fullBody = document.getElementById('workFullbody');
       if(heroPic)  addWork('啟航星', { title: '迷航星．主視覺', year: '', medium: '角色立繪', desc: '', src: heroPic.src });
       if(fullBody) addWork('啟航星', { title: '迷航星．全身立繪', year: '', medium: '角色立繪', desc: '', src: fullBody.src, details: [
-        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-48.webp' },
-        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-49.webp' },
-        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-50.webp' } ] });
-      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-51.webp', details: [
-        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-52.webp' },
-        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-53.webp' },
-        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-54.webp' } ] });
+        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-49.webp' },
+        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-50.webp' },
+        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-51.webp' } ] });
+      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-52.webp', details: [
+        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-53.webp' },
+        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-54.webp' },
+        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-55.webp' } ] });
     })();
 
     addSeries('吉呱呱', { year: '', desc: '' }, [
-      { src: 'images/img-55.webp' },
       { src: 'images/img-56.webp' },
       { src: 'images/img-57.webp' },
       { src: 'images/img-58.webp' },
       { src: 'images/img-59.webp' },
-      { src: 'images/img-60.webp' }
+      { src: 'images/img-60.webp' },
+      { src: 'images/img-61.webp' }
     ]);
     addSeries('邱邱羊的日記', { year: '', desc: '' }, [
-      { src: 'images/img-61.webp' },
       { src: 'images/img-62.webp' },
       { src: 'images/img-63.webp' },
       { src: 'images/img-64.webp' },
@@ -3301,19 +3312,20 @@
       { src: 'images/img-75.webp' },
       { src: 'images/img-76.webp' },
       { src: 'images/img-77.webp' },
-      { src: 'images/img-78.webp' }
+      { src: 'images/img-78.webp' },
+      { src: 'images/img-79.webp' }
     ]);
     addSeries('水獺好有戲', { year: '', desc: '' }, [
-      { src: 'images/img-79.webp', title: '背背包的生氣水獺' },
-      { src: 'images/img-80.webp', title: '愛心眼水獺' }
+      { src: 'images/img-80.webp', title: '背背包的生氣水獺' },
+      { src: 'images/img-81.webp', title: '愛心眼水獺' }
     ]);
     addSeries('累累兔鼠', { year: '', desc: '' }, [
-      { src: 'images/img-81.webp', title: '不想上班' },
-      { src: 'images/img-82.webp', title: '不加班' }
+      { src: 'images/img-82.webp', title: '不想上班' },
+      { src: 'images/img-83.webp', title: '不加班' }
     ]);
     addSeries('其他', { year: '', desc: '' }, [
-      { src: 'images/img-83.webp', title: '草泥馬' },
-      { src: 'images/img-84.webp', title: '水豚疑惑' }
+      { src: 'images/img-84.webp', title: '草泥馬' },
+      { src: 'images/img-85.webp', title: '水豚疑惑' }
     ]);
     var detailEl = document.getElementById('detail');
     var lgBar = document.getElementById('lgBar');
