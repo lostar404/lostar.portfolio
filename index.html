@@ -167,8 +167,16 @@
   .navlinks{align-self:stretch;}
   /* ---- header: one dropdown for work types (desktop only) ---- */
   .nav-cat{display:none;}
+  .nav-mid .nav-pf{display:none;}
+  @media (min-width:961px){ .nav-mid .nav-pf{display:flex;} }
   @media (min-width:961px){
-    .nav-cat{display:block; position:absolute; left:50%; top:0; height:100%; transform:translateX(-50%); z-index:6;}
+    .nav-mid{position:absolute; left:50%; top:0; height:100%; transform:translateX(-50%); display:flex; align-items:stretch; z-index:6;}
+    .nav-cat{display:block; position:relative; height:100%;}
+    .nav-pf{position:relative; display:flex; align-items:center; height:100%; padding:0 var(--sp-4); border:0; background:none; font:var(--fw-medium) var(--fs-ui)/1 var(--sans); letter-spacing:var(--ls-meta); color:rgba(210,205,225,.78); cursor:pointer; white-space:nowrap; transition:color .2s;}
+    .nav-pf::after{content:""; position:absolute; left:var(--sp-4); right:var(--sp-4); bottom:16px; height:2px; border-radius:1px; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform:scaleX(0); transition:transform .3s ease;}
+    .nav-pf:hover, .nav-pf:focus-visible, body.pf-sheet .nav-pf{color:#fff; outline:none;}
+    .nav-pf:hover::after, .nav-pf:focus-visible::after, body.pf-sheet .nav-pf::after{transform:scaleX(1);}
+    .navlinks a[href="#profile"]{display:none;}   /* 關於 is now the 個人簡介 button next to 作品類型 */
     .nav-cat-t{position:relative; display:flex; align-items:center; gap:var(--sp-2); height:100%; padding:0 var(--sp-4); border:0; background:none; font:var(--fw-medium) var(--fs-ui)/1 var(--sans); letter-spacing:var(--ls-meta); color:rgba(210,205,225,.78); cursor:pointer; transition:color .2s;}
     .nav-cat-t i{font-style:normal; font-size:var(--fs-label); color:var(--hud); transition:transform .25s ease;}
     .nav-cat-t::after{content:""; position:absolute; left:var(--sp-4); right:var(--sp-4); bottom:16px; height:2px; border-radius:1px; background:#8fe3c7; box-shadow:0 0 10px rgba(143,227,199,.8); transform:scaleX(0); transition:transform .3s ease;}
@@ -1853,7 +1861,21 @@
   .ft-card.ft-bust .ft-frame img, .ft-fl-art.ft-bust img{object-fit:cover; object-position:50% 0%; transform:scale(1.18); transform-origin:50% 0%;}
   /* ===== mobile: profile opens from a button (full-screen sheet); featured works + card-draw sit under the hero, above the work galaxy ===== */
   .pf-open-wrap{display:none;}
-  @media (min-width:961px){ .pf-close{display:none !important;} }
+  /* ===== desktop: 個人簡介 is its own page (opened from the header button), not a column beside the hero ===== */
+  @media (min-width:961px){
+    body{padding-left:0 !important;}
+    .side-shade{display:none !important;}
+    .top-grid{grid-template-columns:minmax(0,1fr) !important; margin-left:auto !important; margin-right:auto !important;}
+    .top-grid .hero, .top-grid .feat-wrap, .top-grid .live-status:not([hidden]), .top-grid #work{grid-column:1 !important;}
+    #profile{display:none !important;}
+    html:has(body.pf-sheet), body.pf-sheet{overflow:hidden;}
+    body.pf-sheet #profile{display:block !important; visibility:visible; position:fixed !important; inset:0 !important; width:auto !important; z-index:1200; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; margin:0 !important; padding:84px 0 56px !important; grid-row:auto !important; grid-column:auto !important; background:radial-gradient(ellipse at 50% 0%, #141a3d 0%, #0b0e24 45%, #070916 100%);}
+    body.pf-sheet #profile .pfi-clip{overflow:visible;}
+    body.pf-sheet #profile .pfi-box{max-width:640px !important; margin:0 auto !important; padding:36px 40px 32px !important;}
+    body.pf-sheet #profile::after, body.pf-sheet #profile .sec-ghost{display:none;}
+    .pf-close{display:inline-block !important; position:fixed; top:16px; right:28px; z-index:1210; cursor:pointer; padding:8px 18px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); visibility:hidden;}
+    body.pf-sheet .pf-close{visibility:visible;}
+  }
   @media (max-width:960px){
     .pf-open-wrap{display:flex; justify-content:center; padding:4px 20px 22px; position:relative; z-index:3;}
     .pf-open{cursor:pointer; display:inline-flex; align-items:center; gap:10px; padding:11px 22px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(143,227,199,.09); color:var(--text); font-family:var(--serif); font-size:var(--fs-ui); letter-spacing:var(--ls-ui); -webkit-tap-highlight-color:transparent;}
@@ -2015,7 +2037,7 @@
         </div>
       </div>
     </div>
-    <div class="nav-cat" id="navCat"></div>
+    <div class="nav-mid"><div class="nav-cat" id="navCat"></div><button type="button" class="nav-pf" id="navPf" aria-haspopup="dialog">個人簡介</button></div>
     <div class="navlinks">
       <div class="nav-dd" id="navDd"><button type="button" class="nav-dd-t" id="navDdBtn" aria-haspopup="true" aria-expanded="false"><span class="dd-tx"><small>STAR MAP</small><b><span class="dd-pre">作品</span>星系</b></span><i>▾</i></button><div class="nav-dd-menu" id="navDdMenu" role="menu"></div></div>
       <a href="#work" class="nav-st"><span class="dd-tx"><small>WORKS</small><b>作品</b></span></a>
@@ -5109,13 +5131,14 @@ cm.addEventListener('click',function(){
   var mq=window.matchMedia('(max-width:960px)'), close=null;
   if(prof){ close=document.createElement('button'); close.type='button'; close.className='pf-close'; close.textContent='✕ CLOSE'; close.setAttribute('aria-label','關閉探索者檔案'); prof.appendChild(close); }
   function isOpen(){ return document.body.classList.contains('pf-sheet'); }
-  function open(){ if(!mq.matches||!prof) return; document.body.classList.add('pf-sheet'); prof.scrollTop=0; }
+  function open(){ if(!prof) return; document.body.classList.add('pf-sheet'); prof.scrollTop=0; }
   function shut(){ document.body.classList.remove('pf-sheet'); }
   var ph=document.querySelector('#profile .pfi-photo img'), bi=btn&&btn.querySelector('.pf-ph img'); if(ph&&bi) bi.src=ph.src;
   if(btn) btn.addEventListener('click',open);
+  var navPf=document.getElementById('navPf'); if(navPf) navPf.addEventListener('click',function(){ if(isOpen()) shut(); else open(); });
   if(close) close.addEventListener('click',shut);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&isOpen()) shut(); });
-  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a[href="#profile"]'); if(a&&mq.matches){ e.preventDefault(); open(); } });
+  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a[href="#profile"]'); if(a){ e.preventDefault(); open(); } });
   function place(){
     if(!tg||!fw||!work) return;
     if(fw.parentNode!==tg) tg.insertBefore(fw,work);   /* featured works sit above the work galaxy at every width */
