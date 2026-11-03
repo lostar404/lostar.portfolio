@@ -1878,29 +1878,27 @@
     body.pf-sheet #profile .pfi-head{grid-column:1; grid-row:2 / span 3; display:flex !important; flex-direction:column !important; align-items:stretch !important; gap:clamp(14px,2.4vh,24px) !important; margin:0 !important;}
     body.pf-sheet #profile .pfi-left{display:flex; flex-direction:column; gap:clamp(14px,2.4vh,24px);}
     body.pf-sheet #profile .pfi-sh{text-align:left !important; align-items:flex-start !important;}
-    body.pf-sheet #profile .pfi-sh h2{font-size:clamp(30px,3.4vw,52px) !important; line-height:1.1 !important; margin:6px 0 8px !important;}
     body.pf-sheet #profile .pfi-who{flex-direction:column !important; align-items:flex-start !important; text-align:left !important; gap:14px !important; margin:0 !important;}
     body.pf-sheet #profile .pfi-photo{flex:none !important; width:clamp(150px,min(100%,29vh),320px) !important; border-radius:4px; border-color:rgba(143,227,199,.35); box-shadow:0 0 0 4px rgba(143,227,199,.06), 0 18px 50px rgba(0,0,0,.5);}
-    body.pf-sheet #profile .pfi-names h2{font-size:clamp(22px,2vw,30px) !important;}
     body.pf-sheet #profile .pfi-acts{flex-direction:column !important; justify-content:flex-start !important; gap:10px !important; max-width:320px;}
     body.pf-sheet #profile .pf-btn{justify-content:space-between; padding:11px 16px; font-size:var(--fs-ui);}
     body.pf-sheet #profile .pfi-intro{grid-column:2; grid-row:2; margin:0 !important; text-align:left !important; padding-top:6px;}
-    body.pf-sheet #profile .pfi-intro p{font-size:clamp(14px,1.05vw,17px) !important; line-height:1.9 !important; margin:0 0 12px !important; color:rgba(215,220,240,.82);}
+    body.pf-sheet #profile .pfi-intro p{font-size:var(--fs-body) !important; line-height:var(--lh-long) !important; margin:0 0 12px !important; color:var(--muted);}
     body.pf-sheet #profile .pfi-stats{grid-column:2; grid-row:3; margin:0 !important; padding:clamp(14px,2.4vh,22px) 0 0 !important; border-top:1px solid var(--line-soft) !important; border-bottom:0 !important;}
     body.pf-sheet #profile .pfi-stats .ps-exp{justify-content:flex-start !important;}
-    body.pf-sheet #profile .pfi-stats strong{font-size:clamp(26px,2.4vw,38px) !important;}
+    body.pf-sheet #profile .pfi-stats strong{font-size:var(--fs-h2s) !important;}
     body.pf-sheet #profile .ps-scroll{max-height:none !important; overflow:visible !important; -webkit-mask-image:none !important; mask-image:none !important; padding-right:0 !important;}
     body.pf-sheet #profile .ps-more, body.pf-sheet #profile .ps-bar{display:none !important;}
     body.pf-sheet #profile .pf-tl.ps-edu{display:grid !important; grid-template-columns:1fr 1fr; column-gap:clamp(20px,3vw,48px); row-gap:6px;}
     body.pf-sheet #profile .pfi-grid{grid-column:2; grid-row:4; display:grid !important; grid-template-columns:1fr 1fr !important; gap:clamp(14px,2vw,26px) !important; margin:0 !important;}
     body.pf-sheet #profile .pfi-col{padding:clamp(12px,1.6vh,18px) clamp(14px,1.4vw,20px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
-    body.pf-sheet #profile .pf-chip{font-size:clamp(13px,.95vw,15px) !important; padding:6px 12px !important;}
+    body.pf-sheet #profile .pf-chip{font-size:var(--fs-ui) !important; padding:6px 12px !important;}
     body.pf-sheet #profile .pfi-foot{display:none;}
     /* ---- 拾星號: the profile as a ship's observation log of unknown body 404 ---- */
     .pf-bar{display:none;}
     .pf-port{display:none;}
-    body.pf-sheet #profile .pf-bar{display:flex; grid-column:1 / -1; grid-row:1; align-items:center; justify-content:space-between; gap:16px; padding:0 clamp(120px,9vw,150px) 12px 0; margin-bottom:2px; border-bottom:1px solid var(--line-soft); font:var(--fw-medium) var(--fs-label)/1 var(--mono); letter-spacing:var(--ls-label); color:rgba(143,227,199,.85); white-space:nowrap;}
-    body.pf-sheet #profile .pf-bar b{color:#fff; letter-spacing:.2em;}
+    body.pf-sheet #profile .pf-bar{display:flex; grid-column:1 / -1; grid-row:1; align-items:center; justify-content:space-between; gap:16px; padding:0 clamp(120px,9vw,150px) 12px 0; margin-bottom:2px; border-bottom:1px solid var(--line-soft); font-family:var(--mono); font-size:var(--fs-label); font-weight:var(--fw-regular); letter-spacing:var(--ls-meta); line-height:var(--lh-none); color:var(--hud); white-space:nowrap;}
+    body.pf-sheet #profile .pf-bar b{color:var(--text); font-weight:var(--fw-semibold); letter-spacing:var(--ls-label);}
     body.pf-sheet #profile .pf-bar .pb-c{color:rgba(205,213,240,.55);}
     body.pf-sheet #profile .pf-bar .pb-r{margin-left:auto; color:var(--text);}
     body.pf-sheet #profile .pfi-sh{display:none !important;}
@@ -1918,17 +1916,17 @@
     @keyframes ppFloat{0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,calc(-50% - 5px))}}
     @keyframes ppSpin{to{transform:rotate(342deg)}}
     @keyframes ppOrbit{from{transform:rotate(0) translateX(95%) rotate(0)} to{transform:rotate(360deg) translateX(95%) rotate(-360deg)}}
-    .pp-tag{font:var(--fw-medium) var(--fs-label)/1 var(--mono); letter-spacing:var(--ls-label); color:rgba(143,227,199,.9);}
+    .pp-tag{font-family:var(--mono); font-size:var(--fs-label); font-weight:var(--fw-regular); letter-spacing:var(--ls-meta); line-height:var(--lh-none); color:var(--hud);}
     .pp-tag em{font-style:normal; margin-left:8px; color:rgba(205,213,240,.55);}
     body.pf-sheet #profile .pfi-who{flex-direction:row !important; flex-wrap:wrap; align-items:center !important; gap:6px 14px !important;}
-    body.pf-sheet #profile .pfi-who::before{content:"艦長 ・ CAPTAIN"; flex:0 0 100%; font:var(--fw-medium) var(--fs-label)/1 var(--mono); letter-spacing:var(--ls-label); color:rgba(143,227,199,.85);}
+    body.pf-sheet #profile .pfi-who::before{content:"艦長 ・ CAPTAIN"; flex:0 0 100%; font-family:var(--mono); font-size:var(--fs-label); font-weight:var(--fw-regular); letter-spacing:var(--ls-meta); line-height:var(--lh-none); color:var(--hud);}
     body.pf-sheet #profile .pfi-photo{width:clamp(64px,10vh,92px) !important; flex:none !important;}
-    body.pf-sheet #profile .pfi-names h2{margin:0 !important; font-size:clamp(20px,1.9vw,28px) !important;}
+    body.pf-sheet #profile .pfi-names h2{margin:0 !important; font-size:var(--fs-h3) !important; line-height:var(--lh-head) !important;}
     body.pf-sheet #profile .pfi-intro .pfi-sub small, body.pf-sheet #profile .pfi-col:nth-child(4) h3 small{font-size:0;}
-    body.pf-sheet #profile .pfi-intro .pfi-sub small::after, body.pf-sheet #profile .pfi-col:nth-child(4) h3 small::after{font:var(--fw-medium) var(--fs-label)/1 var(--mono); letter-spacing:var(--ls-label); color:rgba(143,227,199,.85);}
+    body.pf-sheet #profile .pfi-intro .pfi-sub small::after, body.pf-sheet #profile .pfi-col:nth-child(4) h3 small::after{font-family:var(--mono); font-size:var(--fs-micro); font-weight:var(--fw-regular); letter-spacing:var(--ls-label); color:var(--hud);}
     body.pf-sheet #profile .pfi-intro .pfi-sub small::after{content:"LOG 01 ・ 艦長自述";}
     body.pf-sheet #profile .pfi-col:nth-child(4) h3 small::after{content:"航行領域";}
-    body.pf-sheet #profile .pfi-stats::before{content:"LOG 02 ・ 航行紀錄 ・ 學歷與工作"; display:block; margin-bottom:6px; font:var(--fw-medium) var(--fs-label)/1 var(--mono); letter-spacing:var(--ls-label); color:rgba(143,227,199,.85);}
+    body.pf-sheet #profile .pfi-stats::before{content:"LOG 02 ・ 航行紀錄 ・ 學歷與工作"; display:block; margin-bottom:6px; font-family:var(--mono); font-size:var(--fs-label); font-weight:var(--fw-regular); letter-spacing:var(--ls-meta); line-height:var(--lh-none); color:var(--hud);}
     body.pf-sheet #profile .pfi-col{position:relative;}
     body.pf-sheet #profile .pfi-col::before, body.pf-sheet #profile .pfi-col::after{content:""; position:absolute; width:9px; height:9px; border:1.5px solid rgba(143,227,199,.7);}
     body.pf-sheet #profile .pfi-col::before{left:-1px; top:-1px; border-right:0; border-bottom:0;}
