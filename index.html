@@ -1872,7 +1872,30 @@
     html:has(body.pf-sheet), body.pf-sheet{overflow:hidden;}
     body.pf-sheet #profile{display:block !important; visibility:visible; position:fixed !important; inset:0 !important; width:auto !important; z-index:1200; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; margin:0 !important; padding:84px 0 56px !important; grid-row:auto !important; grid-column:auto !important; background:radial-gradient(ellipse at 50% 0%, #141a3d 0%, #0b0e24 45%, #070916 100%);}
     body.pf-sheet #profile .pfi-clip{overflow:visible;}
-    body.pf-sheet #profile .pfi-box{max-width:640px !important; margin:0 auto !important; padding:36px 40px 32px !important;}
+    body.pf-sheet #profile{padding:clamp(64px,8vh,100px) 0 36px !important;}
+    body.pf-sheet #profile .pfi-box{display:grid !important; grid-template-columns:minmax(260px,clamp(280px,29vw,400px)) minmax(0,1fr); column-gap:clamp(36px,5vw,96px); row-gap:clamp(18px,3vh,30px); align-items:start; max-width:1240px !important; width:calc(100% - clamp(56px,8vw,160px)); margin:0 auto !important; padding:0 !important; border:0 !important; background:none !important;}
+    body.pf-sheet #profile .pfi-head{grid-column:1; grid-row:1 / span 3; display:flex !important; flex-direction:column !important; align-items:stretch !important; gap:clamp(14px,2.4vh,24px) !important; margin:0 !important;}
+    body.pf-sheet #profile .pfi-left{display:flex; flex-direction:column; gap:clamp(14px,2.4vh,24px);}
+    body.pf-sheet #profile .pfi-sh{text-align:left !important; align-items:flex-start !important;}
+    body.pf-sheet #profile .pfi-sh h2{font-size:clamp(30px,3.4vw,52px) !important; line-height:1.1 !important; margin:6px 0 8px !important;}
+    body.pf-sheet #profile .pfi-who{flex-direction:column !important; align-items:flex-start !important; text-align:left !important; gap:14px !important; margin:0 !important;}
+    body.pf-sheet #profile .pfi-photo{flex:none !important; width:clamp(150px,min(100%,29vh),320px) !important; border-radius:4px; border-color:rgba(143,227,199,.35); box-shadow:0 0 0 4px rgba(143,227,199,.06), 0 18px 50px rgba(0,0,0,.5);}
+    body.pf-sheet #profile .pfi-names h2{font-size:clamp(22px,2vw,30px) !important;}
+    body.pf-sheet #profile .pfi-acts{flex-direction:column !important; justify-content:flex-start !important; gap:10px !important; max-width:320px;}
+    body.pf-sheet #profile .pf-btn{justify-content:space-between; padding:11px 16px; font-size:var(--fs-ui);}
+    body.pf-sheet #profile .pfi-intro{grid-column:2; grid-row:1; margin:0 !important; text-align:left !important; padding-top:6px;}
+    body.pf-sheet #profile .pfi-intro p{font-size:clamp(14px,1.05vw,17px) !important; line-height:1.9 !important; margin:0 0 12px !important; color:rgba(215,220,240,.82);}
+    body.pf-sheet #profile .pfi-stats{grid-column:2; grid-row:2; margin:0 !important; padding:clamp(14px,2.4vh,22px) 0 0 !important; border-top:1px solid var(--line-soft) !important; border-bottom:0 !important;}
+    body.pf-sheet #profile .pfi-stats .ps-exp{justify-content:flex-start !important;}
+    body.pf-sheet #profile .pfi-stats strong{font-size:clamp(26px,2.4vw,38px) !important;}
+    body.pf-sheet #profile .ps-scroll{max-height:none !important; overflow:visible !important; -webkit-mask-image:none !important; mask-image:none !important; padding-right:0 !important;}
+    body.pf-sheet #profile .ps-more, body.pf-sheet #profile .ps-bar{display:none !important;}
+    body.pf-sheet #profile .pf-tl.ps-edu{display:grid !important; grid-template-columns:1fr 1fr; column-gap:clamp(20px,3vw,48px); row-gap:6px;}
+    body.pf-sheet #profile .pfi-grid{grid-column:2; grid-row:3; display:grid !important; grid-template-columns:1fr 1fr !important; gap:clamp(14px,2vw,26px) !important; margin:0 !important;}
+    body.pf-sheet #profile .pfi-col{padding:clamp(12px,1.6vh,18px) clamp(14px,1.4vw,20px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
+    body.pf-sheet #profile .pf-chip{font-size:clamp(13px,.95vw,15px) !important; padding:6px 12px !important;}
+    body.pf-sheet #profile .pfi-foot{display:none;}
+    @media (max-width:1180px){ body.pf-sheet #profile .pfi-box{grid-template-columns:minmax(240px,300px) minmax(0,1fr);} body.pf-sheet #profile .pf-tl.ps-edu{grid-template-columns:1fr;} body.pf-sheet #profile .pfi-grid{grid-template-columns:1fr !important;} }
     body.pf-sheet #profile::after, body.pf-sheet #profile .sec-ghost{display:none;}
     @media (min-width:1600px){ body{padding-left:376px !important;} }
     .pf-close{display:inline-block !important; position:fixed; top:16px; right:28px; z-index:1210; cursor:pointer; padding:8px 18px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); visibility:hidden;}
