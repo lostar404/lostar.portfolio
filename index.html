@@ -1795,7 +1795,8 @@
   #featPanel .hud-label{text-align:center !important;}
   /* >=1600px: right column reserved for a future comment panel; the section rail lives inside it */
   .cm-slot{display:none;}
-  .pf-fold,.pf-stand{display:none;}
+  .pf-fold,.pf-stand{display:none !important;}
+  @media (min-width:1600px){ .pf-stand{display:block !important; opacity:1 !important; visibility:visible !important; transform:none !important; transition:none !important;} }
   body.pf-scrolling .nebula-bg, body.pf-scrolling .milkyway, body.pf-scrolling .star-far, body.pf-scrolling .star-near, body.pf-scrolling .star-bright, body.pf-scrolling .grain-overlay, body.pf-scrolling .scroll-tint, body.pf-scrolling .hero *{animation-play-state:paused !important;}
   @media (min-width:1600px){
     .top-grid .pfi, .side-shade, .pf-fold{transition:transform .7s cubic-bezier(.55,0,.25,1), visibility 0s; will-change:transform; backface-visibility:hidden;}
@@ -1873,6 +1874,7 @@
     body.pf-sheet #profile .pfi-clip{overflow:visible;}
     body.pf-sheet #profile .pfi-box{max-width:640px !important; margin:0 auto !important; padding:36px 40px 32px !important;}
     body.pf-sheet #profile::after, body.pf-sheet #profile .sec-ghost{display:none;}
+    @media (min-width:1600px){ body{padding-left:376px !important;} }
     .pf-close{display:inline-block !important; position:fixed; top:16px; right:28px; z-index:1210; cursor:pointer; padding:8px 18px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); visibility:hidden;}
     body.pf-sheet .pf-close{visibility:visible;}
   }
@@ -1999,7 +2001,6 @@
 <div class="side-shade" aria-hidden="true"></div>
 <button type="button" class="cm-fab" id="cmFab" aria-label="留言" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-4 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg></button>
 <div class="cm-backdrop" id="cmBackdrop"></div>
-<button type="button" class="pf-fold" id="pfFold" aria-label="收合探索者檔案"><span id="pfFoldTx"></span>‹</button>
 <div class="pf-stand" id="pfStand" aria-hidden="true"></div>
 <div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-arc" id="palArc" role="menu" aria-label="前往其他頁面"></div><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
 <aside class="cm-slot" id="cmSlot" aria-label="留言">
@@ -5169,14 +5170,8 @@ cm.addEventListener('click',function(){
   if(mq.addEventListener) mq.addEventListener('change',function(){ if(!mq.matches) shut(); });
   /* keep the sheet above the on-screen keyboard */
   var vv=window.visualViewport, slot=document.getElementById('cmSlot');
-  (function(){ var f=document.getElementById('pfFold'), st=document.getElementById('pfStand'), fb=document.getElementById('workFullbody'), tx=document.getElementById('pfFoldTx');
-    if(!f||!st||!fb) return; var fig=document.createElement('div'); fig.className='pf-fig'; var im=document.createElement('img'); im.alt=''; im.src=fb.src; fig.appendChild(im);
-    var orb=document.createElement('button'); orb.type='button'; orb.className='pf-orb'; orb.setAttribute('aria-label','展開探索者檔案'); var tg=document.createElement('span'); tg.className='pf-orb-tag'; tg.textContent='探索者檔案'; fig.appendChild(orb); fig.appendChild(tg); st.appendChild(fig);
-    function set(v){ window.__rafHold=true; clearTimeout(set.t); set.t=setTimeout(function(){ if(!document.body.classList.contains('cm-open') && window.__rafRelease) window.__rafRelease(); },1300); document.body.classList.toggle('pf-folded',v); f.setAttribute('aria-label',v?'展開探索者檔案':'收合探索者檔案'); }
-    f.addEventListener('click',function(){ set(!document.body.classList.contains('pf-folded')); });
-    var dock=document.getElementById('profile'), sT;
-    if(dock){ dock.addEventListener('scroll',function(){ if(window.innerWidth<1600) return; document.body.classList.add('pf-scrolling'); window.__rafHold=true; clearTimeout(sT); sT=setTimeout(function(){ document.body.classList.remove('pf-scrolling'); if(!document.body.classList.contains('cm-open') && window.__rafRelease) window.__rafRelease(); },180); },{passive:true}); }
-    orb.addEventListener('click',function(){ set(false); });
+  (function(){ var st=document.getElementById('pfStand'), fb=document.getElementById('workFullbody');
+    if(!st||!fb) return; var fig=document.createElement('div'); fig.className='pf-fig'; var im=document.createElement('img'); im.alt=''; im.src=fb.src; fig.appendChild(im); st.appendChild(fig);
   })();
   function kb(){ if(!vv||!slot) return; var d=Math.max(0,window.innerHeight-vv.height-vv.offsetTop); slot.style.setProperty('--cmkb',(document.body.classList.contains('cm-open')?d:0)+'px'); }
   if(vv){ vv.addEventListener('resize',kb); vv.addEventListener('scroll',kb); }
