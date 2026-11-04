@@ -2286,8 +2286,7 @@
     .hs:hover .hs-b,.hs:focus-visible .hs-b{filter:drop-shadow(0 0 30px rgba(150,170,255,.8)) brightness(1.1); animation-play-state:paused;}
     .hs-tip{position:absolute; left:34%; top:88%; transform:translate(-50%,-4px); white-space:nowrap; padding:5px 11px; border:1px solid rgba(143,227,199,.5); border-radius:2px; background:rgba(8,12,30,.85); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud); opacity:0; transition:opacity .2s ease, transform .2s ease; pointer-events:none;}
     .hs:hover .hs-tip,.hs:focus-visible .hs-tip{opacity:1; transform:translate(-50%,0); color:#fff; border-color:var(--hud);}
-    .hs.settled.boarding{transform-origin:30% 55%; transform:translate(-26vw,20vh) rotate(-7deg) scale(3.4); opacity:0; transition:transform .6s cubic-bezier(.35,0,.5,1), opacity .25s ease .35s;}
-    .hs.settled.boarding .hs-b{animation-play-state:paused;}
+        .hs.boarding .hs-b{animation-play-state:paused;}
     .hs.boarding .hs-tip{opacity:0;}
     @keyframes hsIn{0%{opacity:0; transform:translate(55vw,-48vh) rotate(9deg);} 12%{opacity:1;} 100%{opacity:1; transform:translate(0,0) rotate(0);}}
     @keyframes hsFloat{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-9px) rotate(-.6deg)}}
@@ -5662,9 +5661,12 @@ cm.addEventListener('click',function(){
     e.stopPropagation(); if(boarding) return; boarding=true;
     var r=ship.getBoundingClientRect(), sc=document.getElementById('scene'), nav=document.getElementById('navPf');
     if(reduce||!nav){ if(nav) nav.click(); boarding=false; return; }
+    /* the camera pushes in on the ship: the whole hero (ship included) scales around the ship, so the ship itself never changes size relative to its surroundings */
+    var cx=r.left+r.width*.4, cy=r.top+r.height*.5, targets=[document.querySelector('.hero'),wrap].filter(Boolean);
     ship.classList.add('boarding');
-    setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },300);
-    setTimeout(function(){ ship.classList.remove('boarding'); boarding=false; },1300);
+    targets.forEach(function(el){ var b=el.getBoundingClientRect(); el.style.transformOrigin=(cx-b.left)+'px '+(cy-b.top)+'px'; el.style.willChange='transform'; el.style.transition='transform .75s cubic-bezier(.5,0,.85,.45)'; void el.offsetWidth; el.style.transform='scale(3.2)'; });
+    setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },330);
+    setTimeout(function(){ targets.forEach(function(el){ el.style.transition='none'; el.style.transform=''; el.style.transformOrigin=''; el.style.willChange=''; }); ship.classList.remove('boarding'); boarding=false; },1300);
   });
 })();
 </script>
