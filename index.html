@@ -5732,7 +5732,7 @@ cm.addEventListener('click',function(){
       var ph=document.createElement('div'); ph.className='cm-b-ph'; ph.style.cssText='flex:none;width:'+r.width+'px;height:'+r.height+'px;visibility:hidden;pointer-events:none;';
       if(b.parentNode===feed) feed.replaceChild(ph,b);
       b.style.width=r.width+'px'; fly.appendChild(b);
-      it={el:b,x:r.left,y:r.top,w:r.width,h:r.height,vx:0,vy:0,r:0,fly:true}; items.push(it);
+      it={el:b,ph:ph,x:r.left,y:r.top,w:r.width,h:r.height,vx:0,vy:0,r:0,fly:true}; items.push(it);
       if(items.length>24){ var o=items.shift(); if(o.el.parentNode) o.el.parentNode.removeChild(o.el); }
     }
     cur=it; it.vx=it.vy=0; it.grab={dx:e.clientX-it.x,dy:e.clientY-it.y}; it.hist=[{x:e.clientX,y:e.clientY,t:e.timeStamp}];
@@ -5754,6 +5754,18 @@ cm.addEventListener('click',function(){
   }
   document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
   addEventListener('resize',function(){ items.forEach(function(it){ clamp(it); put(it); }); });
+  /* coming back to the home page from a detail page: put every thrown bubble back in its place */
+  function reset(){
+    cur=null; if(raf){ cancelAnimationFrame(raf); raf=0; }
+    items.forEach(function(it){
+      var b=it.el; b.classList.remove('cm-drag'); b.style.transform=''; b.style.width='';
+      if(it.ph&&it.ph.parentNode){ it.ph.parentNode.replaceChild(b,it.ph); if(b.animate) b.animate([{opacity:0},{opacity:1}],{duration:500,easing:'ease-out'}); }
+      else if(b.parentNode) b.parentNode.removeChild(b);
+    });
+    items=[];
+  }
+  var wasCov=document.documentElement.classList.contains('lg-covered');
+  new MutationObserver(function(){ var c=document.documentElement.classList.contains('lg-covered'); if(wasCov&&!c) reset(); wasCov=c; }).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 })();
 </script>
 </body>
