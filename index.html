@@ -5666,7 +5666,8 @@ cm.addEventListener('click',function(){
     var fl=ship.querySelector('.hs-b').cloneNode(true), bk=document.createElement('div');
     bk.style.cssText='position:fixed;inset:0;background:#02030a;opacity:0;z-index:1240;pointer-events:none;';
     fl.style.cssText='position:fixed;left:'+(-w/2)+'px;top:'+(-h/2)+'px;width:'+w+'px;height:'+h+'px;z-index:1250;pointer-events:none;animation:none;filter:none;transition:none;will-change:transform;';
-    document.body.appendChild(bk); document.body.appendChild(fl);
+    var fb=fl.cloneNode(true); fb.style.filter='blur(9px)'; fb.style.opacity='0';
+    document.body.appendChild(bk); document.body.appendChild(fl); document.body.appendChild(fb);
     ship.style.visibility='hidden'; ship.classList.add('boarding');
     function T(x,y,sc_,rot,fx){ return 'translate('+x+'px,'+y+'px) rotate('+rot+'deg) scale('+(fx*sc_)+','+sc_+')'; }
     var a1=fl.animate([
@@ -5677,15 +5678,18 @@ cm.addEventListener('click',function(){
     a1.onfinish=function(){
       /* second pass: from the lower-left, mirrored so the nose leads, growing until it fills (blacks out) the screen */
       var s0=.9, s1=Math.max(W/w,H/h)*4.2, x0=-w*.3, y0=H+h*.2, x1=W*.62, y1=H*.4;
-      fl.animate([
+      var kf=[
         {transform:T(x0,y0,s0,-16,-1), offset:0},
         {transform:T(x0+(x1-x0)*.5,y0+(y1-y0)*.5,s1*.18,-14,-1), offset:.55},
         {transform:T(x1,y1,s1,-10,-1), offset:1}
-      ],{duration:1000,easing:'cubic-bezier(.45,0,.75,.6)',fill:'forwards'});
-      bk.animate([{opacity:0},{opacity:0,offset:.5},{opacity:1}],{duration:1000,fill:'forwards'});
-      setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },900);
-      setTimeout(function(){ var o={duration:380,fill:'forwards',easing:'ease-out'}; fl.animate([{opacity:1},{opacity:0}],o); bk.animate([{opacity:1},{opacity:0}],o); },1020);
-      setTimeout(function(){ fl.remove(); bk.remove(); ship.style.visibility=''; ship.classList.remove('boarding'); boarding=false; },1450);
+      ], op={duration:680,easing:'cubic-bezier(.4,0,.7,.5)',fill:'forwards'};
+      fl.animate(kf,op); fb.animate(kf,op);
+      fl.animate([{opacity:1},{opacity:1,offset:.15},{opacity:0}],{duration:680,fill:'forwards'});
+      fb.animate([{opacity:0},{opacity:0,offset:.15},{opacity:1}],{duration:680,fill:'forwards'});
+      bk.animate([{opacity:0},{opacity:0,offset:.5},{opacity:1}],{duration:680,fill:'forwards'});
+      setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },600);
+      setTimeout(function(){ var o={duration:380,fill:'forwards',easing:'ease-out'}; fb.animate([{opacity:1},{opacity:0}],o); bk.animate([{opacity:1},{opacity:0}],o); },700);
+      setTimeout(function(){ fl.remove(); fb.remove(); bk.remove(); ship.style.visibility=''; ship.classList.remove('boarding'); boarding=false; },1120);
     };
   });
 })();
