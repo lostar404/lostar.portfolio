@@ -2277,8 +2277,8 @@
 <style>
   /* ---- 拾星號: the ship that circles the outer ring (desktop). Click = board it and enter the bridge ---- */
   @media (min-width:961px){
-    .hs-wrap{position:absolute; left:0; top:0; width:100%; height:760px; overflow:hidden; pointer-events:none; z-index:5;}
-    .hs{position:absolute; right:-9%; top:14px; width:min(38vw,760px); aspect-ratio:1.6012; padding:0; border:0; background:none; cursor:pointer; pointer-events:auto; outline:none; -webkit-tap-highlight-color:transparent; opacity:0; transform:translate(55vw,-48vh) rotate(9deg); animation:hsIn 2.8s cubic-bezier(.16,.8,.25,1) .5s forwards paused;}
+    .hs-wrap{position:absolute; left:0; top:0; width:100%; height:760px; overflow-x:clip; overflow-y:visible; pointer-events:none; z-index:5;}
+    .hs{position:absolute; right:-9%; top:4px; width:min(38vw,760px); aspect-ratio:1.6012; padding:0; border:0; background:none; cursor:pointer; pointer-events:auto; outline:none; -webkit-tap-highlight-color:transparent; opacity:0; transform:translate(55vw,-48vh) rotate(9deg); animation:hsIn 2.8s cubic-bezier(.16,.8,.25,1) .5s forwards paused;}
     body:not(.intro-on):not(:has(#bootScreen:not(.hide))) .hs{animation-play-state:running;}
     .hs.settled{opacity:1; transform:none; animation:none;}
     .hs-b{position:absolute; inset:0; animation:hsFloat 8s ease-in-out infinite; transition:transform .5s ease, filter .25s ease; filter:drop-shadow(0 0 22px rgba(120,130,255,.45));}
@@ -2286,7 +2286,8 @@
     .hs:hover .hs-b,.hs:focus-visible .hs-b{filter:drop-shadow(0 0 30px rgba(150,170,255,.8)) brightness(1.1); animation-play-state:paused;}
     .hs-tip{position:absolute; left:34%; top:88%; transform:translate(-50%,-4px); white-space:nowrap; padding:5px 11px; border:1px solid rgba(143,227,199,.5); border-radius:2px; background:rgba(8,12,30,.85); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud); opacity:0; transition:opacity .2s ease, transform .2s ease; pointer-events:none;}
     .hs:hover .hs-tip,.hs:focus-visible .hs-tip{opacity:1; transform:translate(-50%,0); color:#fff; border-color:var(--hud);}
-    .hs.boarding .hs-b{transform:scale(1.25); filter:brightness(1.6) drop-shadow(0 0 40px rgba(190,210,255,1)); transition:transform .5s cubic-bezier(.5,0,.8,.4), filter .5s ease;}
+    .hs.settled.boarding{transform-origin:30% 55%; transform:translate(-26vw,20vh) rotate(-7deg) scale(3.4); opacity:0; transition:transform .6s cubic-bezier(.35,0,.5,1), opacity .25s ease .35s;}
+    .hs.settled.boarding .hs-b{animation-play-state:paused;}
     .hs.boarding .hs-tip{opacity:0;}
     @keyframes hsIn{0%{opacity:0; transform:translate(55vw,-48vh) rotate(9deg);} 12%{opacity:1;} 100%{opacity:1; transform:translate(0,0) rotate(0);}}
     @keyframes hsFloat{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-9px) rotate(-.6deg)}}
@@ -5661,10 +5662,9 @@ cm.addEventListener('click',function(){
     e.stopPropagation(); if(boarding) return; boarding=true;
     var r=ship.getBoundingClientRect(), sc=document.getElementById('scene'), nav=document.getElementById('navPf');
     if(reduce||!nav){ if(nav) nav.click(); boarding=false; return; }
-    var f=document.createElement('div'); f.className='board-flash'; f.style.setProperty('--bx',(r.left+r.width*.4)+'px'); f.style.setProperty('--by',(r.top+r.height*.55)+'px'); document.body.appendChild(f);
     ship.classList.add('boarding');
-    setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },430);
-    setTimeout(function(){ f.remove(); ship.classList.remove('boarding'); boarding=false; },1250);
+    setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },300);
+    setTimeout(function(){ ship.classList.remove('boarding'); boarding=false; },1300);
   });
 })();
 </script>
