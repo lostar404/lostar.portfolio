@@ -2287,10 +2287,6 @@
     .hs-tip{position:absolute; left:34%; top:88%; transform:translate(-50%,-4px); white-space:nowrap; padding:5px 11px; border:1px solid rgba(143,227,199,.5); border-radius:2px; background:rgba(8,12,30,.85); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud); opacity:0; transition:opacity .2s ease, transform .2s ease; pointer-events:none;}
     .hs:hover .hs-tip,.hs:focus-visible .hs-tip{opacity:1; transform:translate(-50%,0); color:#fff; border-color:var(--hud);}
         .hs.boarding .hs-b{animation-play-state:paused;}
-    html.hs-go body *:not(#scene):not(#scene *){animation-play-state:paused !important; transition-duration:0s !important;}
-    html.hs-go, html.hs-go body{overflow-x:hidden;}
-    html.hs-go .hero, html.hs-go .hs-wrap{transition:transform .6s cubic-bezier(.5,0,.85,.45) !important;}
-    html.hs-go .hero *{backdrop-filter:none !important; -webkit-backdrop-filter:none !important;}
     .hs.boarding .hs-tip{opacity:0;}
     @keyframes hsIn{0%{opacity:0; transform:translate(55vw,-48vh) rotate(9deg);} 12%{opacity:1;} 100%{opacity:1; transform:translate(0,0) rotate(0);}}
     @keyframes hsFloat{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-9px) rotate(-.6deg)}}
@@ -5664,13 +5660,30 @@ cm.addEventListener('click',function(){
   ship.addEventListener('click',function(e){
     e.stopPropagation(); if(boarding) return; boarding=true;
     var r=ship.getBoundingClientRect(), sc=document.getElementById('scene'), nav=document.getElementById('navPf');
-    if(reduce||!nav){ if(nav) nav.click(); boarding=false; return; }
-    /* the camera pushes in on the ship: the whole hero (ship included) scales around the ship, so the ship itself never changes size relative to its surroundings */
-    var cx=r.left+r.width*.4, cy=r.top+r.height*.5, targets=[document.querySelector('.hero'),wrap].filter(Boolean);
-    ship.classList.add('boarding'); document.documentElement.classList.add('hs-go');
-    targets.forEach(function(el){ var b=el.getBoundingClientRect(); el.style.transformOrigin=(cx-b.left)+'px '+(cy-b.top)+'px'; void el.offsetWidth; el.style.transform='scale(2.4)'; });
-    setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },400);
-    setTimeout(function(){ targets.forEach(function(el){ el.style.transition='none'; el.style.transform=''; el.style.transformOrigin=''; el.style.willChange=''; }); ship.classList.remove('boarding'); document.documentElement.classList.remove('hs-go'); boarding=false; },1300);
+    if(reduce||!nav||!ship.animate){ if(nav) nav.click(); boarding=false; return; }
+    /* ship-only flight: dash off to the left, then swoop back in from the lower-left, big and out of focus, toward the upper-right while the cockpit opens */
+    var W=innerWidth, H=innerHeight, w=r.width, h=r.height, ox=r.left+w/2, oy=r.top+h/2;
+    var fl=ship.querySelector('.hs-b').cloneNode(true);
+    fl.style.cssText='position:fixed;left:'+(-w/2)+'px;top:'+(-h/2)+'px;width:'+w+'px;height:'+h+'px;z-index:1250;pointer-events:none;animation:none;will-change:transform,filter;';
+    document.body.appendChild(fl);
+    ship.style.visibility='hidden'; ship.classList.add('boarding');
+    function T(x,y,sc_,rot){ return 'translate('+x+'px,'+y+'px) rotate('+rot+'deg) scale('+sc_+')'; }
+    var glow='drop-shadow(0 0 22px rgba(120,130,255,.45))';
+    var a1=fl.animate([
+      {transform:T(ox,oy,1,0), filter:glow, offset:0},
+      {transform:T(ox-W*.12,oy+8,1.04,-3), filter:glow, offset:.25},
+      {transform:T(-w*1.3,oy+30,1.1,-6), filter:glow+' blur(3px)', offset:1}
+    ],{duration:420,easing:'cubic-bezier(.55,0,.9,.4)',fill:'forwards'});
+    a1.onfinish=function(){
+      var s0=Math.max(2.6,W/w*.9), x0=-w*s0*.45, y0=H+h*s0*.35, x1=W+w*s0*.5, y1=-h*s0*.4;
+      fl.animate([
+        {transform:T(x0,y0,s0,-16), filter:glow+' blur(14px)', offset:0},
+        {transform:T((x0+x1)/2,(y0+y1)/2,s0*.78,-16), filter:glow+' blur(6px)', offset:.5},
+        {transform:T(x1,y1,s0*.55,-16), filter:glow+' blur(2px)', offset:1}
+      ],{duration:1000,easing:'cubic-bezier(.3,.1,.35,1)',fill:'forwards'});
+      setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },320);
+      setTimeout(function(){ fl.remove(); ship.style.visibility=''; ship.classList.remove('boarding'); boarding=false; },1100);
+    };
   });
 })();
 </script>
