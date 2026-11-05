@@ -2118,7 +2118,13 @@
   .sk-sp{position:absolute; width:calc(54px * var(--s,1) * var(--k,1)); aspect-ratio:1; margin:calc(-27px * var(--s,1) * var(--k,1)) 0 0 calc(-27px * var(--s,1) * var(--k,1)); pointer-events:none; mix-blend-mode:screen; will-change:opacity,transform; animation:skTw 4s ease-in-out infinite;
     background:radial-gradient(circle,rgba(255,255,255,.95) 0 6%,rgba(200,190,255,.45) 14%,transparent 40%), linear-gradient(90deg,transparent 8%,rgba(235,230,255,.75) 50%,transparent 92%) center/100% 3% no-repeat, linear-gradient(0deg,transparent 8%,rgba(235,230,255,.75) 50%,transparent 92%) center/3% 100% no-repeat;}
   @keyframes skTw{0%,100%{opacity:.25; transform:scale(.7) rotate(0deg)} 45%{opacity:1; transform:scale(1.15) rotate(8deg)} 70%{opacity:.55; transform:scale(.9) rotate(-4deg)}}
-  @media (prefers-reduced-motion:reduce){ .sk-img,.sk-img2,.sk-sp{animation:none;} .sk-img2{opacity:0;} }
+  .sk-rg{position:absolute; will-change:transform; animation:skRg 26s ease-in-out infinite alternate;}
+  .sk-rg2{animation-duration:34s; animation-direction:alternate-reverse;}
+  .sk-ro{position:absolute; display:block; height:auto; will-change:transform; animation:skRo 30s ease-in-out infinite alternate, skRf 20s ease-in-out infinite alternate; filter:drop-shadow(0 0 calc(10px*var(--k,1)) rgba(120,110,255,.28));}
+  @keyframes skRg{from{transform:translate(-1.6%,1.2%)} to{transform:translate(2.2%,-1.8%)}}
+  @keyframes skRo{from{rotate:var(--a,-6deg)} to{rotate:var(--b,6deg)}}
+  @keyframes skRf{from{translate:0 0} to{translate:2.5% -4%}}
+  @media (prefers-reduced-motion:reduce){ .sk-rg,.sk-ro,.sk-img,.sk-img2,.sk-sp{animation:none;} .sk-img2{opacity:0;} }
   .sc-star{position:absolute; width:2px; height:2px; border-radius:50%; background:#fff; box-shadow:0 0 4px 1px rgba(190,210,255,.8); opacity:.2; animation:scTw 3s ease-in-out infinite;}
   @keyframes scTw{0%,100%{opacity:.15; transform:scale(.8)} 50%{opacity:1; transform:scale(1.3)}}
   .sc-met{position:absolute; width:150px; height:2px; background:linear-gradient(270deg,transparent,rgba(210,230,255,.95)); border-radius:2px; transform-origin:0 50%; opacity:0; animation:scMet 1s ease-out forwards; filter:drop-shadow(0 0 4px rgba(170,200,255,.9));}
@@ -2321,21 +2327,21 @@
 <div class="cm-backdrop" id="cmBackdrop"></div>
 <div id="scene" aria-hidden="true">
   <div class="sc-stage" id="scStage">
-    <div class="sc-sky" id="scSky"><div class="sk-d sk-far"><div class="sk-img"><img loading="lazy" decoding="async" alt="" src="images/img-04.webp"></div><div class="sk-img sk-img2"><img loading="lazy" decoding="async" alt="" src="images/img-05.webp"></div></div><div class="sk-d sk-mid"><i class="sk-sp" style="left:5.86%;top:9.56%;--s:0.9;animation-delay:0.0s;animation-duration:3.2s"></i><i class="sk-sp" style="left:7.12%;top:24.65%;--s:1.5;animation-delay:5.3s;animation-duration:3.9s"></i><i class="sk-sp" style="left:20.51%;top:25.61%;--s:0.7;animation-delay:3.6s;animation-duration:4.6s"></i><i class="sk-sp" style="left:28.35%;top:45.38%;--s:1;animation-delay:1.9s;animation-duration:5.3s"></i><i class="sk-sp" style="left:94.38%;top:11.48%;--s:1.3;animation-delay:0.2s;animation-duration:6.0s"></i><i class="sk-sp" style="left:78.65%;top:68.86%;--s:1.4;animation-delay:5.5s;animation-duration:3.7s"></i><i class="sk-sp" style="left:50.84%;top:7.55%;--s:0.55;animation-delay:3.8s;animation-duration:4.4s"></i><i class="sk-sp" style="left:89.53%;top:53.45%;--s:0.6;animation-delay:2.1s;animation-duration:5.1s"></i><i class="sk-sp" style="left:39.95%;top:84.17%;--s:0.65;animation-delay:0.4s;animation-duration:5.8s"></i><i class="sk-sp" style="left:44.50%;top:83.74%;--s:0.55;animation-delay:5.7s;animation-duration:3.5s"></i><i class="sk-sp" style="left:90.37%;top:40.81%;--s:0.6;animation-delay:4.0s;animation-duration:4.2s"></i><i class="sk-sp" style="left:3.11%;top:5.95%;--s:0.5;animation-delay:2.3s;animation-duration:4.9s"></i></div><div class="sk-d sk-near" id="skNear"></div></div>
-    <img loading="lazy" decoding="async" class="sc-bg" alt="" src="images/img-06.webp">
+    <div class="sc-sky" id="scSky"><div class="sk-d sk-far"><div class="sk-img"><img loading="lazy" decoding="async" alt="" src="images/img-04.webp"></div><div class="sk-img sk-img2"><img loading="lazy" decoding="async" alt="" src="images/img-05.webp"></div></div><div class="sk-d sk-mid"><div class="sk-rg sk-rg1" style="left:21.5%;top:13%;width:9.5%;aspect-ratio:509/366"><img loading="lazy" decoding="async" alt="" class="sk-ro" src="images/img-06.webp" style="left:0.59%;top:0.82%;width:66.21%;--a:-7deg;--b:6deg;animation-duration:38s,26.599999999999998s;animation-delay:-11.4s,-19.0s"><img loading="lazy" decoding="async" alt="" class="sk-ro" src="images/img-07.webp" style="left:59.72%;top:65.57%;width:18.66%;--a:10deg;--b:-12deg;animation-duration:23s,16.099999999999998s;animation-delay:-6.9s,-11.5s"><img loading="lazy" decoding="async" alt="" class="sk-ro" src="images/img-08.webp" style="left:79.17%;top:78.14%;width:20.24%;--a:-9deg;--b:8deg;animation-duration:29s,20.299999999999997s;animation-delay:-8.7s,-14.5s"></div><div class="sk-rg sk-rg2" style="left:55%;top:15%;width:14.5%;aspect-ratio:510/362"><img loading="lazy" decoding="async" alt="" class="sk-ro" src="images/img-09.webp" style="left:44.12%;top:0.83%;width:55.29%;--a:6deg;--b:-6deg;animation-duration:44s,30.799999999999997s;animation-delay:-13.2s,-22.0s"><img loading="lazy" decoding="async" alt="" class="sk-ro" src="images/img-10.webp" style="left:0.59%;top:67.96%;width:28.24%;--a:-10deg;--b:9deg;animation-duration:31s,21.7s;animation-delay:-9.3s,-15.5s"><img loading="lazy" decoding="async" alt="" class="sk-ro" src="images/img-11.webp" style="left:33.92%;top:85.36%;width:8.82%;--a:12deg;--b:-14deg;animation-duration:19s,13.299999999999999s;animation-delay:-5.7s,-9.5s"></div><i class="sk-sp" style="left:5.86%;top:9.56%;--s:0.9;animation-delay:0.0s;animation-duration:3.2s"></i><i class="sk-sp" style="left:7.12%;top:24.65%;--s:1.5;animation-delay:5.3s;animation-duration:3.9s"></i><i class="sk-sp" style="left:20.51%;top:25.61%;--s:0.7;animation-delay:3.6s;animation-duration:4.6s"></i><i class="sk-sp" style="left:28.35%;top:45.38%;--s:1;animation-delay:1.9s;animation-duration:5.3s"></i><i class="sk-sp" style="left:94.38%;top:11.48%;--s:1.3;animation-delay:0.2s;animation-duration:6.0s"></i><i class="sk-sp" style="left:78.65%;top:68.86%;--s:1.4;animation-delay:5.5s;animation-duration:3.7s"></i><i class="sk-sp" style="left:50.84%;top:7.55%;--s:0.55;animation-delay:3.8s;animation-duration:4.4s"></i><i class="sk-sp" style="left:89.53%;top:53.45%;--s:0.6;animation-delay:2.1s;animation-duration:5.1s"></i><i class="sk-sp" style="left:39.95%;top:84.17%;--s:0.65;animation-delay:0.4s;animation-duration:5.8s"></i><i class="sk-sp" style="left:44.50%;top:83.74%;--s:0.55;animation-delay:5.7s;animation-duration:3.5s"></i><i class="sk-sp" style="left:90.37%;top:40.81%;--s:0.6;animation-delay:4.0s;animation-duration:4.2s"></i><i class="sk-sp" style="left:3.11%;top:5.95%;--s:0.5;animation-delay:2.3s;animation-duration:4.9s"></i></div><div class="sk-d sk-near" id="skNear"></div></div>
+    <img loading="lazy" decoding="async" class="sc-bg" alt="" src="images/img-12.webp">
     <i class="sc-glow g-ceil"></i><i class="sc-glow g-floor"></i>
     
-    <button type="button" class="sc-chair" id="scChair" aria-label="艦長席"><img loading="lazy" decoding="async" alt="" src="images/img-07.webp"><span class="sc-chair-hit"></span><span class="sc-tip">艦長席 ・ 點擊</span></button>
-    <button type="button" class="sc-lamp" id="scLamp" aria-label="切換艙內燈光"><i class="sc-lamp-shadow"></i><i class="sc-lamp-spill"></i><img loading="lazy" decoding="async" class="sc-lamp-refl" alt="" src="images/img-08.webp"><img loading="lazy" decoding="async" alt="" src="images/img-09.webp"><span class="sc-tip" id="scLampTip">艙內燈光 ・ 靛紫 ▸ 點擊切換</span></button>
+    <button type="button" class="sc-chair" id="scChair" aria-label="艦長席"><img loading="lazy" decoding="async" alt="" src="images/img-13.webp"><span class="sc-chair-hit"></span><span class="sc-tip">艦長席 ・ 點擊</span></button>
+    <button type="button" class="sc-lamp" id="scLamp" aria-label="切換艙內燈光"><i class="sc-lamp-shadow"></i><i class="sc-lamp-spill"></i><img loading="lazy" decoding="async" class="sc-lamp-refl" alt="" src="images/img-14.webp"><img loading="lazy" decoding="async" alt="" src="images/img-15.webp"><span class="sc-tip" id="scLampTip">艙內燈光 ・ 靛紫 ▸ 點擊切換</span></button>
     <button type="button" class="sc-hot hot-globe" id="scGlobe" aria-label="前往作品星系"><span class="sc-tip">作品星系 ・ 點擊前往</span></button>
     <button type="button" class="sc-hot hot-planet" id="scPlanet" aria-label="展開作品類型"><span class="sc-tip">作品類型 ・ 點擊展開</span></button>
-    <div class="sc-rdw" id="scRsw"><button type="button" class="sc-rd" id="scRs" aria-label="專長訊號" style="width:1506px;height:1044px;transform:matrix3d(0.088657438,-0.023749411,0,-4.28617e-05,0.063008835,0.21195211,0,6.3810457e-05,0,0,1,0,1201.9361,418.23237,0,1)"><img loading="lazy" decoding="async" alt="" width="1506" height="1044" src="images/img-10.webp"></button><span class="sc-tip sc-rdtip" style="left:1330px;top:442px">專長訊號 ・ 點擊</span></div>
+    <div class="sc-rdw" id="scRsw"><button type="button" class="sc-rd" id="scRs" aria-label="專長訊號" style="width:1506px;height:1044px;transform:matrix3d(0.088657438,-0.023749411,0,-4.28617e-05,0.063008835,0.21195211,0,6.3810457e-05,0,0,1,0,1201.9361,418.23237,0,1)"><img loading="lazy" decoding="async" alt="" width="1506" height="1044" src="images/img-16.webp"></button><span class="sc-tip sc-rdtip" style="left:1330px;top:442px">專長訊號 ・ 點擊</span></div>
     <button type="button" class="sc-dash" id="scDash" aria-label="開啟探索者檔案">
-      <i class="sc-ping"></i><img loading="lazy" decoding="async" alt="" src="images/img-11.webp">
+      <i class="sc-ping"></i><img loading="lazy" decoding="async" alt="" src="images/img-17.webp">
       <span class="sc-tip">探索者檔案 ・ 點擊儀表板開啟</span>
     </button>
-    <div class="sc-rdw" id="scRdw"><button type="button" class="sc-rd" id="scRd" aria-label="航行紀錄"><img loading="lazy" decoding="async" alt="" width="1536" height="1024" src="images/img-12.webp"></button><span class="sc-tip sc-rdtip" id="scRdTip">航行紀錄 ・ 點擊</span></div>
-    <img loading="lazy" decoding="async" class="sc-plant" alt="" src="images/img-13.webp">
+    <div class="sc-rdw" id="scRdw"><button type="button" class="sc-rd" id="scRd" aria-label="航行紀錄"><img loading="lazy" decoding="async" alt="" width="1536" height="1024" src="images/img-18.webp"></button><span class="sc-tip sc-rdtip" id="scRdTip">航行紀錄 ・ 點擊</span></div>
+    <img loading="lazy" decoding="async" class="sc-plant" alt="" src="images/img-19.webp">
   </div>
   <div class="sc-card" id="scCard" role="dialog" aria-label="艦長席" hidden>
     <div class="scc-top"><span>艦長席 ・ CAPTAIN</span><button type="button" id="sccX" aria-label="關閉">✕</button></div>
@@ -2368,10 +2374,10 @@
     <div class="cm-msg" id="cmMsg" role="status"></div>
     <div class="cm-row"><span id="cmCnt">0/30</span><button type="submit">SEND ➤</button></div>
   </form>
-  <img loading="lazy" decoding="async" id="cmFrameB1Src" alt="" hidden src="images/img-14.webp">
-  <img loading="lazy" decoding="async" id="cmFrameB2Src" alt="" hidden src="images/img-15.webp">
-  <img loading="lazy" decoding="async" id="cmFrame2Src" alt="" hidden src="images/img-16.webp">
-  <img loading="lazy" decoding="async" id="cmFrameSrc" alt="" hidden src="images/img-17.webp">
+  <img loading="lazy" decoding="async" id="cmFrameB1Src" alt="" hidden src="images/img-20.webp">
+  <img loading="lazy" decoding="async" id="cmFrameB2Src" alt="" hidden src="images/img-21.webp">
+  <img loading="lazy" decoding="async" id="cmFrame2Src" alt="" hidden src="images/img-22.webp">
+  <img loading="lazy" decoding="async" id="cmFrameSrc" alt="" hidden src="images/img-23.webp">
 </aside>
 <div class="side-tag" aria-hidden="true"><span>LOSTAR · X-404</span><b id="sideProg">SCAN 000</b></div>
 <div class="milkyway"></div>
@@ -2384,9 +2390,9 @@
 <header>
   <nav class="wrap">
     <div class="player" id="player">
-      <div class="pl-avatar" role="button" tabindex="0" aria-label="發射太空船"><img loading="lazy" decoding="async" src="images/img-18.png" alt="Xiaoyi 太空人頭盔"></div>
+      <div class="pl-avatar" role="button" tabindex="0" aria-label="發射太空船"><img loading="lazy" decoding="async" src="images/img-24.png" alt="Xiaoyi 太空人頭盔"></div>
       <div class="pl-info">
-        <div class="pl-name"><img loading="lazy" decoding="async" class="pl-word" src="images/img-19.png" alt="LOSTAR 迷航星"><span class="pl-lv">LV.<i id="plLv">--</i></span></div>
+        <div class="pl-name"><img loading="lazy" decoding="async" class="pl-word" src="images/img-25.png" alt="LOSTAR 迷航星"><span class="pl-lv">LV.<i id="plLv">--</i></span></div>
         <div class="pl-xp-wrap" tabindex="0">
           <div class="pl-xp" role="progressbar" aria-label="經驗值" aria-valuemin="0" aria-valuemax="100" id="plBar"><i id="plXp"></i></div>
           <span class="pl-xp-txt" id="plXpTxt">EXP --%</span>
@@ -2453,7 +2459,7 @@
           <div class="vh-tilt" id="vhTilt">
             <div class="vh-flip">
               <div class="vh-glow" id="vhGlow" aria-hidden="true"></div>
-              <img loading="lazy" decoding="async" id="vhHand" alt="填滿星空的手，托著上方的主視覺" src="images/img-20.webp">
+              <img loading="lazy" decoding="async" id="vhHand" alt="填滿星空的手，托著上方的主視覺" src="images/img-26.webp">
               <canvas id="vhDust" aria-hidden="true"></canvas>
             </div>
           </div>
@@ -2472,14 +2478,14 @@
       <div class="pf-bar" aria-hidden="true"><span class="pb-l">拾星號 <b>GLEANER</b></span><span class="pb-c">探索者檔案 ・ CAPTAIN LOG</span></div>
       <div class="pfi-head">
         <div class="pfi-left">
-          <div class="pf-port" aria-hidden="true"><div class="pp-win"><i class="pp-sky"></i><i class="pp-sweep"></i><img loading="lazy" decoding="async" class="pp-av" alt="" src="images/img-21.webp"><i class="pp-tint"></i><i class="pp-scan"></i><i class="pp-ret"></i><i class="pp-hud pp-hl">REC</i><i class="pp-hud pp-hr">404</i></div><span class="pp-tag">404 <em>虛擬化身</em></span></div>
+          <div class="pf-port" aria-hidden="true"><div class="pp-win"><i class="pp-sky"></i><i class="pp-sweep"></i><img loading="lazy" decoding="async" class="pp-av" alt="" src="images/img-27.webp"><i class="pp-tint"></i><i class="pp-scan"></i><i class="pp-ret"></i><i class="pp-hud pp-hl">REC</i><i class="pp-hud pp-hr">404</i></div><span class="pp-tag">404 <em>虛擬化身</em></span></div>
           <div class="section-head pfi-sh">
             <div class="hud-label">// 01 — EXPLORER PROFILE · ABOUT</div>
             <h2>探索者檔案</h2>
             <p>創作者的簡歷、專長與經歷。</p>
           </div>
           <div class="pfi-who">
-            <div class="pfi-photo"><img loading="lazy" decoding="async" src="images/img-22.jpg" alt="海邊手持乾燥花的側臉人像"></div>
+            <div class="pfi-photo"><img loading="lazy" decoding="async" src="images/img-28.jpg" alt="海邊手持乾燥花的側臉人像"></div>
             <div class="pfi-names">
               <h2>蕭翔逸<span>XiangYi Xiao</span></h2>
               <p class="pfi-role">插畫家 ・ 角色設計 ・ 貼圖企劃</p>
@@ -2563,12 +2569,12 @@
       <div class="trail-canvas" id="trailCanvas"></div>
       <div class="ring-tilt">
         <div class="blackhole" aria-hidden="true" style="--bh-grow:1.35; --bh-bright:1.3;">
-          <img decoding="async" class="bh-img" src="images/img-23.webp" alt="黑洞插畫">
+          <img decoding="async" class="bh-img" src="images/img-29.webp" alt="黑洞插畫">
         </div>
         <div class="ring collapsed" id="starRing">
           <button class="ring-item" type="button" data-angle="0" style="transform:rotateY(0deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-24.webp" alt="水星風格行星">
+              <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-30.webp" alt="水星風格行星">
               <div class="star-label"><div class="name">啟航星</div><div class="medium">Voyage Star</div></div>
             </div>
           </button>
@@ -2588,7 +2594,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(24deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="72" style="transform:rotateY(72deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-25.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-31.webp" alt="星環行星">
               <div class="star-label"><div class="name">元宇宙</div><div class="medium">Metaverse</div></div>
             </div>
           </button>
@@ -2608,7 +2614,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(96deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="144" style="transform:rotateY(144deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-26.webp" alt="森林行星">
+              <img decoding="async" class="planet-img" src="images/img-32.webp" alt="森林行星">
               <div class="star-label"><div class="name">貼圖星</div><div class="medium">Sticker Star</div></div>
             </div>
           </button>
@@ -2628,7 +2634,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(168deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="216" style="transform:rotateY(216deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-27.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-33.webp" alt="星環行星">
               <div class="star-label"><div class="name">萬象星</div><div class="medium">Spectrum</div></div>
             </div>
           </button>
@@ -2648,7 +2654,7 @@
           <span class="trail-dot td-cw" style="transform:rotateY(240deg) translateZ(250px);"></span>
           <button class="ring-item" type="button" data-angle="288" style="transform:rotateY(288deg) translateZ(var(--orbit-r));">
             <div class="star-content">
-              <img decoding="async" class="planet-img" src="images/img-28.webp" alt="星環行星">
+              <img decoding="async" class="planet-img" src="images/img-34.webp" alt="星環行星">
               <div class="star-label"><div class="name">牡羊 41</div><div class="medium">41 Arietis</div></div>
             </div>
           </button>
@@ -2757,7 +2763,7 @@
       <div class="ct-title">合作友星 <small>NEIGHBOR STARS</small></div>
       <div class="ct-partners" style="margin-top:0">
         <a class="pn-card" id="pnGuo" href="https://sakanaouo.github.io/" title="郭乃瑜 作品集" aria-label="郭乃瑜 作品集" target="_blank" rel="noopener noreferrer">
-          <span class="pn-orb"><img loading="lazy" decoding="async" src="images/img-29.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
+          <span class="pn-orb"><img loading="lazy" decoding="async" src="images/img-35.webp" alt="郭乃瑜 作品集" width="70" height="70"><i class="pn-tag t1">VFX</i><i class="pn-tag t2">3D Artist</i><i class="pn-tag t3">跨領域創作</i></span>
           <span class="pn-txt"><b>郭乃瑜</b><em>具備數位多媒體與3D製作的跨領域背景。</em><small>VISIT PORTFOLIO ›</small></span>
         </a>
       </div>
@@ -2799,7 +2805,7 @@
   <div class="lg-main" id="lgMain">
     <section class="lg-hero">
       <div class="lg-bignum" id="lgBigNum" aria-hidden="true"></div>
-      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img loading="lazy" decoding="async" id="lgFigImg" alt="" src="images/img-30.webp"></div>
+      <div class="lg-fig" id="lgFig" aria-hidden="true"><div class="lg-say" id="lgSay"></div><img loading="lazy" decoding="async" id="lgFigImg" alt="" src="images/img-36.webp"></div>
       <span class="hud-label" id="dtNo"></span>
       <h1 class="lg-name" id="dtName"></h1>
       <div class="lg-en" id="dtEn"></div>
@@ -2887,8 +2893,8 @@
 </div>
 
 <div id="assetStore" hidden>
-  <img loading="lazy" decoding="async" id="workFullbody" src="images/img-31.webp" alt="白髮少年回眸站姿全身設定">
-  <img loading="lazy" decoding="async" id="coverArt" src="images/img-32.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
+  <img loading="lazy" decoding="async" id="workFullbody" src="images/img-37.webp" alt="白髮少年回眸站姿全身設定">
+  <img loading="lazy" decoding="async" id="coverArt" src="images/img-38.jpg" alt="白髮少年手捧發光星芒，頭頂彩虹光環，站在星空下">
 </div>
 
 <script>
@@ -3502,33 +3508,33 @@
     // metaverse: addCharacterSeries('角色名稱', { year:'2026', desc:'角色／系列說明', cover:'(選填) 封面圖', pinned:false }, [ { src:'…', title:'' }, … ]);
     function addCharacterSeries(name, meta, works){ pushSeries(META_NAME, name, meta, works, '角色系列'); }
     addCharacterSeries('許願神．新輝', { year: '', desc: '' }, [
-      { src: 'images/img-33.webp' },
-      { src: 'images/img-34.webp' },
-      { src: 'images/img-35.webp' },
-      { src: 'images/img-36.webp' },
-      { src: 'images/img-37.webp' },
-      { src: 'images/img-38.webp' },
       { src: 'images/img-39.webp' },
       { src: 'images/img-40.webp' },
-      { src: 'images/img-41.webp', title: '新輝 Q版 動圖' }
-    ]);
-    addCharacterSeries('星鯊．魚', { year: '', desc: '' }, [
+      { src: 'images/img-41.webp' },
       { src: 'images/img-42.webp' },
       { src: 'images/img-43.webp' },
-      { src: 'images/img-44.webp' }
-    ]);
-    addCharacterSeries('瑤幽', { year: '', desc: '' }, [
+      { src: 'images/img-44.webp' },
       { src: 'images/img-45.webp' },
       { src: 'images/img-46.webp' },
-      { src: 'images/img-47.webp' }
+      { src: 'images/img-47.webp', title: '新輝 Q版 動圖' }
     ]);
-    addCharacterSeries('專題小夥伴', { year: '', desc: '大學專題時，為組員們畫的 Q 版形象。' }, [
+    addCharacterSeries('星鯊．魚', { year: '', desc: '' }, [
       { src: 'images/img-48.webp' },
       { src: 'images/img-49.webp' },
-      { src: 'images/img-50.webp' },
+      { src: 'images/img-50.webp' }
+    ]);
+    addCharacterSeries('瑤幽', { year: '', desc: '' }, [
       { src: 'images/img-51.webp' },
       { src: 'images/img-52.webp' },
-      { src: 'images/img-53.webp' },
+      { src: 'images/img-53.webp' }
+    ]);
+    addCharacterSeries('專題小夥伴', { year: '', desc: '大學專題時，為組員們畫的 Q 版形象。' }, [
+      { src: 'images/img-54.webp' },
+      { src: 'images/img-55.webp' },
+      { src: 'images/img-56.webp' },
+      { src: 'images/img-57.webp' },
+      { src: 'images/img-58.webp' },
+      { src: 'images/img-59.webp' },
     ]);
 
     if(newIdx >= 0){
@@ -3537,11 +3543,11 @@
     }
 
     (function(){
-      addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-54.webp' });
-      addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-55.webp' });
-      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-56.webp' });
-      addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-57.webp' });
-      addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-58.webp' });
+      addWork('萬象星', { title: '寧願拖行李箱也不想背背包', year: '', medium: '漫畫', desc: '', src: 'images/img-60.webp' });
+      addWork('萬象星', { title: '飯店的早餐再睏都要吃', year: '', medium: '漫畫', desc: '', src: 'images/img-61.webp' });
+      addWork('牡羊 41', { title: '委託-Q版哈利波特風格', year: '', medium: 'Q版', desc: '', src: 'images/img-62.webp' });
+      addWork('萬象星', { title: '風車與地球', year: '', medium: '插畫', desc: '', src: 'images/img-63.webp' });
+      addWork('萬象星', { title: '聖誕賀卡', year: '2022', medium: '插畫', desc: '', src: 'images/img-64.webp' });
     })();
 
     (function(){
@@ -3549,30 +3555,24 @@
       var fullBody = document.getElementById('workFullbody');
       if(heroPic)  addWork('啟航星', { title: '迷航星．主視覺', year: '', medium: '角色立繪', desc: '', src: heroPic.src });
       if(fullBody) addWork('啟航星', { title: '迷航星．全身立繪', year: '', medium: '角色立繪', desc: '', src: fullBody.src, details: [
-        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-59.webp' },
-        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-60.webp' },
-        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-61.webp' } ] });
-      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-62.webp', details: [
-        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-63.webp' },
-        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-64.webp' },
-        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-65.webp' } ] });
+        { title: '迷航星．全身立繪 · 回眸', label: '回眸', src: 'images/img-65.webp' },
+        { title: '迷航星．全身立繪 · LOSTAR 掛飾', label: 'LOSTAR 掛飾', src: 'images/img-66.webp' },
+        { title: '迷航星．全身立繪 · 彩虹球鞋', label: '彩虹球鞋', src: 'images/img-67.webp' } ] });
+      addWork('啟航星', { title: '迷航星．正面立繪', year: '', medium: '角色立繪', desc: '', src: 'images/img-68.webp', details: [
+        { title: '迷航星．正面立繪 · 眼神與星石', label: '眼神與星石', src: 'images/img-69.webp' },
+        { title: '迷航星．正面立繪 · 腰帶與鍊飾', label: '腰帶與鍊飾', src: 'images/img-70.webp' },
+        { title: '迷航星．正面立繪 · 鞋子', label: '鞋子', src: 'images/img-71.webp' } ] });
     })();
 
     addSeries('吉呱呱', { year: '', desc: '' }, [
-      { src: 'images/img-66.webp' },
-      { src: 'images/img-67.webp' },
-      { src: 'images/img-68.webp' },
-      { src: 'images/img-69.webp' },
-      { src: 'images/img-70.webp' },
-      { src: 'images/img-71.webp' }
-    ]);
-    addSeries('邱邱羊的日記', { year: '', desc: '' }, [
       { src: 'images/img-72.webp' },
       { src: 'images/img-73.webp' },
       { src: 'images/img-74.webp' },
       { src: 'images/img-75.webp' },
       { src: 'images/img-76.webp' },
-      { src: 'images/img-77.webp' },
+      { src: 'images/img-77.webp' }
+    ]);
+    addSeries('邱邱羊的日記', { year: '', desc: '' }, [
       { src: 'images/img-78.webp' },
       { src: 'images/img-79.webp' },
       { src: 'images/img-80.webp' },
@@ -3584,19 +3584,25 @@
       { src: 'images/img-86.webp' },
       { src: 'images/img-87.webp' },
       { src: 'images/img-88.webp' },
-      { src: 'images/img-89.webp' }
+      { src: 'images/img-89.webp' },
+      { src: 'images/img-90.webp' },
+      { src: 'images/img-91.webp' },
+      { src: 'images/img-92.webp' },
+      { src: 'images/img-93.webp' },
+      { src: 'images/img-94.webp' },
+      { src: 'images/img-95.webp' }
     ]);
     addSeries('水獺好有戲', { year: '', desc: '' }, [
-      { src: 'images/img-90.webp', title: '背背包的生氣水獺' },
-      { src: 'images/img-91.webp', title: '愛心眼水獺' }
+      { src: 'images/img-96.webp', title: '背背包的生氣水獺' },
+      { src: 'images/img-97.webp', title: '愛心眼水獺' }
     ]);
     addSeries('累累兔鼠', { year: '', desc: '' }, [
-      { src: 'images/img-92.webp', title: '不想上班' },
-      { src: 'images/img-93.webp', title: '不加班' }
+      { src: 'images/img-98.webp', title: '不想上班' },
+      { src: 'images/img-99.webp', title: '不加班' }
     ]);
     addSeries('其他', { year: '', desc: '' }, [
-      { src: 'images/img-94.webp', title: '草泥馬' },
-      { src: 'images/img-95.webp', title: '水豚疑惑' }
+      { src: 'images/img-100.webp', title: '草泥馬' },
+      { src: 'images/img-101.webp', title: '水豚疑惑' }
     ]);
     var detailEl = document.getElementById('detail');
     var lgBar = document.getElementById('lgBar');
@@ -5646,7 +5652,7 @@ cm.addEventListener('click',function(){
   var reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var wrap=document.createElement('div'); wrap.className='hs-wrap'; wrap.setAttribute('aria-hidden','false');
   var ship=document.createElement('button'); ship.type='button'; ship.className='hs'; ship.setAttribute('aria-label','登上拾星號，進入駕駛艙');
-  ship.innerHTML='<span class="hs-b"><img loading="lazy" decoding="async" alt="" src="images/img-96.webp"></span><span class="hs-tip">拾星號 ・ 點擊登艦</span>';
+  ship.innerHTML='<span class="hs-b"><img loading="lazy" decoding="async" alt="" src="images/img-102.webp"></span><span class="hs-tip">拾星號 ・ 點擊登艦</span>';
   wrap.appendChild(ship); document.body.insertBefore(wrap,document.body.firstChild);
   ship.addEventListener('animationend',function(e){ if(e.animationName==='hsIn') ship.classList.add('settled'); });
   var boarding=false;
