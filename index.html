@@ -2118,8 +2118,7 @@
   .sk-sp{position:absolute; width:calc(54px * var(--s,1) * var(--k,1)); aspect-ratio:1; margin:calc(-27px * var(--s,1) * var(--k,1)) 0 0 calc(-27px * var(--s,1) * var(--k,1)); pointer-events:none; mix-blend-mode:screen; will-change:opacity,transform; animation:skTw 4s ease-in-out infinite;
     background:radial-gradient(circle,rgba(255,255,255,.95) 0 6%,rgba(200,190,255,.45) 14%,transparent 40%), linear-gradient(90deg,transparent 8%,rgba(235,230,255,.75) 50%,transparent 92%) center/100% 3% no-repeat, linear-gradient(0deg,transparent 8%,rgba(235,230,255,.75) 50%,transparent 92%) center/3% 100% no-repeat;}
   @keyframes skTw{0%,100%{opacity:.25; transform:scale(.7) rotate(0deg)} 45%{opacity:1; transform:scale(1.15) rotate(8deg)} 70%{opacity:.55; transform:scale(.9) rotate(-4deg)}}
-  .sk-rg{position:absolute; will-change:transform; animation:skRg 26s ease-in-out infinite alternate;}
-  .sk-rg2{animation-duration:34s; animation-direction:alternate-reverse;}
+  .sk-rg{position:absolute;}
   .sk-ro{position:absolute; display:block; height:auto; will-change:transform; animation:skRo 30s ease-in-out infinite alternate, skRf 20s ease-in-out infinite alternate; filter:drop-shadow(0 0 calc(10px*var(--k,1)) rgba(120,110,255,.28));}
   @keyframes skRg{from{transform:translate(-1.6%,1.2%)} to{transform:translate(2.2%,-1.8%)}}
   @keyframes skRo{from{rotate:var(--a,-6deg)} to{rotate:var(--b,6deg)}}
@@ -5765,6 +5764,40 @@ cm.addEventListener('click',function(){
   }
   var wasCov=document.documentElement.classList.contains('lg-covered');
   new MutationObserver(function(){ var c=document.documentElement.classList.contains('lg-covered'); if(wasCov&&!c) reset(); wasCov=c; }).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+})();
+</script>
+<script>
+/* cockpit asteroids: each rock wanders slowly across the window at its own heading, wrapping at the sides and easing off the top/bottom limits */
+(function(){
+  var rocks=[].slice.call(document.querySelectorAll('.sk-ro')); if(!rocks.length) return;
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var parent=rocks[0].closest('.sk-d'), st=[], last=0, ready=false;
+  function init(){
+    var W=parent.offsetWidth, H=parent.offsetHeight; if(!W) return false;
+    st=rocks.map(function(el,i){
+      var g=el.parentNode, x=g.offsetLeft+el.offsetLeft, y=g.offsetTop+el.offsetTop, w=el.offsetWidth;
+      var sp=1.6*(7+Math.random()*9)*(w/120>1?1.25:1)/1672*W, ang=(Math.random()*.9-.45)+(Math.random()<.5?0:Math.PI);
+      return {el:el,hx:x,hy:y,w:w,dx:0,dy:0,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp*.45,t:Math.random()*10};
+    });
+    ready=true; return true;
+  }
+  function tick(t){
+    requestAnimationFrame(tick);
+    if(!document.body.classList.contains('pf-scene')||document.hidden){ last=0; return; }
+    if(!ready&&!init()) return;
+    var dt=last?Math.min(.1,(t-last)/1000):0; last=t;
+    var W=parent.offsetWidth, H=parent.offsetHeight, top=H*.05, bot=H*.5;
+    st.forEach(function(r){
+      r.t+=dt; r.vy+=Math.sin(r.t*.35+r.w)*dt*1.2;           /* slow meander */
+      var ax=r.hx+r.dx+r.vx*dt, ay=r.hy+r.dy+r.vy*dt;
+      if(ay<top){ ay=top; r.vy=Math.abs(r.vy)*.8; } if(ay>bot-r.w*.5){ ay=bot-r.w*.5; r.vy=-Math.abs(r.vy)*.8; }
+      if(r.vx>0&&ax>W+r.w){ ax=-r.w*1.2; } if(r.vx<0&&ax<-r.w*1.3){ ax=W+r.w*.2; }
+      r.dx=ax-r.hx; r.dy=ay-r.hy;
+      r.el.style.transform='translate('+r.dx.toFixed(1)+'px,'+r.dy.toFixed(1)+'px)';
+    });
+  }
+  requestAnimationFrame(tick);
+  addEventListener('resize',function(){ ready=false; rocks.forEach(function(e){ e.style.transform=''; }); });
 })();
 </script>
 </body>
