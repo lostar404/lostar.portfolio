@@ -5927,7 +5927,7 @@ cm.addEventListener('click',function(){
     if(shots>=BURST){ cdUntil=now+2000; shots=0; rs.classList.add('rs-cool'); setTimeout(function(){ rs.classList.remove('rs-cool'); },2000); }
     if(miss){
       var W=d.parent.offsetWidth, H=d.parent.offsetHeight;
-      launch(d,r,true,{x:W*(.18+Math.random()*.64),y:H*(.03+Math.random()*.14)});
+      launch(d,r,true,{x:W*(.5+(Math.random()-.5)*.03),y:H*(.3+(Math.random()-.5)*.03)});
       return;
     }
     r.targeted=true;
