@@ -5898,9 +5898,10 @@ cm.addEventListener('click',function(){
   }
   function launch(d,r,miss,aim){
     var W=d.parent.offsetWidth, H=d.parent.offsetHeight, k=W/1672;
-    var m=el('sk-ms'); var x=W*.47+(Math.random()*W*.06), y=H*.41, hd=-Math.PI/2+(Math.random()*.7-.35), v=240*k, t0=performance.now(), last=t0, n=0, passed=0;
+    var m=el('sk-ms'); var side=Math.random()<.5?-1:1, x=W*(.5+side*(.3+Math.random()*.03)), y=H*(.4+Math.random()*.03), hd=-Math.PI/2-side*(.35+Math.random()*.35), v=240*k, t0=performance.now(), last=t0, n=0, passed=0, wp=0;
     (function step(now){
       var dt=Math.min(.05,(now-last)/1000); last=now;
+      if(miss&&now>wp){ aim={x:W*(.08+Math.random()*.84),y:H*(.04+Math.random()*.34)}; wp=now+380+Math.random()*200; }
       var tx=miss?aim.x:center(r).x, ty=miss?aim.y:center(r).y, dx=tx-x, dy=ty-y, dist=Math.hypot(dx,dy);
       if(!(miss&&passed)){
         var want=Math.atan2(dy,dx), diff=((want-hd+Math.PI*3)%(Math.PI*2))-Math.PI, maxT=(4.2+((now-t0)/1000)*3)*dt;
@@ -5908,11 +5909,11 @@ cm.addEventListener('click',function(){
       }
       v=Math.min(1300*k,v+1500*k*dt);
       x+=Math.cos(hd)*v*dt; y+=Math.sin(hd)*v*dt;
-      var pr=miss?Math.min(1,(now-t0)/1250):0, sc=1-.72*pr;
+      var pr=miss?Math.min(1,(now-t0)/1700):0, sc=1-.72*pr;
       m.style.transform='translate('+x+'px,'+y+'px) rotate('+hd*180/Math.PI+'deg) scale('+sc+')';
       if((n++%2)===0){ var tr=el('sk-sm'); tr.animate([{transform:'translate('+x+'px,'+y+'px) scale('+sc+')',opacity:.85},{transform:'translate('+x+'px,'+y+'px) scale('+sc*.2+')',opacity:0}],{duration:520,easing:'ease-out'}).onfinish=function(){ tr.remove(); }; }
       if(miss){
-        if(pr>=1||dist<8*k){ m.remove(); farBoom(x,y,k); return; }
+        if(pr>=1){ m.remove(); farBoom(x,y,k); return; }
       }else if(dist<Math.max(16*k,r.w*.28)||now-t0>3200){ m.remove(); explode(d,r); return; }
       requestAnimationFrame(step);
     })(t0);
