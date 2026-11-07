@@ -5859,7 +5859,7 @@ cm.addEventListener('click',function(){
 /* cockpit: the radar screen is the fire button. A missile homes in on the asteroid the radar sweep is pointing at, blows it up, and a new rock drifts back in a few seconds later */
 (function(){
   var rs=document.getElementById('scRs'); if(!rs) return;
-  var layer=null, SWEEP=4800, shots=0, lastShot=-1e9, cdUntil=0, MISS=.25;
+  var layer=null, SWEEP=4800, shots=0, lastShot=-1e9, cdUntil=0, MISS=.25, BURST=5;
   function ctx(){ var d=window.__skRocks; if(!d) return null; if(!layer){ layer=document.createElement('div'); layer.className='sk-fx'; d.parent.appendChild(layer); } return d; }
   function center(r){ return {x:r.hx+r.dx+r.w/2, y:r.hy+r.dy+r.el.offsetHeight/2}; }
   function sweepDeg(){ var sw=document.querySelector('.rs-sw'), a=sw&&sw.getAnimations&&sw.getAnimations()[0]; return a?(((a.currentTime||0)%SWEEP)/SWEEP*360):0; }
@@ -5890,6 +5890,12 @@ cm.addEventListener('click',function(){
       setTimeout(function(){ r.el.style.transition=''; },1300);
     },5200);
   }
+  function farBoom(x,y,k){
+    var w=34*k+10, fl=el('sk-boom','width:'+w*2+'px;height:'+w*2+'px;margin:'+(-w)+'px 0 0 '+(-w)+'px;');
+    fl.animate([{transform:'translate('+x+'px,'+y+'px) scale(.2)',opacity:.95},{transform:'translate('+x+'px,'+y+'px) scale(1)',opacity:.7,offset:.4},{transform:'translate('+x+'px,'+y+'px) scale(1.3)',opacity:0}],{duration:520,easing:'ease-out'}).onfinish=function(){ fl.remove(); };
+    var rg=el('sk-ring','width:'+w*1.5+'px;height:'+w*1.5+'px;margin:'+(-w*.75)+'px 0 0 '+(-w*.75)+'px;border-width:2px;');
+    rg.animate([{transform:'translate('+x+'px,'+y+'px) scale(.1)',opacity:.8},{transform:'translate('+x+'px,'+y+'px) scale(1.4)',opacity:0}],{duration:640,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=function(){ rg.remove(); };
+  }
   function launch(d,r,miss,aim){
     var W=d.parent.offsetWidth, H=d.parent.offsetHeight, k=W/1672;
     var m=el('sk-ms'); var x=W*.47+(Math.random()*W*.06), y=H*.41, hd=-Math.PI/2+(Math.random()*.7-.35), v=240*k, t0=performance.now(), last=t0, n=0, passed=0;
@@ -5902,12 +5908,11 @@ cm.addEventListener('click',function(){
       }
       v=Math.min(1300*k,v+1500*k*dt);
       x+=Math.cos(hd)*v*dt; y+=Math.sin(hd)*v*dt;
-      m.style.transform='translate('+x+'px,'+y+'px) rotate('+hd*180/Math.PI+'deg)';
-      if((n++%2)===0){ var tr=el('sk-sm'); tr.animate([{transform:'translate('+x+'px,'+y+'px) scale(1)',opacity:.85},{transform:'translate('+x+'px,'+y+'px) scale(.2)',opacity:0}],{duration:520,easing:'ease-out'}).onfinish=function(){ tr.remove(); }; }
+      var pr=miss?Math.min(1,(now-t0)/1250):0, sc=1-.72*pr;
+      m.style.transform='translate('+x+'px,'+y+'px) rotate('+hd*180/Math.PI+'deg) scale('+sc+')';
+      if((n++%2)===0){ var tr=el('sk-sm'); tr.animate([{transform:'translate('+x+'px,'+y+'px) scale('+sc+')',opacity:.85},{transform:'translate('+x+'px,'+y+'px) scale('+sc*.2+')',opacity:0}],{duration:520,easing:'ease-out'}).onfinish=function(){ tr.remove(); }; }
       if(miss){
-        if(!passed&&dist<22*k) passed=now;
-        var gone=x<-80||x>W+80||y<-80||y>H+80;
-        if(gone||(passed&&now-passed>900)||now-t0>3600){ m.remove(); return; }
+        if(pr>=1||dist<8*k){ m.remove(); farBoom(x,y,k); return; }
       }else if(dist<Math.max(16*k,r.w*.28)||now-t0>3200){ m.remove(); explode(d,r); return; }
       requestAnimationFrame(step);
     })(t0);
@@ -5919,10 +5924,10 @@ cm.addEventListener('click',function(){
     if(now-lastShot>2000) shots=0;
     var r=pick(d), miss=Math.random()<MISS||!r;
     shots++; lastShot=now; rs.classList.add('rs-fire'); setTimeout(function(){ rs.classList.remove('rs-fire'); },260);
-    if(shots>=3){ cdUntil=now+2000; shots=0; rs.classList.add('rs-cool'); setTimeout(function(){ rs.classList.remove('rs-cool'); },2000); }
+    if(shots>=BURST){ cdUntil=now+2000; shots=0; rs.classList.add('rs-cool'); setTimeout(function(){ rs.classList.remove('rs-cool'); },2000); }
     if(miss){
-      var W=d.parent.offsetWidth, H=d.parent.offsetHeight, k=W/1672, base=r?center(r):{x:W*(.25+Math.random()*.5),y:H*(.08+Math.random()*.25)}, a=Math.random()*Math.PI*2, off=(110+Math.random()*90)*k;
-      launch(d,r,true,{x:base.x+Math.cos(a)*off,y:Math.min(H*.36,Math.max(H*.04,base.y+Math.sin(a)*off))});
+      var W=d.parent.offsetWidth, H=d.parent.offsetHeight;
+      launch(d,r,true,{x:W*(.18+Math.random()*.64),y:H*(.03+Math.random()*.14)});
       return;
     }
     r.targeted=true;
