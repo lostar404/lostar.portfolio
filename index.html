@@ -2298,6 +2298,8 @@
     .hs-tip{position:absolute; left:34%; top:88%; transform:translate(-50%,-4px); white-space:nowrap; padding:5px 11px; border:1px solid rgba(143,227,199,.5); border-radius:2px; background:rgba(8,12,30,.85); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud); opacity:0; transition:opacity .2s ease, transform .2s ease; pointer-events:none;}
     .hs:hover .hs-tip,.hs:focus-visible .hs-tip{opacity:1; transform:translate(-50%,0); color:#fff; border-color:var(--hud);}
         .hs.boarding .hs-b{animation-play-state:paused;}
+    html.hs-go body *:not(#scene):not(#scene *){animation-play-state:paused !important;}
+    html.hs-go .hero *{backdrop-filter:none !important; -webkit-backdrop-filter:none !important;}
     .hs.boarding .hs-tip{opacity:0;}
     @keyframes hsIn{0%{opacity:0; transform:translate(55vw,-48vh) rotate(9deg);} 12%{opacity:1;} 100%{opacity:1; transform:translate(0,0) rotate(0);}}
     @keyframes hsFloat{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-9px) rotate(-.6deg)}}
@@ -5677,7 +5679,9 @@ cm.addEventListener('click',function(){
     var fl=ship.querySelector('.hs-b').cloneNode(true), bk=document.createElement('div');
     bk.style.cssText='position:fixed;inset:0;background:#02030a;opacity:0;z-index:1240;pointer-events:none;';
     fl.style.cssText='position:fixed;left:'+(-w/2)+'px;top:'+(-h/2)+'px;width:'+w+'px;height:'+h+'px;z-index:1250;pointer-events:none;animation:none;filter:none;transition:none;will-change:transform;';
-    var fb=fl.cloneNode(true); fb.style.filter='blur(9px)'; fb.style.opacity='0';
+    var fb=fl.cloneNode(true); fb.style.filter='none'; fb.style.opacity='0';
+    try{ var im0=fl.querySelector('img'), im1=fb.querySelector('img'); if(im0&&im1&&im0.naturalWidth){ var cv=document.createElement('canvas'); cv.width=Math.max(8,Math.round(im0.naturalWidth/12)); cv.height=Math.max(8,Math.round(im0.naturalHeight/12)); cv.getContext('2d').drawImage(im0,0,0,cv.width,cv.height); cv.style.cssText='display:block;width:100%;height:100%;'; im1.parentNode.replaceChild(cv,im1); } }catch(_){}
+    document.documentElement.classList.add('hs-go');
     document.body.appendChild(bk); document.body.appendChild(fl); document.body.appendChild(fb);
     ship.style.visibility='hidden'; ship.classList.add('boarding');
     function T(x,y,sc_,rot,fx){ return 'translate('+x+'px,'+y+'px) rotate('+rot+'deg) scale('+(fx*sc_)+','+sc_+')'; }
@@ -5688,7 +5692,7 @@ cm.addEventListener('click',function(){
     ],{duration:420,easing:'cubic-bezier(.55,0,.9,.4)',fill:'forwards'});
     a1.onfinish=function(){
       /* second pass: from the lower-left, mirrored so the nose leads, growing until it fills (blacks out) the screen */
-      var s0=.9, s1=Math.max(W/w,H/h)*4.2, x0=-w*.3, y0=H+h*.2, x1=W*.62, y1=H*.4;
+      var s0=.9, s1=Math.max(W/w,H/h)*1.7, x0=-w*.3, y0=H+h*.2, x1=W*.62, y1=H*.4;
       var kf=[
         {transform:T(x0,y0,s0,-16,-1), offset:0},
         {transform:T(x0+(x1-x0)*.5,y0+(y1-y0)*.5,s1*.18,-14,-1), offset:.55},
@@ -5697,10 +5701,10 @@ cm.addEventListener('click',function(){
       fl.animate(kf,op); fb.animate(kf,op);
       fl.animate([{opacity:1},{opacity:1,offset:.15},{opacity:0}],{duration:680,fill:'forwards'});
       fb.animate([{opacity:0},{opacity:0,offset:.15},{opacity:1}],{duration:680,fill:'forwards'});
-      bk.animate([{opacity:0},{opacity:0,offset:.5},{opacity:1}],{duration:680,fill:'forwards'});
+      bk.animate([{opacity:0},{opacity:0,offset:.45},{opacity:1,offset:.9},{opacity:1}],{duration:680,fill:'forwards'});
       setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },600);
       setTimeout(function(){ var o={duration:380,fill:'forwards',easing:'ease-out'}; fb.animate([{opacity:1},{opacity:0}],o); bk.animate([{opacity:1},{opacity:0}],o); },700);
-      setTimeout(function(){ fl.remove(); fb.remove(); bk.remove(); ship.style.visibility=''; ship.classList.remove('boarding'); boarding=false; },1120);
+      setTimeout(function(){ fl.remove(); fb.remove(); bk.remove(); document.documentElement.classList.remove('hs-go'); ship.style.visibility=''; ship.classList.remove('boarding'); boarding=false; },1120);
     };
   });
 })();
