@@ -2308,6 +2308,7 @@
     @media (prefers-reduced-motion:reduce){ .hs{animation:none; opacity:1; transform:none;} .hs-b{animation:none;} }
     .board-flash{position:fixed; inset:0; z-index:1195; pointer-events:none; background:radial-gradient(circle at var(--bx,50%) var(--by,50%),rgba(215,225,255,.95) 0%,rgba(110,130,240,.7) 22%,#070a22 62%); opacity:0; animation:boardFlash 1.1s ease-in-out forwards;}
     @keyframes boardFlash{0%{opacity:0} 38%{opacity:1} 55%{opacity:1} 100%{opacity:0}}
+    #scene.sc-warm{visibility:visible !important; opacity:.01 !important; pointer-events:none !important; transition:none !important;}
     #scene.sc-enter .sc-stage{animation:scEnter .9s cubic-bezier(.2,.8,.2,1) both;}
     #scene.sc-enter .sc-stage *{animation-play-state:paused !important;}
     @keyframes scEnter{from{transform:translate(-50%,-50%) scale(1.3);} to{transform:translate(-50%,-50%) scale(1.04);}}
@@ -5691,16 +5692,19 @@ cm.addEventListener('click',function(){
       {transform:T(-w*1.3,oy+30,1.1,-6,1), offset:1}
     ],{duration:420,easing:'cubic-bezier(.55,0,.9,.4)',fill:'forwards'});
     a1.onfinish=function(){
-      /* second pass: re-enters from the left, grows a little and sweeps right across the screen; the cockpit opens as it leaves */
-      var xs=-w*.8, xe=W+w*.8, ys=H*.62, ye=H*.34;
-      fl.animate([
-        {transform:T(xs,ys,.95,-6,-1), offset:0},
-        {transform:T((xs+xe)/2,(ys+ye)/2,1.2,-9,-1), offset:.5},
-        {transform:T(xe,ye,1.45,-12,-1), offset:1}
-      ],{duration:760,easing:'cubic-bezier(.4,0,.6,1)',fill:'forwards'});
-      setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },700);
-      setTimeout(function(){ fl.remove(); },820);
-      setTimeout(function(){ ship.style.visibility=''; ship.classList.remove('boarding'); document.documentElement.classList.remove('hs-go'); boarding=false; },1400);
+      /* the ship is off-screen to the left: use this ~0.8s to quietly render the cockpit (invisible), then bring the ship back, 1.5x bigger, growing as it sweeps right off the screen */
+      if(sc) sc.classList.add('sc-warm');
+      setTimeout(function(){
+        var s0=1.5, s1=3.1, xs=-w*s0*.75, xe=W+w*s1*.7, ys=H*.64, ye=H*.3;
+        fl.animate([
+          {transform:T(xs,ys,s0,-6,-1), offset:0},
+          {transform:T((xs+xe)/2,(ys+ye)/2,(s0+s1)/2,-10,-1), offset:.5},
+          {transform:T(xe,ye,s1,-14,-1), offset:1}
+        ],{duration:900,easing:'cubic-bezier(.35,0,.65,1)',fill:'forwards'});
+        setTimeout(function(){ if(sc){ sc.classList.remove('sc-warm'); sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1000); } nav.click(); },720);
+        setTimeout(function(){ fl.remove(); },960);
+        setTimeout(function(){ ship.style.visibility=''; ship.classList.remove('boarding'); document.documentElement.classList.remove('hs-go'); boarding=false; },1500);
+      },800);
     };
   });
 })();
