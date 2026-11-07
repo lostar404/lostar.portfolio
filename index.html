@@ -5698,8 +5698,9 @@ cm.addEventListener('click',function(){
         {transform:T((xs+xe)/2,(ys+ye)/2,1.2,-9,-1), offset:.5},
         {transform:T(xe,ye,1.45,-12,-1), offset:1}
       ],{duration:760,easing:'cubic-bezier(.4,0,.6,1)',fill:'forwards'});
-      setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },430);
-      setTimeout(function(){ fl.remove(); ship.style.visibility=''; ship.classList.remove('boarding'); document.documentElement.classList.remove('hs-go'); boarding=false; },900);
+      setTimeout(function(){ if(sc){ sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1100); } nav.click(); },700);
+      setTimeout(function(){ fl.remove(); },820);
+      setTimeout(function(){ ship.style.visibility=''; ship.classList.remove('boarding'); document.documentElement.classList.remove('hs-go'); boarding=false; },1400);
     };
   });
 })();
