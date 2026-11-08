@@ -5521,7 +5521,9 @@ cm.addEventListener('click',function(){
   function sceneOpen(){ return document.body.classList.contains('pf-scene'); }
   function openScene(){ document.body.classList.add('pf-scene'); scene.removeAttribute('aria-hidden'); setTimeout(function(){ if(scDash) scDash.focus({preventScroll:true}); },500); }
   function closeScene(){ if(window.__scCardShut) window.__scCardShut(); clearTimeout(zt); document.body.classList.remove('pf-scene','pf-zoom','pf-sheet'); scene.setAttribute('aria-hidden','true'); }
-  if(navPf) navPf.addEventListener('click',function(){ if(sceneOpen()) closeScene(); else openScene(); });
+  window.__scOpen=function(){ if(!sceneOpen()) openScene(); };
+  /* header 個人簡介: open the profile page directly (the cockpit is entered through the ship avatar) */
+  if(navPf) navPf.addEventListener('click',function(){ if(sceneOpen()) closeScene(); if(isOpen()) shut(); else open(); });
   if(scClose) scClose.addEventListener('click',closeScene);
   if(scDash) scDash.addEventListener('click',function(){ if(isOpen()||document.body.classList.contains('pf-zoom')) return; document.body.classList.add('pf-zoom'); zt=setTimeout(open,520); });
 
@@ -5677,7 +5679,7 @@ cm.addEventListener('click',function(){
   ship.addEventListener('click',function(e){
     e.stopPropagation(); if(boarding) return; boarding=true;
     var r=ship.getBoundingClientRect(), sc=document.getElementById('scene'), nav=document.getElementById('navPf');
-    if(reduce||!nav||!ship.animate){ if(nav) nav.click(); boarding=false; return; }
+    if(reduce||!nav||!ship.animate){ if(window.__scOpen) window.__scOpen(); boarding=false; return; }
     /* ship-only flight: dash off to the left, then swoop back in from the lower-left, big and out of focus, toward the upper-right while the cockpit opens */
     var W=innerWidth, H=innerHeight, w=r.width, h=r.height, ox=r.left+w/2, oy=r.top+h/2;
     var fl=ship.querySelector('.hs-b').cloneNode(true);
@@ -5701,7 +5703,7 @@ cm.addEventListener('click',function(){
           {transform:T((xs+xe)/2,(ys+ye)/2,(s0+s1)/2,-10,-1), offset:.5},
           {transform:T(xe,ye,s1,-14,-1), offset:1}
         ],{duration:900,easing:'cubic-bezier(.35,0,.65,1)',fill:'forwards'});
-        setTimeout(function(){ if(sc){ sc.classList.remove('sc-warm'); sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1000); } nav.click(); },720);
+        setTimeout(function(){ if(sc){ sc.classList.remove('sc-warm'); sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1000); } if(window.__scOpen) window.__scOpen(); },720);
         setTimeout(function(){ fl.remove(); },960);
         setTimeout(function(){ ship.style.visibility=''; ship.classList.remove('boarding'); document.documentElement.classList.remove('hs-go'); boarding=false; },1500);
       },800);
