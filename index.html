@@ -1338,6 +1338,7 @@
   .pfi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
   .pfi-col h3{margin:0 0 12px; font-size:var(--fs-body); font-weight:600; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
   .pfi-col h3 small{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); font-weight:400;}
+  .pfi-work{display:none;}   /* 工作內容 shows only in the desktop profile sheet */
   .pf-chips{display:flex; flex-wrap:wrap; gap:7px;}
   .pf-chip{padding:5px 11px; font-size:var(--fs-ui); color:var(--text); border:1px solid var(--line); background:rgba(205,213,240,0.04);}
   .pf-tl{list-style:none; margin:0; padding:0 0 0 14px; border-left:1px solid var(--line);}
@@ -1890,6 +1891,24 @@
     body.pf-sheet #profile .ps-scroll{max-height:none !important; overflow:visible !important; -webkit-mask-image:none !important; mask-image:none !important; padding-right:0 !important;}
     body.pf-sheet #profile .ps-more, body.pf-sheet #profile .ps-bar{display:none !important;}
     body.pf-sheet #profile .pf-tl.ps-edu{display:grid !important; grid-template-columns:1fr 1fr; column-gap:clamp(20px,3vw,48px); row-gap:6px;}
+    .pfi-work{display:none;}
+    body.pf-sheet #profile .pfi-work{display:block; grid-column:2; grid-row:4; margin:0 !important; padding:clamp(14px,2.4vh,22px) 0 0 !important; border-top:1px solid var(--line-soft);}
+    body.pf-sheet #profile .pfi-grid{grid-row:5 !important;}
+    body.pf-sheet #profile .pfi-work .pfi-sub{display:block !important; margin:0 0 10px; text-align:left;}
+    body.pf-sheet #profile .pw-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 18px; margin:0 0 14px;}
+    body.pf-sheet #profile .pw-co{font-size:var(--fs-h4); font-weight:var(--fw-semibold); color:var(--text);}
+    body.pf-sheet #profile .pw-role{font-size:var(--fs-ui); color:var(--hud); letter-spacing:var(--ls-meta);}
+    body.pf-sheet #profile .pw-date{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--muted);}
+    body.pf-sheet #profile .pw-cols{display:grid; grid-template-columns:1fr 1fr; gap:clamp(14px,2vw,26px);}
+    body.pf-sheet #profile .pw-col{padding:clamp(12px,1.6vh,18px) clamp(14px,1.4vw,20px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
+    body.pf-sheet #profile .pw-col h4{margin:0 0 8px; font-size:var(--fs-ui); font-weight:var(--fw-semibold); color:var(--text);}
+    body.pf-sheet #profile .pw-col h4 small{margin-left:6px; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); font-weight:var(--fw-regular);}
+    body.pf-sheet #profile .pw-col p{margin:0 0 8px; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--muted);}
+    body.pf-sheet #profile .pw-col ul{list-style:none; margin:0 0 8px; padding:0;}
+    body.pf-sheet #profile .pw-col li{position:relative; padding-left:16px; margin:0 0 5px; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--text);}
+    body.pf-sheet #profile .pw-col li::before{content:""; position:absolute; left:2px; top:.6em; width:5px; height:5px; background:var(--hud); transform:rotate(45deg);}
+    body.pf-sheet #profile .pw-col p.pw-note{margin:6px 0 0; font-size:var(--fs-meta); color:var(--muted);}
+    body.pf-sheet #profile .pw-take{margin:14px 0 0; font-size:var(--fs-ui); line-height:var(--lh-long); color:var(--muted);}
     body.pf-sheet #profile .pfi-grid{grid-column:2; grid-row:4; display:grid !important; grid-template-columns:1fr 1fr !important; gap:clamp(14px,2vw,26px) !important; margin:0 !important;}
     body.pf-sheet #profile .pfi-col{padding:clamp(12px,1.6vh,18px) clamp(14px,1.4vw,20px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
     body.pf-sheet #profile .pf-chip{font-size:var(--fs-ui) !important; padding:6px 12px !important;}
@@ -2540,6 +2559,20 @@
           <button type="button" class="ps-more" id="psMore" aria-label="向下查看更多經歷"><svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>SCROLL</span></button>
           <div class="ps-bar" id="psBar" aria-hidden="true"><div class="ps-thumb" id="psThumb"></div></div>
         </div>
+      </div>
+      <div class="pfi-work">
+        <h3 class="pfi-sub">工作內容 <small>WORK LOG</small></h3>
+        <div class="pw-head"><span class="pw-co">智冠科技 ・ MyCard 平台開發課</span><span class="pw-role">專案企劃專員</span><span class="pw-date">2026.07–2026.11</span></div>
+        <div class="pw-cols">
+          <div class="pw-col"><h4>專案提案 <small>PROPOSAL</small></h4>
+            <p>從會員使用情境與帳戶安全角度，主動發掘改善機會並自主提案：</p>
+            <ul><li>帳戶動態訊息通知（推播與 Email）</li><li>FIDO 驗證機制與應用</li><li>會員通知信件樣式與後台功能</li></ul>
+            <p class="pw-note">皆已完成立案，正與 PM 銜接規劃與開發排程。</p></div>
+          <div class="pw-col"><h4>功能測試 <small>TESTING</small></h4>
+            <p>日常負責平台各項測試，確保交易流程與帳務正確：</p>
+            <ul><li>APP 與網站功能測試</li><li>各 CP 廠商儲值測試</li><li>金流測試</li></ul></div>
+        </div>
+        <p class="pw-take">實際參與測試，讓我熟悉平台的會員、儲值與金流運作，提案時也更能掌握技術可行性與使用者痛點。</p>
       </div>
       <div class="pfi-grid">
         <div class="pfi-col"><h3>專長 <small>SKILLS</small></h3>
