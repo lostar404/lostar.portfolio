@@ -2463,7 +2463,7 @@
   </div>
   <svg class="sc-link" id="scLink" aria-hidden="true"><path id="scLinkP" pathLength="1"/><circle id="scLinkA" r="4"/><circle id="scLinkR" r="4"/><rect id="scLinkE" width="7" height="7"/></svg>
   <div class="sc-vig"></div>
-  <div class="sc-ui"><span class="sc-name">拾星號 <b>GLEANER</b> ・ 艦橋</span><span class="sc-uir"><button type="button" class="sc-fx" id="scFx" aria-pressed="false" title="開啟後會關閉背景動畫與光效,讓畫面更順">⚡ 流暢模式:關</button><button type="button" class="sc-close" id="scClose">✕ CLOSE</button></span></div>
+  <div class="sc-ui"><span class="sc-name">拾星號 <b>GLEANER</b> ・ 艦橋</span><span class="sc-uir"><button type="button" class="sc-fx" id="scFx" aria-pressed="false" title="開啟後會關閉背景動畫與光效,讓畫面更順">⚡ 切換精緻模式</button><button type="button" class="sc-close" id="scClose">✕ CLOSE</button></span></div>
 </div>
 <div class="pf-stand" id="pfStand" aria-hidden="true"></div>
 <div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-arc" id="palArc" role="menu" aria-label="前往其他頁面"></div><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
@@ -6089,7 +6089,7 @@ body.pf-scene > #scLoad:not(.on){visibility:hidden !important;}
 <script>(function(){
 var B=document.body, btn=document.getElementById('scFx'), wm=document.getElementById('fxWarn'); if(!btn||!wm) return;
 var KEY='lostarFx', saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
-function set(on,persist){ B.classList.toggle('fx-lite',on); btn.setAttribute('aria-pressed',on?'true':'false'); btn.textContent=on?'⚡ 流暢模式:開':'⚡ 流暢模式:關'; if(persist){ try{ localStorage.setItem(KEY,on?'lite':'full'); }catch(e){} } }
+function set(on,persist){ B.classList.toggle('fx-lite',on); btn.setAttribute('aria-pressed',on?'true':'false'); btn.textContent=on?'⚡ 切換精緻模式':'⚡ 切換流暢模式'; btn.title=on?'目前為流暢模式(較省效能),點擊可切換為精緻模式':'目前為精緻模式,點擊可切回流暢模式'; if(persist){ try{ localStorage.setItem(KEY,on?'lite':'full'); }catch(e){} } }
 var forced=/[?&]fx=full/.test(location.search)?'full':/[?&]fx=lite/.test(location.search)?'lite':null;
 var pref=forced||saved; set(pref!=='full',false);
 function shut(){ wm.hidden=true; btn.focus({preventScroll:true}); }
