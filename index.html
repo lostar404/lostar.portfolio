@@ -6071,20 +6071,35 @@ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.
 lb.addEventListener('click',function(e){ e.stopPropagation(); shut(); });
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden){ e.stopImmediatePropagation(); e.preventDefault(); shut(); } },true);
 })();</script>
+<style>
+#fxWarn{position:fixed; inset:0; z-index:1400; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(3,5,15,.78);}
+#fxWarn[hidden]{display:none;}
+body.pf-scene > #fxWarn, body.pf-scene > #scLoad{visibility:visible !important;}
+body.pf-scene > #scLoad:not(.on){visibility:hidden !important;}
+#fxWarn .fw-box{width:min(420px,92vw); padding:22px 24px 20px; border:1px solid rgba(143,227,199,.5); background:linear-gradient(160deg,rgba(14,22,60,.96),rgba(6,10,30,.98)); box-shadow:0 12px 50px rgba(0,0,0,.6);}
+#fxWarn h4{margin:0 0 10px; font-size:var(--fs-ui); font-weight:var(--fw-semibold); color:var(--text); letter-spacing:.06em;}
+#fxWarn p{margin:0 0 8px; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--muted);}
+#fxWarn ul{margin:0 0 14px; padding-left:18px; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--text);}
+#fxWarn .fw-b{display:flex; gap:10px; justify-content:flex-end;}
+#fxWarn button{cursor:pointer; padding:8px 18px; border-radius:999px; border:1px solid rgba(143,227,199,.5); background:rgba(9,11,26,.85); color:var(--hud); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label);}
+#fxWarn button:hover, #fxWarn button:focus-visible{background:rgba(143,227,199,.16); outline:none;}
+#fxWarn .fw-ok{border-color:rgba(255,190,120,.7); color:#ffd9a8;}
+</style>
+<div id="fxWarn" hidden role="dialog" aria-modal="true" aria-label="華麗模式提醒"><div class="fw-box"><h4>⚠ 要開啟華麗模式嗎?</h4><p>華麗模式會播放完整的窗外動畫與光效,耗用較多的效能與電力:</p><ul><li>舊款或低階筆電可能出現卡頓、畫面閃爍</li><li>筆電可能發熱、風扇變大聲,耗電也較快</li><li>如果覺得不順,隨時可以再按「流暢模式」切回</li></ul><div class="fw-b"><button type="button" class="fw-no">保持流暢模式</button><button type="button" class="fw-ok">我了解,開啟</button></div></div></div>
 <script>(function(){
-var B=document.body, btn=document.getElementById('scFx'); if(!btn) return;
+var B=document.body, btn=document.getElementById('scFx'), wm=document.getElementById('fxWarn'); if(!btn||!wm) return;
 var KEY='lostarFx', saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
 function set(on,persist){ B.classList.toggle('fx-lite',on); btn.setAttribute('aria-pressed',on?'true':'false'); btn.textContent=on?'⚡ 流暢模式:開':'⚡ 流暢模式:關'; if(persist){ try{ localStorage.setItem(KEY,on?'lite':'full'); }catch(e){} } }
-var q=location.search; var forced=/[?&]fx=lite/.test(q)?'lite':/[?&]fx=full/.test(q)?'full':null;
-var weak=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory&&navigator.deviceMemory<=4);
-var pref=forced||saved; set(pref?pref==='lite':!!weak,false);
-btn.addEventListener('click',function(e){ e.stopPropagation(); set(!B.classList.contains('fx-lite'),true); measured=true; });
-var measured=!!pref, running=false;
-function measure(){ if(measured||running) return; running=true; setTimeout(function(){ if(!B.classList.contains('pf-scene')){ running=false; return; }
-  var ts=[],t0=performance.now(); (function f(t){ ts.push(t); if(t-t0<2600&&B.classList.contains('pf-scene')) requestAnimationFrame(f); else done(); })(t0);
-  function done(){ running=false; if(ts.length<20) return; var d=[]; for(var i=1;i<ts.length;i++) d.push(ts[i]-ts[i-1]); d.sort(function(a,b){return a-b;}); var med=d[d.length>>1], p90=d[Math.floor(d.length*.9)];
-    measured=true; if(med>24||p90>45) set(true,false); } },1400); }
-new MutationObserver(function(){ if(B.classList.contains('pf-scene')) measure(); }).observe(B,{attributes:true,attributeFilter:['class']});
+var forced=/[?&]fx=full/.test(location.search)?'full':/[?&]fx=lite/.test(location.search)?'lite':null;
+var pref=forced||saved; set(pref!=='full',false);
+function shut(){ wm.hidden=true; btn.focus({preventScroll:true}); }
+btn.addEventListener('click',function(e){ e.stopPropagation();
+  if(B.classList.contains('fx-lite')){ wm.hidden=false; wm.querySelector('.fw-no').focus({preventScroll:true}); }
+  else set(true,true); });
+wm.querySelector('.fw-no').addEventListener('click',shut);
+wm.querySelector('.fw-ok').addEventListener('click',function(){ set(false,true); shut(); });
+wm.addEventListener('click',function(e){ if(e.target===wm) shut(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!wm.hidden){ e.stopImmediatePropagation(); e.preventDefault(); shut(); } },true);
 })();</script>
 <style>
 #scLoad{position:fixed; inset:0; z-index:1300; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; background:radial-gradient(ellipse at 50% 55%,#0d1233 0%,#050714 70%); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .35s ease, visibility 0s .35s;}
