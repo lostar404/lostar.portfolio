@@ -2148,6 +2148,59 @@
   .cm-b2 p{top:20%; bottom:20%; left:15%; right:13%; word-break:normal; overflow-wrap:anywhere; line-break:auto;}
   .cm-bB p{color:#fff; text-shadow:0 1px 3px rgba(5,8,40,.7); top:23%; bottom:25%; left:15%; right:15%;}
   .cm-bB.cm-b2 p{top:21%; bottom:23%;}
+  /* ===== desktop works page (>=961px): full-bleed page + masonry works wall; phones keep the older layout ===== */
+  .lb-n{display:none;}
+  @media (min-width:961px){
+    .lg-main{max-width:none; padding-left:clamp(32px,3.4vw,64px); padding-right:clamp(32px,3.4vw,64px);}
+    .lg-sum{max-width:min(720px,60%);}
+    .lg-record{max-width:none;}
+    .lg-next{max-width:none;}
+    .wl{--wcol:300px;}
+    .wl-bar{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; padding:0 0 14px; margin:0 0 22px; border-bottom:1px solid var(--line-soft);}
+    .wl-tabs{display:flex; flex-wrap:wrap; gap:8px;}
+    .wl-tabs:empty{display:none;}
+    .wl-tab{display:inline-flex; align-items:center; gap:8px; padding:var(--btn-sm); border:1px solid var(--line); border-radius:var(--r-pill); background:none; color:var(--muted); font:inherit; font-size:var(--fs-ui); cursor:pointer; transition:border-color .2s ease, color .2s ease, background .2s ease;}
+    .wl-tab small{font-family:var(--mono); font-size:var(--fs-deco); letter-spacing:var(--ls-label); color:var(--dim, var(--muted)); opacity:.8;}
+    .wl-tab:hover{color:var(--text); border-color:var(--hud-56);}
+    .wl-tab.on{color:var(--text); border-color:var(--hud); background:var(--hud-08);}
+    .wl-tab.on small{color:var(--hud); opacity:1;}
+    .wl-tab:focus-visible{outline:2px solid var(--hud); outline-offset:2px;}
+    .wl-pin{display:none;}
+    .wl-pin svg{width:100%; height:100%; fill:currentColor;}
+    .wl-count{margin-left:auto; font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); color:var(--hud); white-space:nowrap;}
+    .wl-info{display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 18px; margin:-6px 0 22px;}
+    .wl-info[hidden]{display:none;}
+    .wl-info h3{margin:0; font-family:var(--serif); font-style:italic; font-weight:500; font-size:var(--fs-h4); color:var(--text);}
+    .wl-info p{margin:0; color:var(--muted); font-size:var(--fs-body); max-width:72ch;}
+    .wl-info a{color:var(--hud); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); text-decoration:none;}
+    .wl-info a:hover{text-decoration:underline;}
+    .wl-wall{display:grid; grid-template-columns:repeat(auto-fill, minmax(var(--wcol), 1fr)); grid-auto-rows:4px; column-gap:18px; row-gap:0; align-items:start;}
+    .wl-wall.is-sticker{--wcol:200px;}
+    .wl-wall.is-row{display:flex; flex-wrap:wrap; gap:18px; --rowh:min(68vh,680px);}
+    .wl-wall.is-row .wl-cell{--ar:.75; flex:0 1 auto; width:calc(var(--rowh) * var(--ar)); max-width:100%; aspect-ratio:var(--ar); margin:0;}
+    .wl-wall.is-row .wl-cell img{width:100%; height:100%; object-fit:cover;}
+    .wl-cell{position:relative; display:block; width:100%; margin:0 0 18px; padding:0; border:1px solid var(--line-soft); border-radius:var(--r-hud); background:var(--elevated); overflow:hidden; cursor:zoom-in; grid-row-end:span 75; transition:border-color .25s ease, box-shadow .25s ease;}
+    .wl-cell img{display:block; width:100%; height:auto; max-width:none; transition:transform .5s cubic-bezier(.2,.8,.2,1);}
+    .wl-cell.is-sticker{aspect-ratio:1; padding:10px;
+      background:conic-gradient(rgba(255,255,255,0.045) 25%, transparent 0 50%, rgba(255,255,255,0.045) 0 75%, transparent 0) 0 0/16px 16px, radial-gradient(circle at 50% 40%, rgba(120,110,180,0.14), rgba(0,0,0,0.55));}
+    .wl-cell.is-sticker img{width:100%; height:100%; object-fit:contain;}
+    .wl-cell:hover{border-color:var(--hud-56); box-shadow:0 10px 30px rgba(0,0,0,.45);}
+    .wl-cell:hover img{transform:scale(1.035);}
+    .wl-cell:focus-visible{outline:2px solid var(--hud); outline-offset:3px;}
+    .wl-cap{position:absolute; left:0; right:0; bottom:0; display:flex; flex-direction:column; gap:3px; padding:38px 14px 12px; text-align:left; background:linear-gradient(180deg, transparent, rgba(3,5,15,.9)); opacity:0; transform:translateY(6px); transition:opacity .25s ease, transform .25s ease; pointer-events:none;}
+    .wl-cap b{font-family:var(--serif); font-style:italic; font-weight:500; font-size:var(--fs-body); color:var(--text);}
+    .wl-cap small{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta); color:var(--hud);}
+    .wl-cell:hover .wl-cap, .wl-cell:focus-visible .wl-cap{opacity:1; transform:none;}
+    .wl-more{position:absolute; top:10px; right:10px; padding:3px 9px; border-radius:var(--r-pill); background:var(--overlay); border:1px solid var(--hud-32); color:var(--hud); font-style:normal; font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-meta);}
+    .wl-cell .pin-badge{top:10px; left:10px; right:auto;}
+    .wl-wall.in .wl-cell{animation:wlIn .55s cubic-bezier(.2,.8,.2,1) var(--d,0ms) both;}
+    @keyframes wlIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+    @media (prefers-reduced-motion:reduce){ .wl-wall.in .wl-cell{animation:none;} .wl-cell img, .wl-cap{transition:none;} }
+    @media (min-width:1600px){ .wl{--wcol:320px;} .wl-wall.is-sticker{--wcol:210px;} }
+    /* lightbox on desktop: bigger picture + position counter */
+    .lightbox img{max-width:min(92vw,1600px); max-height:80vh;}
+    .lb-n{display:block; margin-bottom:6px; font-style:normal; font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); color:var(--hud);}
+  }
 </style>
 <style>
 /* ===== PROTOTYPE: cockpit scene → click the console to open 探索者檔案 (desktop only) ===== */
@@ -2495,7 +2548,6 @@
   <div class="sc-ui"><span class="sc-name">拾星號 <b>GLEANER</b> ・ 艦橋</span><span class="sc-uir"><button type="button" class="sc-fx" id="scFx" aria-pressed="false" title="開啟後會關閉背景動畫與光效,讓畫面更順">⚡ 切換精緻模式</button><button type="button" class="sc-close" id="scClose">✕ CLOSE</button></span></div>
 </div>
 <div class="pf-stand" id="pfStand" aria-hidden="true"></div>
-<div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-arc" id="palArc" role="menu" aria-label="前往其他頁面"></div><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
 <aside class="cm-slot" id="cmSlot" aria-label="留言">
   <div class="cm-feed" id="cmFeed" aria-live="polite"></div>
   <form class="cm-form" id="cmForm" autocomplete="off">
@@ -3813,7 +3865,8 @@
     function lbShow(){
       var w = lbList[lbIdx]; if(!w) return;
       $('lbImg').src = w.src;
-      $('lbCap').innerHTML = '<b></b><span></span>';
+      $('lbCap').innerHTML = '<em class="lb-n"></em><b></b><span></span>';
+      $('lbCap').querySelector('.lb-n').textContent = (lbIdx + 1 < 10 ? '0' : '') + (lbIdx + 1) + ' / ' + (lbList.length < 10 ? '0' : '') + lbList.length;
       $('lbCap').querySelector('b').textContent = w.title || '';
       $('lbCap').querySelector('span').textContent = [w.year, w.medium].filter(Boolean).join(' · ') + (w.desc ? '  —  ' + w.desc : '');
     }
@@ -4006,7 +4059,115 @@
       show(startK);
     }
 
+    // ---- desktop (>=961px) works wall: one full-width masonry layout for every planet; series become filter tabs, a click opens the lightbox ----
+    var WALL_MQ = window.matchMedia ? window.matchMedia('(min-width:961px)') : null;
+    function useWall(){ return !OWNER && !!WALL_MQ && WALL_MQ.matches; }
+    function wallGroups(i){
+      var star = stars[i].zh, groups = [];
+      if(seriesCfg(i)){
+        arrange((LOG[i].series || []).filter(function(s){ return s.stickers.length; }), star).forEach(function(s){
+          groups.push({ name: s.name, desc: s.desc, year: s.year, url: s.url, platform: s.platform, key: s.key, pinned: isPinned(s), sticker: star === STICKER_NAME,
+            items: s.stickers.map(function(x, m){ return { src: x.src, title: x.title || (s.name + ' · ' + (m + 1) + ' / ' + s.stickers.length), year: s.year || '', medium: '', desc: '', group: s.name, sticker: star === STICKER_NAME, ref: x }; }) });
+        });
+      } else {
+        var ws = arrange((LOG[i].works || []).filter(function(w){ return w && w.src; }), star);
+        if(ws.length) groups.push({ name: '', items: ws.map(function(w){ return { src: w.src, title: w.title || '', year: w.year || '', medium: w.medium || '', desc: w.desc || '', details: w.details || null, pinned: isPinned(w), group: '', ref: w }; }) });
+      }
+      return groups;
+    }
+    function renderWall(i){
+      var box = $('lgWorks'); box.innerHTML = '';
+      var groups = wallGroups(i), cfg = seriesCfg(i);
+      var total = groups.reduce(function(n, g){ return n + g.items.length; }, 0);
+      var unit = cfg ? cfg.unit : '件';
+      var wrap = document.createElement('div'); wrap.className = 'wl';
+      var bar = document.createElement('div'); bar.className = 'wl-bar';
+      var tabs = document.createElement('div'); tabs.className = 'wl-tabs'; tabs.setAttribute('role', 'tablist'); tabs.setAttribute('aria-label', '作品分類');
+      var info = document.createElement('div'); info.className = 'wl-info';
+      bar.appendChild(tabs); wrap.appendChild(bar); wrap.appendChild(info);
+      var wall = document.createElement('div'); wall.className = 'wl-wall' + (groups.length && groups[0].sticker ? ' is-sticker' : '');
+      wrap.appendChild(wall); box.appendChild(wrap);
+      var cur = -1, tabBtns = [];
+      function tab(label, n, k){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'wl-tab'; b.setAttribute('role', 'tab');
+        var t = document.createElement('span'); t.textContent = label; b.appendChild(t);
+        var c = document.createElement('small'); c.textContent = n; b.appendChild(c);
+        if(k >= 0 && groups[k].pinned){ var p = document.createElement('i'); p.className = 'wl-pin'; p.innerHTML = PIN_SVG; p.setAttribute('aria-label', '置頂'); b.insertBefore(p, t); }
+        b.addEventListener('click', function(){ show(k); });
+        tabs.appendChild(b); tabBtns.push({ b: b, k: k });
+      }
+      if(groups.length > 1){ tab('全部', total, -1); groups.forEach(function(g, k){ tab(g.name, g.items.length, k); }); }
+      else bar.classList.add('solo');
+      var cnt = document.createElement('div'); cnt.className = 'wl-count'; bar.appendChild(cnt);
+      // masonry on a fine row grid: every cell spans as many 4px rows as its picture needs, so the reading order stays left -> right
+      var ROW = 4, GAP = 18;
+      function fit(cell){ var w = cell.getBoundingClientRect().width; if(!w) return; var ar = parseFloat(cell.getAttribute('data-ar')) || 1; var h = cell.classList.contains('is-sticker') ? w : w / ar; cell.style.gridRowEnd = 'span ' + Math.max(1, Math.ceil((h + GAP) / ROW)); }
+      function fitAll(){ [].forEach.call(wall.children, fit); }
+      if(window.ResizeObserver){ var lastW = 0; new ResizeObserver(function(){ var w = wall.clientWidth; if(w && w !== lastW){ lastW = w; fitAll(); } }).observe(wall); }
+      function show(k){
+        cur = k;
+        tabBtns.forEach(function(t){ var on = t.k === k; t.b.classList.toggle('on', on); t.b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+        var items = [];
+        (k < 0 ? groups : [groups[k]]).forEach(function(g){ items = items.concat(g.items); });
+        // series info line
+        info.innerHTML = '';
+        var g = k >= 0 ? groups[k] : (groups.length === 1 && groups[0].name ? groups[0] : null);
+        if(g){
+          var h = document.createElement('h3'); h.textContent = g.name; info.appendChild(h);
+          if(g.desc){ var p = document.createElement('p'); p.textContent = g.desc; info.appendChild(p); }
+          if(g.url){ var a = document.createElement('a'); a.href = g.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = (g.platform || '前往') + ' ↗'; info.appendChild(a); }
+        }
+        info.hidden = !info.firstChild;
+        cnt.textContent = items.length + ' ' + unit + (cfg ? ' · ' + cfg.label : ' · WORKS');
+        // lightbox list: every work followed by its detail crops (啟航星)
+        var lb = [], at = [];
+        items.forEach(function(it){
+          at.push(lb.length);
+          lb.push({ src: it.src, title: it.title, year: it.year, medium: [it.medium, k < 0 && it.group ? it.group : ''].filter(Boolean).join(' · '), desc: it.desc });
+          if(it.details) it.details.forEach(function(d){ lb.push({ src: d.src, title: d.title || d.label || it.title, year: '', medium: it.medium, desc: '' }); });
+        });
+        wall.innerHTML = '';
+        // only a handful of works: one tall row instead of a mostly empty wall
+        wall.classList.toggle('is-row', items.length <= 4 && !(items[0] && items[0].sticker));
+        items.forEach(function(it, n){
+          var c = document.createElement('button'); c.type = 'button'; c.className = 'wl-cell' + (it.sticker ? ' is-sticker' : '');
+          c.setAttribute('aria-label', '放大檢視：' + (it.title || '作品'));
+          if(it.ref && it.ref._ar){ c.setAttribute('data-ar', it.ref._ar); c.style.setProperty('--ar', it.ref._ar); }
+          c.style.setProperty('--d', Math.min(n, 24) * 35 + 'ms');
+          var im = document.createElement('img'); im.alt = it.title || ''; im.loading = n < 12 ? 'eager' : 'lazy'; im.decoding = 'async'; im.src = it.src;
+          function setAR(){ if(im.naturalWidth && im.naturalHeight){ var ar = (im.naturalWidth / im.naturalHeight).toFixed(4); c.setAttribute('data-ar', ar); c.style.setProperty('--ar', ar); if(it.ref) it.ref._ar = ar; fit(c); } }
+          if(im.complete) setAR(); else im.addEventListener('load', setAR);
+          c.appendChild(im);
+          if(!it.sticker){
+            var cap = document.createElement('span'); cap.className = 'wl-cap';
+            var b = document.createElement('b'); b.textContent = it.title || ''; cap.appendChild(b);
+            var meta = [it.year, it.medium, k < 0 && it.group ? it.group : ''].filter(Boolean).join(' · ');
+            if(meta){ var s = document.createElement('small'); s.textContent = meta; cap.appendChild(s); }
+            if(it.title || meta) c.appendChild(cap);
+          }
+          if(it.details && it.details.length){ var dn = document.createElement('i'); dn.className = 'wl-more'; dn.textContent = '+' + it.details.length + ' 細節'; c.appendChild(dn); }
+          if(it.pinned) c.appendChild(pinBadge());
+          c.addEventListener('click', function(){ lbOpen(lb, at[n]); });
+          wall.appendChild(c);
+        });
+        fitAll();
+        wall.classList.remove('in'); void wall.offsetWidth; wall.classList.add('in');
+      }
+      if(!total){
+        info.hidden = false; info.innerHTML = '<p>作品整理中，敬請期待。</p>'; cnt.textContent = '';
+        return;
+      }
+      var start = groups.length > 1 ? -1 : 0;
+      groups.forEach(function(g, k){ if(g.key && g.key === viewKey) start = k; }); viewKey = '';
+      show(start);
+    }
+    if(WALL_MQ){
+      var wallSync = function(){ if(detailOpen && stars[detailIndex]) renderWorks(detailIndex); };
+      if(WALL_MQ.addEventListener) WALL_MQ.addEventListener('change', wallSync); else if(WALL_MQ.addListener) WALL_MQ.addListener(wallSync);
+    }
+
     function renderWorks(i){
+      if(useWall()){ renderWall(i); return; }
       if(seriesCfg(i)){ renderSeries(i); return; }
       var box = $('lgWorks'); box.innerHTML = '';
       var ws = arrange(((i === newIdx) ? latestWorks() : (LOG[i].works || [])).filter(function(w){ return w && w.src; }), stars[i].zh);
@@ -4354,51 +4515,6 @@
     $('lgBadge').addEventListener('click', requestClose);
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
-    (function(){ /* 常駐小助理: bottom-right companion (desktop only), shares the rig engine & image cache */
-      var pal=$('pal'), cv=$('palCv'), bub=$('palBub'), xb=$('palX'), arc=$('palArc'); if(!pal||!cv) return;
-      var mq=window.matchMedia('(min-width:1280px) and (hover:hover)'); var rig=null, loading=false, mini=false, bt=0, lastStar=-1, clicks=0;
-      var KEY='lostar-pal-mini', reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
-      try{ mini=localStorage.getItem(KEY)==='1'; }catch(e){}
-      var LINES={0:'這裡是我的起點。',1:'歡迎來到元宇宙。',2:'貼圖在這，看看有沒有喜歡的？',3:'萬象星，什麼都有一點。',4:'委託角色設計都收在這。'};
-      var CLICK=['嗨，我在這裡。','慢慢逛，不用急。','今天也要繼續探索嗎？'];
-      function say(t,ms){ if(mini||!t) return; bub.textContent=t; bub.classList.add('on'); clearTimeout(bt); bt=setTimeout(function(){ bub.classList.remove('on'); },ms||4200); }
-      function setView(){ if(!rig) return; if(mini) rig.setView({z:2.6,cx:765,cy:400,fy:.36}); else rig.setView({z:1.05,cx:765,cy:600,fy:.36}); rig.resize(); }
-      function apply(){ pal.classList.toggle('mini',mini); setView(); run(); }
-      function run(){ if(!rig) return; if(!mq.matches||document.hidden||document.body.classList.contains('intro-on')||!document.body.classList.contains('pal-detail')||reduce){ rig.stop(); if(reduce&&mq.matches) rig.resize(); return; } rig.start(); }
-      function init(){ if(rig||loading||!mq.matches) return; loading=true;
-        (window.LostarLive2D?Promise.resolve():new Promise(function(res,rej){ var sc=document.createElement('script'); sc.src='live2d/engine.js'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }))
-        .then(function(){ return LostarLive2D.create(cv,{base:'live2d/',fps:30}); }).then(function(r){ rig=r; loading=false; document.body.classList.add('pal-live'); pal.classList.add('on'); apply(); if(lastStar>=0) setTimeout(function(){ say(LINES[lastStar]||'',4000); },700); })
-        .catch(function(){ loading=false; pal.classList.add('hide'); }); }
-      (function(){ function idle(f){ if(window.requestIdleCallback) requestIdleCallback(f,{timeout:3500}); else setTimeout(f,2000); } function go(){ idle(function(){ init(); }); } if(document.readyState==='complete') go(); else window.addEventListener('load',go); })();
-      window.addEventListener('resize',function(){ if(!mq.matches){ run(); } else { init(); if(rig){ rig.resize(); run(); } } });
-      document.addEventListener('visibilitychange',run);
-      window.addEventListener('pointermove',function(e){ if(!rig||mini) return; var r=cv.getBoundingClientRect(); var cx=r.left+r.width*.5, cy=r.top+r.height*.28; rig.setPointer((e.clientX-cx)/(Math.max(window.innerWidth,600)*.4),(e.clientY-cy)/(Math.max(window.innerHeight,500)*.4)); },{passive:true});
-      var arcOn=false, arcT=0, TYPE={'啟航星':'原創角色','元宇宙':'元宇宙','貼圖星':'貼圖創作','萬象星':'插畫・漫畫','委託星':'角色設計'};
-      function arcStop(){ clearTimeout(arcT); }
-      function arcTimer(){ clearTimeout(arcT); arcT=setTimeout(arcClose,3000); }
-      function arcClose(){ arcOn=false; clearTimeout(arcT); arc.classList.remove('open'); }
-      function arcOpen(){
-        arc.textContent='';
-        var q=document.createElement('div'); q.className='pal-q'; q.textContent='// 要去哪裡呢？'; arc.appendChild(q);
-        var items=[]; stars.forEach(function(st,i){ if(i!==lastStar) items.push({no:st.no,label:TYPE[st.zh]||st.zh,go:function(){ selectStar(i); fillDetail(i,true); setHash(i,true); }}); });
-        items.push({no:'←',label:'回到主頁',go:function(){ requestClose(); }});
-        var n=items.length;
-        items.forEach(function(it,k){
-          var b=document.createElement('button'); b.type='button'; b.className='pal-it'; b.setAttribute('role','menuitem'); b.style.setProperty('--i',n-1-k);
-          b.innerHTML='<small></small><span></span>'; b.children[0].textContent=it.no; b.children[1].textContent=it.label;
-          b.addEventListener('click',function(e){ e.stopPropagation(); arcClose(); it.go(); });
-          b.addEventListener('pointerenter',arcStop); b.addEventListener('pointerleave',arcTimer); b.addEventListener('focus',arcStop); b.addEventListener('blur',arcTimer);
-          arc.appendChild(b); });
-        bub.classList.remove('on'); void arc.offsetWidth; arcOn=true; arc.classList.add('open'); arcTimer();
-      }
-      cv.addEventListener('click',function(){ if(mini){ mini=false; try{ localStorage.setItem(KEY,'0'); }catch(e){} apply(); }
-        if(arcOn){ arcClose(); return; } if(rig) rig.react(); arcOpen(); });
-      document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&arcOn) arcClose(); });
-      xb.addEventListener('click',function(e){ e.stopPropagation(); arcClose(); mini=true; try{ localStorage.setItem(KEY,'1'); }catch(e){} bub.classList.remove('on'); apply(); });
-      var cmT=$('cmText'); if(cmT){ cmT.addEventListener('focus',function(){ say('想對迷航星說什麼？',3500); }); }
-      window.__palSync=function(i,open,isOrigin){ var show=!!(open&&!isOrigin); document.body.classList.toggle('pal-detail',show); run();
-        if(show){ if(i!==lastStar){ lastStar=i; say(LINES[i]||'',4000); } } else { lastStar=-1; bub.classList.remove('on'); } if(!show) arcClose(); };
-    })();
     (function(){ /* 啟航星 half-body Live2D-style rig: lazy-loaded, idle / pointer follow, optional webcam face tracking */
       var fig=$('lgLiveStage'), wrap=$('lgLiveWrap'), cv=$('lgLive'), ui=$('lgLiveUi'), btn=$('lgLiveBtn'), txt=$('lgLiveTxt'), cam=$('lgLiveCam'), note=$('lgLiveNote');
       if(!fig||!cv) return;
