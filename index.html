@@ -6107,18 +6107,26 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!wm.hidden
 #scLoad .sl-t{font-size:clamp(16px,1.5vw,22px); color:var(--text); letter-spacing:.18em;}
 #scLoad .sl-t i{font-style:normal; display:inline-block; width:1.6em; text-align:left;}
 #scLoad .sl-s{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:.24em; color:var(--hud); opacity:.8;}
+#scLoad .sl-fly{position:relative; width:min(420px,80vw); height:150px; display:flex; align-items:center; justify-content:center; overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent); mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);}
+#scLoad .sl-fly img{position:relative; z-index:2; width:210px; height:auto; filter:drop-shadow(0 0 14px rgba(120,170,255,.55)); animation:slBob 2.6s ease-in-out infinite;}
+#scLoad .sl-fly::after{content:""; position:absolute; z-index:1; left:calc(50% + 70px); top:50%; width:130px; height:16px; margin-top:-2px; border-radius:50%; background:radial-gradient(ellipse at 0% 50%,rgba(140,200,255,.7),rgba(140,200,255,0) 70%); animation:slBob 2.6s ease-in-out infinite;}
+#scLoad .sl-st{position:absolute; height:2px; border-radius:2px; background:linear-gradient(90deg,transparent,rgba(190,215,255,.85)); left:-40%; animation:slStreak 1.1s linear infinite; opacity:0;}
+#scLoad .sl-st.s1{top:26%; width:90px; animation-delay:0s;}
+#scLoad .sl-st.s2{top:44%; width:140px; animation-delay:.35s; animation-duration:.9s;}
+#scLoad .sl-st.s3{top:63%; width:70px; animation-delay:.7s;}
+#scLoad .sl-st.s4{top:78%; width:110px; animation-delay:.2s; animation-duration:1.3s;}
+@keyframes slBob{0%,100%{transform:translateY(-5px) rotate(-1.2deg);} 50%{transform:translateY(6px) rotate(1deg);}}
+@keyframes slStreak{0%{transform:translateX(0); opacity:0;} 15%{opacity:.9;} 100%{transform:translateX(560px); opacity:0;}}
+@media (prefers-reduced-motion:reduce){ #scLoad .sl-fly img,#scLoad .sl-fly::after,#scLoad .sl-st{animation:none;} #scLoad .sl-st{display:none;} }
 #scLoad .sl-bar{width:min(320px,62vw); height:3px; border-radius:2px; background:rgba(143,227,199,.15); overflow:hidden;}
 #scLoad .sl-bar b{display:block; height:100%; width:0; background:linear-gradient(90deg,#8fe3c7,#8ab4ff); box-shadow:0 0 10px rgba(143,227,199,.6); transition:width .25s ease-out;}
-#scLoad .sl-ship{width:54px; height:54px; border-radius:50%; border:1px solid rgba(143,227,199,.45); display:flex; align-items:center; justify-content:center; animation:slSpin 2.4s linear infinite;}
-#scLoad .sl-ship::after{content:""; width:8px; height:8px; border-radius:50%; background:var(--hud); box-shadow:0 0 12px var(--hud); transform:translateY(-27px);}
-@keyframes slSpin{to{transform:rotate(360deg);}}
-@media (prefers-reduced-motion:reduce){ #scLoad .sl-ship{animation:none;} }
 </style>
-<div id="scLoad" role="status" aria-live="polite" aria-hidden="true"><div class="sl-ship"></div><div class="sl-s">BOARDING ・ GLEANER</div><div class="sl-t">前往飛船中<i id="slDots">...</i></div><div class="sl-bar"><b id="slBar"></b></div></div>
+<div id="scLoad" role="status" aria-live="polite" aria-hidden="true"><div class="sl-fly"><i class="sl-st s1"></i><i class="sl-st s2"></i><i class="sl-st s3"></i><i class="sl-st s4"></i><img loading="lazy" decoding="async" id="slShip" alt=""></div><div class="sl-s">BOARDING ・ GLEANER</div><div class="sl-t">前往飛船中<i id="slDots">...</i></div><div class="sl-bar"><b id="slBar"></b></div></div>
 <script>(function(){
 var ov=document.getElementById('scLoad'), bar=document.getElementById('slBar'), dots=document.getElementById('slDots'), busy=false;
 window.__scLoad=function(done){
   var sc=document.getElementById('scene'); if(busy||!sc||!window.__scOpen){ if(window.__scOpen) window.__scOpen(); if(done) done(); return; }
+  var sh=document.getElementById('slShip'), src=document.querySelector('.hs-b img'); if(sh&&src&&!sh.src) sh.src=src.src;
   busy=true; ov.setAttribute('aria-hidden','false'); ov.classList.add('on'); bar.style.width='4%';
   var n=0, dt=setInterval(function(){ n=(n+1)%4; dots.textContent=('...').slice(0,n)+'\u00a0\u00a0\u00a0'.slice(0,3-n); },380);
   var imgs=[].slice.call(sc.querySelectorAll('img')), total=imgs.length||1, ok=0, t0=performance.now(), MIN=1900, MAX=7000, finished=false;
