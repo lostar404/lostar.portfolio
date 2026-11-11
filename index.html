@@ -557,7 +557,6 @@
   .star-label{text-align:center; white-space:nowrap; pointer-events:auto;}
   .star-label .name{font-family:var(--serif); font-style:italic; font-size:var(--fs-h1s); font-weight:500;}
   .star-label .medium{font-size:var(--fs-h2s); color:var(--muted); margin-top:8px; letter-spacing:var(--ls-ui);}
-  .star-label .medium{display:none;}   /* ring labels show the planet name only (the subtitle collided with 查看詳情) */
 
 
   /* ===== works: view toggle + alternate views ===== */
@@ -2149,28 +2148,6 @@
   .cm-b2 p{top:20%; bottom:20%; left:15%; right:13%; word-break:normal; overflow-wrap:anywhere; line-break:auto;}
   .cm-bB p{color:#fff; text-shadow:0 1px 3px rgba(5,8,40,.7); top:23%; bottom:25%; left:15%; right:15%;}
   .cm-bB.cm-b2 p{top:21%; bottom:23%;}
-  /* ===== desktop (>=961px): explorer profile is centre-aligned; the planet works pages keep their original left-aligned layout ===== */
-  @media (min-width:961px){
-    /* explorer profile (#profile sheet) */
-    body.pf-sheet #profile .pfi-sh, body.pf-sheet #profile .pfi-sh *{text-align:center !important;}
-    body.pf-sheet #profile .pfi-sh{align-items:center !important;}
-    body.pf-sheet #profile .pfi-who{flex-direction:column !important; align-items:center !important; text-align:center !important; justify-content:center;}
-    body.pf-sheet #profile .pfi-names, body.pf-sheet #profile .pfi-role{text-align:center !important;}
-    body.pf-sheet #profile .pfi-acts{align-items:stretch; justify-content:center !important; margin-left:auto; margin-right:auto;}
-    body.pf-sheet #profile .pfi-intro{text-align:center !important;}
-    body.pf-sheet #profile .pfi-intro p{margin-left:auto !important; margin-right:auto !important;}
-    body.pf-sheet #profile .pfi-sub, body.pf-sheet #profile .pfi-work .pfi-sub{text-align:center !important;}
-    body.pf-sheet #profile .pfi-stats .ps-exp{justify-content:center !important; text-align:center;}
-    body.pf-sheet #profile .pw-head{justify-content:center; text-align:center;}
-    body.pf-sheet #profile .pw-col h4, body.pf-sheet #profile .pw-awards h4{text-align:center;}
-    body.pf-sheet #profile .pfi-col h3{text-align:center;}
-    body.pf-sheet #profile .pf-chips{justify-content:center;}
-    body.pf-sheet #profile .pfi-sub{justify-content:center !important;}
-    body.pf-sheet #profile .pfi-stats::before, body.pf-sheet #profile .pfi-intro .pfi-sub{text-align:center !important;}
-    body.pf-sheet #profile .pfi-hud, body.pf-sheet #profile .pp-tag{text-align:center;}
-    body.pf-sheet #profile .pfi-intro{width:100%; max-width:none !important;}
-    body.pf-sheet #profile .pfi-intro p{max-width:min(52em,100%) !important;}
-  }
 </style>
 <style>
 /* ===== PROTOTYPE: cockpit scene → click the console to open 探索者檔案 (desktop only) ===== */
@@ -2518,6 +2495,7 @@
   <div class="sc-ui"><span class="sc-name">拾星號 <b>GLEANER</b> ・ 艦橋</span><span class="sc-uir"><button type="button" class="sc-fx" id="scFx" aria-pressed="false" title="開啟後會關閉背景動畫與光效,讓畫面更順">⚡ 切換精緻模式</button><button type="button" class="sc-close" id="scClose">✕ CLOSE</button></span></div>
 </div>
 <div class="pf-stand" id="pfStand" aria-hidden="true"></div>
+<div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-arc" id="palArc" role="menu" aria-label="前往其他頁面"></div><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
 <aside class="cm-slot" id="cmSlot" aria-label="留言">
   <div class="cm-feed" id="cmFeed" aria-live="polite"></div>
   <form class="cm-form" id="cmForm" autocomplete="off">
@@ -2765,7 +2743,7 @@
           <button class="ring-item" type="button" data-angle="0" style="transform:rotateY(0deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-f94a85d1e1.webp" alt="水星風格行星">
-              <div class="star-label"><div class="name">啟航星</div><div class="medium"></div></div>
+              <div class="star-label"><div class="name">啟航星</div><div class="medium">Voyage Star</div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(-2.5deg) translateZ(250px);"></span>
@@ -2785,7 +2763,7 @@
           <button class="ring-item" type="button" data-angle="72" style="transform:rotateY(72deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-6d12e99a78.webp" alt="星環行星">
-              <div class="star-label"><div class="name">元宇宙</div><div class="medium"></div></div>
+              <div class="star-label"><div class="name">元宇宙</div><div class="medium">Metaverse</div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(69.5deg) translateZ(250px);"></span>
@@ -2805,7 +2783,7 @@
           <button class="ring-item" type="button" data-angle="144" style="transform:rotateY(144deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-c7ecb52f75.webp" alt="森林行星">
-              <div class="star-label"><div class="name">貼圖星</div><div class="medium"></div></div>
+              <div class="star-label"><div class="name">貼圖星</div><div class="medium">Sticker Star</div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(141.5deg) translateZ(250px);"></span>
@@ -2825,7 +2803,7 @@
           <button class="ring-item" type="button" data-angle="216" style="transform:rotateY(216deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-d632b5740e.webp" alt="星環行星">
-              <div class="star-label"><div class="name">萬象星</div><div class="medium"></div></div>
+              <div class="star-label"><div class="name">萬象星</div><div class="medium">Spectrum</div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(213.5deg) translateZ(250px);"></span>
@@ -2845,7 +2823,7 @@
           <button class="ring-item" type="button" data-angle="288" style="transform:rotateY(288deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-7f9c754636.webp" alt="星環行星">
-              <div class="star-label"><div class="name">委託星</div><div class="medium"></div></div>
+              <div class="star-label"><div class="name">委託星</div><div class="medium">Commission Star</div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(285.5deg) translateZ(250px);"></span>
@@ -3444,7 +3422,7 @@
       if(window.__navTabsSync) window.__navTabsSync(selected);
       if(rpName && stars[selected]){
         rpName.textContent = stars[selected].zh;
-        rpEn.textContent = [stars[selected].en, 'MAG ' + stars[selected].mag].filter(Boolean).join('  ·  ');
+        rpEn.textContent = stars[selected].en + '  ·  MAG ' + stars[selected].mag;
       }
       rpDots.forEach(function(d, i){
         d.classList.toggle('is-active', i === selected);
@@ -4185,7 +4163,7 @@
       $('lgSum').textContent = LOG[i].summary || '（一句話簡介待補）這顆星球是 X-404 在星圖空白處留下的一筆新座標。';
       $('lgMag').textContent = s.mag;
       $('lgMagChip').textContent = s.mag;
-      $('lgDes').textContent = s.en.split('·')[0].trim() || '—';
+      $('lgDes').textContent = s.en.split('·')[0].trim();
       $('lgLogNo').textContent = no;
       var t = $('lgText'); t.innerHTML = '';
       var paras = (LOG[i].text && LOG[i].text.length) ? LOG[i].text : ['這顆星球的設定與創作說明還在整理中。', '之後會在這裡寫下它的來歷、設計想法，以及它在 LOSTAR 世界裡代表的意義。'];
@@ -4376,6 +4354,51 @@
     $('lgBadge').addEventListener('click', requestClose);
     $('dtPrev').addEventListener('click', function(){ stepDetail(-1); });
     $('dtNext').addEventListener('click', function(){ stepDetail(1); });
+    (function(){ /* 常駐小助理: bottom-right companion (desktop only), shares the rig engine & image cache */
+      var pal=$('pal'), cv=$('palCv'), bub=$('palBub'), xb=$('palX'), arc=$('palArc'); if(!pal||!cv) return;
+      var mq=window.matchMedia('(min-width:1280px) and (hover:hover)'); var rig=null, loading=false, mini=false, bt=0, lastStar=-1, clicks=0;
+      var KEY='lostar-pal-mini', reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+      try{ mini=localStorage.getItem(KEY)==='1'; }catch(e){}
+      var LINES={0:'這裡是我的起點。',1:'歡迎來到元宇宙。',2:'貼圖在這，看看有沒有喜歡的？',3:'萬象星，什麼都有一點。',4:'委託角色設計都收在這。'};
+      var CLICK=['嗨，我在這裡。','慢慢逛，不用急。','今天也要繼續探索嗎？'];
+      function say(t,ms){ if(mini||!t) return; bub.textContent=t; bub.classList.add('on'); clearTimeout(bt); bt=setTimeout(function(){ bub.classList.remove('on'); },ms||4200); }
+      function setView(){ if(!rig) return; if(mini) rig.setView({z:2.6,cx:765,cy:400,fy:.36}); else rig.setView({z:1.05,cx:765,cy:600,fy:.36}); rig.resize(); }
+      function apply(){ pal.classList.toggle('mini',mini); setView(); run(); }
+      function run(){ if(!rig) return; if(!mq.matches||document.hidden||document.body.classList.contains('intro-on')||!document.body.classList.contains('pal-detail')||reduce){ rig.stop(); if(reduce&&mq.matches) rig.resize(); return; } rig.start(); }
+      function init(){ if(rig||loading||!mq.matches) return; loading=true;
+        (window.LostarLive2D?Promise.resolve():new Promise(function(res,rej){ var sc=document.createElement('script'); sc.src='live2d/engine.js'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }))
+        .then(function(){ return LostarLive2D.create(cv,{base:'live2d/',fps:30}); }).then(function(r){ rig=r; loading=false; document.body.classList.add('pal-live'); pal.classList.add('on'); apply(); if(lastStar>=0) setTimeout(function(){ say(LINES[lastStar]||'',4000); },700); })
+        .catch(function(){ loading=false; pal.classList.add('hide'); }); }
+      (function(){ function idle(f){ if(window.requestIdleCallback) requestIdleCallback(f,{timeout:3500}); else setTimeout(f,2000); } function go(){ idle(function(){ init(); }); } if(document.readyState==='complete') go(); else window.addEventListener('load',go); })();
+      window.addEventListener('resize',function(){ if(!mq.matches){ run(); } else { init(); if(rig){ rig.resize(); run(); } } });
+      document.addEventListener('visibilitychange',run);
+      window.addEventListener('pointermove',function(e){ if(!rig||mini) return; var r=cv.getBoundingClientRect(); var cx=r.left+r.width*.5, cy=r.top+r.height*.28; rig.setPointer((e.clientX-cx)/(Math.max(window.innerWidth,600)*.4),(e.clientY-cy)/(Math.max(window.innerHeight,500)*.4)); },{passive:true});
+      var arcOn=false, arcT=0, TYPE={'啟航星':'原創角色','元宇宙':'元宇宙','貼圖星':'貼圖創作','萬象星':'插畫・漫畫','委託星':'角色設計'};
+      function arcStop(){ clearTimeout(arcT); }
+      function arcTimer(){ clearTimeout(arcT); arcT=setTimeout(arcClose,3000); }
+      function arcClose(){ arcOn=false; clearTimeout(arcT); arc.classList.remove('open'); }
+      function arcOpen(){
+        arc.textContent='';
+        var q=document.createElement('div'); q.className='pal-q'; q.textContent='// 要去哪裡呢？'; arc.appendChild(q);
+        var items=[]; stars.forEach(function(st,i){ if(i!==lastStar) items.push({no:st.no,label:TYPE[st.zh]||st.zh,go:function(){ selectStar(i); fillDetail(i,true); setHash(i,true); }}); });
+        items.push({no:'←',label:'回到主頁',go:function(){ requestClose(); }});
+        var n=items.length;
+        items.forEach(function(it,k){
+          var b=document.createElement('button'); b.type='button'; b.className='pal-it'; b.setAttribute('role','menuitem'); b.style.setProperty('--i',n-1-k);
+          b.innerHTML='<small></small><span></span>'; b.children[0].textContent=it.no; b.children[1].textContent=it.label;
+          b.addEventListener('click',function(e){ e.stopPropagation(); arcClose(); it.go(); });
+          b.addEventListener('pointerenter',arcStop); b.addEventListener('pointerleave',arcTimer); b.addEventListener('focus',arcStop); b.addEventListener('blur',arcTimer);
+          arc.appendChild(b); });
+        bub.classList.remove('on'); void arc.offsetWidth; arcOn=true; arc.classList.add('open'); arcTimer();
+      }
+      cv.addEventListener('click',function(){ if(mini){ mini=false; try{ localStorage.setItem(KEY,'0'); }catch(e){} apply(); }
+        if(arcOn){ arcClose(); return; } if(rig) rig.react(); arcOpen(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&arcOn) arcClose(); });
+      xb.addEventListener('click',function(e){ e.stopPropagation(); arcClose(); mini=true; try{ localStorage.setItem(KEY,'1'); }catch(e){} bub.classList.remove('on'); apply(); });
+      var cmT=$('cmText'); if(cmT){ cmT.addEventListener('focus',function(){ say('想對迷航星說什麼？',3500); }); }
+      window.__palSync=function(i,open,isOrigin){ var show=!!(open&&!isOrigin); document.body.classList.toggle('pal-detail',show); run();
+        if(show){ if(i!==lastStar){ lastStar=i; say(LINES[i]||'',4000); } } else { lastStar=-1; bub.classList.remove('on'); } if(!show) arcClose(); };
+    })();
     (function(){ /* 啟航星 half-body Live2D-style rig: lazy-loaded, idle / pointer follow, optional webcam face tracking */
       var fig=$('lgLiveStage'), wrap=$('lgLiveWrap'), cv=$('lgLive'), ui=$('lgLiveUi'), btn=$('lgLiveBtn'), txt=$('lgLiveTxt'), cam=$('lgLiveCam'), note=$('lgLiveNote');
       if(!fig||!cv) return;
@@ -4761,7 +4784,7 @@
           c.innerHTML = '<span class="ft-frame"><img loading="lazy" decoding="async" alt=""></span><span class="ft-name"></span><span class="ft-star"></span>';
           c.querySelector('img').src = p.src;
           c.querySelector('.ft-name').textContent = p.title;
-          c.querySelector('.ft-star').textContent = [stars[p.star].zh, stars[p.star].en.toUpperCase()].filter(Boolean).join(' · ');
+          c.querySelector('.ft-star').textContent = stars[p.star].zh + ' · ' + stars[p.star].en.toUpperCase();
           c.addEventListener('click', function(){ if(!busy) openDetail(p.star); });
           row.appendChild(c);
         });
