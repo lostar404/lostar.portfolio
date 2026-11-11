@@ -2226,6 +2226,9 @@
   body.fx-lite #scStage .sc-star, body.fx-lite #scStage .sk-sp{display:none !important;}
   body.fx-lite #scene .sc-card, body.fx-lite #scene .sc-tip, body.fx-lite .sc-ui{-webkit-backdrop-filter:none !important; backdrop-filter:none !important;}
   body.fx-lite #scStage .sc-bg, body.fx-lite #scStage .sc-dash, body.fx-lite #scStage .sc-sky, body.fx-lite #scStage .sc-chair, body.fx-lite #scStage .sc-lamp, body.fx-lite #scStage .sc-rdw, body.fx-lite #scStage .sc-plant, body.fx-lite #scStage .sc-rs, body.fx-lite #scStage .sk-d{translate:none !important;}
+  body.pf-scene #scene *{mix-blend-mode:normal !important;}
+  body.pf-scene #scene .sc-card, body.pf-scene #scene .sc-tip, body.pf-scene .sc-ui{-webkit-backdrop-filter:none !important; backdrop-filter:none !important;}
+  body.fx-lite #scStage *{will-change:auto !important;}
   body.fx-lite #scStage .sk-img, body.fx-lite #scStage .sk-ro, body.fx-lite #scStage .sk-pl2{will-change:auto !important;}
   .sc-uir{display:flex; align-items:center; gap:10px;}
   .sc-fx{pointer-events:auto; cursor:pointer; padding:8px 14px; border-radius:999px; border:1px solid rgba(143,227,199,.35); background:rgba(9,11,26,.85); color:var(--muted); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label);}
@@ -2270,10 +2273,10 @@
 #scene{--hue:0deg;}
 @media (min-width:961px){
   .sc-bg{filter:var(--tf,none); transition:filter .7s ease, translate .35s ease-out;}
-  .sc-chair img{filter:var(--tf,hue-rotate(0deg)); transition:filter .7s ease;}
+  .sc-chair img{filter:var(--tf,none); transition:filter .7s ease;}
   .sc-chair:hover img, .sc-chair:focus-visible img{filter:drop-shadow(0 0 3px rgba(143,227,199,.95)) drop-shadow(0 0 14px rgba(120,190,255,.7)) brightness(1.1) var(--tf,hue-rotate(0deg));}
   .sc-lamp{position:absolute; left:9.65%; top:42.9%; width:10.24%; height:25%; padding:0; border:0; background:none; cursor:pointer; outline:none; -webkit-tap-highlight-color:transparent; translate:calc(var(--mx,0) * -14px) calc(var(--my,0) * -8px); transition:translate .35s ease-out;}
-  .sc-lamp img{position:absolute; inset:0; width:100%; height:100%; display:block; filter:var(--tf,hue-rotate(0deg)); transition:filter .7s ease; animation:scLamp 4.2s ease-in-out infinite; user-select:none; -webkit-user-drag:none;}
+  .sc-lamp img{position:absolute; inset:0; width:100%; height:100%; display:block; filter:var(--tf,none); transition:filter .7s ease; animation:scLamp 4.2s ease-in-out infinite; user-select:none; -webkit-user-drag:none;}
   .sc-lamp:hover img, .sc-lamp:focus-visible img{animation:none; filter:brightness(1.18) drop-shadow(0 0 10px rgba(190,150,255,.9)) var(--tf,hue-rotate(0deg));}
   .sc-lamp-spill{position:absolute; left:-70%; right:-70%; top:48%; bottom:-34%; border-radius:50%; background:radial-gradient(ellipse,rgba(170,130,255,.5),rgba(170,130,255,0) 68%); mix-blend-mode:screen; pointer-events:none; filter:var(--tf,hue-rotate(0deg)); transition:filter .7s ease; animation:scSpill 4.2s ease-in-out infinite;}
   .sc-lamp .sc-tip{left:50%; bottom:100%; transform:translate(-50%,-4px); opacity:0;}
@@ -2317,7 +2320,7 @@
 <style>
 /* --- far-right screen (perspective-warped) -> log card --- */
 @media (min-width:961px){
-  .sc-tone{position:absolute; inset:0; display:block; pointer-events:none; filter:var(--tf,hue-rotate(0deg)); transition:filter .7s ease;}
+  .sc-tone{position:absolute; inset:0; display:block; pointer-events:none; filter:var(--tf,none); transition:filter .7s ease;}
   .sc-rdw{position:absolute; left:0; top:0; width:1672px; height:941px; transform-origin:0 0; transform:scale(var(--k,1)); pointer-events:none; translate:calc(var(--mx,0) * -14px * var(--ik,1)) calc(var(--my,0) * -8px * var(--ik,1)); transition:translate .35s ease-out;}
   .sc-rd{position:absolute; left:0; top:0; width:1536px; height:1024px; padding:0; border:0; background:none; cursor:pointer; outline:none; pointer-events:auto; transform-origin:0 0; transform:matrix3d(0.058276345,-0.022078536,0,-8.0856031e-05,-0.055123269,0.24535031,0,7.721189e-07,0,0,1,0,1400.3308,394.54717,0,1); -webkit-tap-highlight-color:transparent;}
   .sc-rd img{display:block; width:100%; height:100%; transition:filter .25s ease; animation:scRd 5.2s ease-in-out -2.4s infinite; user-select:none; -webkit-user-drag:none; pointer-events:none;}
@@ -6115,5 +6118,8 @@ window.__scLoad=function(done){
   setTimeout(finish,MAX);
 };
 })();</script>
+<script>(function(){var B=document.body, paused=[];
+function sync(){ if(B.classList.contains('pf-scene')){ paused=[].slice.call(document.querySelectorAll('video')).filter(function(v){return !v.paused;}); paused.forEach(function(v){ try{v.pause();}catch(e){} }); } else { paused.forEach(function(v){ try{v.play();}catch(e){} }); paused=[]; } }
+new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}); })();</script>
 </body>
 </html>
