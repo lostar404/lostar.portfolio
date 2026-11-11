@@ -6219,6 +6219,22 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 .bh-cue-inner, .ft-star, .live-status .hud-label, .pf-bar .pb-c, .pf-bar .pb-l, .pfi-role, .pn-tag, .pf-tl em{font-size:var(--fs-caption) !important;}
 /* hero English motto is HUD Latin: one line on phones */
 @media (max-width:480px){ .hero .sub-motto span{font-size:var(--fs-label); white-space:nowrap;} }
+
+    /* ===== 經歷階段區分：階段橫幅 + 階段分隔線 ===== */
+    #profile .pw-head, body.pf-sheet #profile .pw-head{position:relative; display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin:0 0 14px; padding:14px 18px 14px 20px; border:1px solid var(--line-soft); border-left:3px solid var(--hud); background:linear-gradient(90deg,rgba(80,230,200,.10),rgba(40,46,90,.18) 45%,rgba(8,10,22,.1));}
+    #profile .pw-head .pw-co, body.pf-sheet #profile .pw-head .pw-co{flex:1 1 auto; min-width:0; font-size:var(--fs-h4,18px); font-weight:var(--fw-semibold); color:var(--text);}
+    #profile .pw-head .pw-role, body.pf-sheet #profile .pw-head .pw-role{order:2; padding:3px 10px; border:1px solid var(--hud); color:var(--hud); font-size:var(--fs-meta,12px); letter-spacing:.12em; background:rgba(80,230,200,.08);}
+    #profile .pw-head .pw-date, body.pf-sheet #profile .pw-head .pw-date{order:3; padding:3px 0 3px 14px; border-left:1px solid var(--line-soft); font-size:var(--fs-ui); color:var(--text); letter-spacing:.1em;}
+    #profile .pw-head.pw-gap, body.pf-sheet #profile .pw-head.pw-gap{margin-top:64px;}
+    #profile .pw-head.pw-gap::before{content:""; position:absolute; left:-1px; right:0; top:-34px; height:1px; background:linear-gradient(90deg,var(--hud),rgba(120,140,220,.25) 40%,transparent);}
+    #profile .pw-head.pw-gap::after{content:""; position:absolute; left:-5px; top:-38px; width:9px; height:9px; background:var(--hud); transform:rotate(45deg); box-shadow:0 0 10px var(--hud);}
+    #profile .pw-take, body.pf-sheet #profile .pw-take{padding-left:14px; border-left:2px solid rgba(80,230,200,.35);}
+    @media (max-width:760px){
+      #profile .pw-head{padding:12px 14px 12px 16px;}
+      #profile .pw-head .pw-co{flex:1 0 100%;}
+      #profile .pw-head .pw-date{border-left:0; padding-left:0;}
+      #profile .pw-head.pw-gap{margin-top:56px;}
+    }
 </style>
 </body>
 </html>
