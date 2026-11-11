@@ -1338,7 +1338,9 @@
   .pf-menu[hidden]{display:none;}
   .pf-mi{display:flex; flex-direction:column; gap:2px; padding:9px 11px; color:var(--text); text-decoration:none; border-radius:var(--r-hud);}
   .pf-mi:hover, .pf-mi:focus-visible{background:var(--hud-08); outline:none;}
-  .pf-mk{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
+  .pf-mk{display:inline-flex; flex:none; width:18px; height:18px; color:var(--hud);}
+  .pf-mk svg{width:100%; height:100%;}
+  .pf-mi{flex-direction:row !important; align-items:center !important; gap:12px !important;}
   .pf-mv{font-size:var(--fs-ui); word-break:break-all;}
   .pf-copy{display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:4px; padding:8px 11px; border:none; border-top:1px solid var(--line-soft); background:none; color:var(--muted); font:inherit; font-size:var(--fs-meta); cursor:pointer;}
   .pf-copy small{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
@@ -1679,8 +1681,7 @@
     #pfContact .pf-menu{display:block !important; position:static !important; width:auto !important; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important;}
     #pfContact .pf-menu[hidden]{display:block !important;}
     #pfContact .pf-menu::before{content:"CONTACT \00B7 聯絡我"; display:block; margin:0 0 8px; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
-    #pfContact .pf-mi{border:1px solid var(--hud); background:var(--hud-08); padding:11px 16px; margin:0 0 8px; border-radius:0; width:100%; flex-direction:row; justify-content:space-between; align-items:center; gap:12px;}
-    #pfContact .pf-mk{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
+    #pfContact .pf-mi{border:1px solid var(--hud); background:var(--hud-08); padding:11px 16px; margin:0 0 8px; border-radius:0; width:100%; justify-content:flex-start;}
     #pfContact .pf-mv{font-size:var(--fs-ui); color:var(--text);}
   }
   @media (min-width:961px){
@@ -2627,8 +2628,8 @@
           <div class="pf-contact" id="pfContact">
             <button type="button" class="pf-btn ghost" id="pfContactBtn" aria-haspopup="true" aria-expanded="false" aria-controls="pfContactMenu">聯絡我 <small>CONTACT <i class="pf-caret" aria-hidden="true"></i></small></button>
             <div class="pf-menu" id="pfContactMenu" role="menu" hidden>
-              <button type="button" class="pf-mi" id="pfMail" role="menuitem"><span class="pf-mk">EMAIL</span><span class="pf-mv">Lostar404@gmail.com</span></button>
-              <a class="pf-mi" role="menuitem" href="https://www.instagram.com/lostar.0404" target="_blank" rel="noopener noreferrer"><span class="pf-mk">INSTAGRAM</span><span class="pf-mv">@lostar.0404</span></a>
+              <button type="button" class="pf-mi" id="pfMail" role="menuitem" aria-label="複製信箱 Lostar404@gmail.com" title="複製信箱"><span class="pf-mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span class="pf-mv">Lostar404@gmail.com</span></button>
+              <a class="pf-mi" role="menuitem" href="https://www.instagram.com/lostar.0404" target="_blank" rel="noopener noreferrer" aria-label="Instagram @lostar.0404" title="Instagram"><span class="pf-mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r=".8" fill="currentColor"/></svg></span><span class="pf-mv">@lostar.0404</span></a>
             </div>
           </div>
         </div>
