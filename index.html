@@ -1357,6 +1357,13 @@
     #profile .pw-col li::before{content:""; position:absolute; left:2px; top:.6em; width:5px; height:5px; background:var(--hud); transform:rotate(45deg);}
     #profile .pw-col p.pw-note{margin:6px 0 0; font-size:var(--fs-meta);}
     #profile .pfi-work .pw-sub2{margin-top:30px;}
+    #profile .pw-awards{margin-top:12px; padding:14px 16px; border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
+    #profile .pw-awards h4{margin:0 0 8px; font-size:var(--fs-ui); font-weight:var(--fw-semibold); color:var(--text);}
+    #profile .pw-awards h4 small{margin-left:6px; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); font-weight:var(--fw-regular);}
+    #profile .pw-awards ul{list-style:none; margin:0; padding:0;}
+    #profile .pw-awards li{display:flex; align-items:baseline; gap:8px; padding:6px 0; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--text);}
+    #profile .aw-l{flex:1 1 10px; min-width:10px; border-bottom:1px dotted rgba(143,227,199,.35); transform:translateY(-.25em);}
+    #profile .aw-r{flex:none; font-weight:var(--fw-semibold); color:var(--hud);}
     #profile .pw-take{margin:12px 0 0; font-size:var(--fs-ui); line-height:var(--lh-long); color:var(--muted);}
   }
   .pf-chips{display:flex; flex-wrap:wrap; gap:7px;}
@@ -1930,6 +1937,13 @@
     body.pf-sheet #profile .pw-col p.pw-note{margin:6px 0 0; font-size:var(--fs-meta); color:var(--muted);}
     body.pf-sheet #profile .pw-head.pw-gap{margin-top:clamp(20px,3vh,30px);}
     body.pf-sheet #profile .pw-sub2{margin-top:clamp(28px,4.5vh,44px) !important;}
+    body.pf-sheet #profile .pw-awards{margin-top:clamp(14px,2vh,20px); padding:clamp(14px,2vh,20px) clamp(16px,1.6vw,24px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
+    body.pf-sheet #profile .pw-awards h4{margin:0 0 10px; font-size:var(--fs-ui); font-weight:var(--fw-semibold); color:var(--text);}
+    body.pf-sheet #profile .pw-awards h4 small{margin-left:6px; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); font-weight:var(--fw-regular);}
+    body.pf-sheet #profile .pw-awards ul{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:repeat(8,auto); grid-auto-flow:column; column-gap:clamp(24px,3vw,48px);}
+    body.pf-sheet #profile .pw-awards li{display:flex; align-items:baseline; gap:8px; padding:7px 0; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--text);}
+    body.pf-sheet #profile .aw-l{flex:1 1 16px; min-width:16px; border-bottom:1px dotted rgba(143,227,199,.35); transform:translateY(-.25em);}
+    body.pf-sheet #profile .aw-r{flex:none; font-weight:var(--fw-semibold); color:var(--hud); font-size:var(--fs-ui);}
     body.pf-sheet #profile .pw-take{margin:14px 0 0; font-size:var(--fs-ui); line-height:var(--lh-long); color:var(--muted);}
     body.pf-sheet #profile .pfi-grid{grid-column:2; grid-row:4; display:grid !important; grid-template-columns:1fr 1fr !important; gap:clamp(14px,2vw,26px) !important; margin:0 !important;}
     body.pf-sheet #profile .pfi-col{padding:clamp(12px,1.6vh,18px) clamp(14px,1.4vw,20px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
@@ -2617,6 +2631,7 @@
             <p class="pw-note">副選手於正選手臨時無法上場時遞補，未實際出賽，但賽前選拔與訓練皆有參與。</p></div>
         </div>
         <p class="pw-take">三年的手繪媒材訓練，讓我習慣在時限內把細節畫完整，也成為後來插畫創作的基礎。</p>
+        <div class="pw-awards"><h4>得獎紀錄 <small>AWARDS ・ 16</small></h4><ul><li><span class="aw-t">教育部曬曬教師節黑板畫</span><i class="aw-l"></i><b class="aw-r">優等</b></li><li><span class="aw-t">107桃園市心三美微電影</span><i class="aw-l"></i><b class="aw-r">特優</b></li><li><span class="aw-t">2019道歉服務公司感恩母親創作競賽影片類</span><i class="aw-l"></i><b class="aw-r">金牌獎</b></li><li><span class="aw-t">108年財政部國稅局桃園分局租稅動畫競賽</span><i class="aw-l"></i><b class="aw-r">第一名</b></li><li><span class="aw-t">107年度 全國技藝競賽 商業廣告類校內決選</span><i class="aw-l"></i><b class="aw-r">第三名</b></li><li><span class="aw-t">106年桃園大同扶輪社海報競賽</span><i class="aw-l"></i><b class="aw-r">第三名</b></li><li><span class="aw-t">華嚴金獅獎佛像繪畫</span><i class="aw-l"></i><b class="aw-r">佳作</b></li><li><span class="aw-t">107學年度書籤設計比賽</span><i class="aw-l"></i><b class="aw-r">佳作</b></li><li><span class="aw-t">振聲高中108學年度設計群科畢業展 版畫類</span><i class="aw-l"></i><b class="aw-r">佳作</b></li><li><span class="aw-t">振聲高中108學年度設計群科畢業展 插畫漫畫類</span><i class="aw-l"></i><b class="aw-r">佳作</b></li><li><span class="aw-t">桃園市108年度「陂塘之美」微電影比賽</span><i class="aw-l"></i><b class="aw-r">佳作</b></li><li><span class="aw-t">中壢穿搭設計微電影大賽</span><i class="aw-l"></i><b class="aw-r">網路人氣獎</b></li><li><span class="aw-t">反婦幼暴力四格漫畫</span><i class="aw-l"></i><b class="aw-r">入選</b></li><li><span class="aw-t">2019宏洲磁磚觀光工廠磚情萬種磁磚設計比賽</span><i class="aw-l"></i><b class="aw-r">入圍</b></li><li><span class="aw-t">振聲高中75期主弦校刊作品</span><i class="aw-l"></i><b class="aw-r">刊登</b></li><li><span class="aw-t">108學年度學生美術比賽 高中美術班組 平面設計類</span><i class="aw-l"></i><b class="aw-r">入選</b></li></ul></div>
       </div>
       <div class="pfi-grid">
         <div class="pfi-col"><h3>專長 <small>SKILLS</small></h3>
