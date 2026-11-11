@@ -557,6 +557,7 @@
   .star-label{text-align:center; white-space:nowrap; pointer-events:auto;}
   .star-label .name{font-family:var(--serif); font-style:italic; font-size:var(--fs-h1s); font-weight:500;}
   .star-label .medium{font-size:var(--fs-h2s); color:var(--muted); margin-top:8px; letter-spacing:var(--ls-ui);}
+  .star-label .medium{display:none;}   /* ring labels show the planet name only (the subtitle collided with 查看詳情) */
 
 
   /* ===== works: view toggle + alternate views ===== */
@@ -2795,7 +2796,7 @@
           <button class="ring-item" type="button" data-angle="0" style="transform:rotateY(0deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" style="width:530px;max-width:none" src="images/img-f94a85d1e1.webp" alt="水星風格行星">
-              <div class="star-label"><div class="name">啟航星</div><div class="medium">Voyage Star</div></div>
+              <div class="star-label"><div class="name">啟航星</div><div class="medium"></div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(-2.5deg) translateZ(250px);"></span>
@@ -2815,7 +2816,7 @@
           <button class="ring-item" type="button" data-angle="72" style="transform:rotateY(72deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-6d12e99a78.webp" alt="星環行星">
-              <div class="star-label"><div class="name">元宇宙</div><div class="medium">Metaverse</div></div>
+              <div class="star-label"><div class="name">元宇宙</div><div class="medium"></div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(69.5deg) translateZ(250px);"></span>
@@ -2835,7 +2836,7 @@
           <button class="ring-item" type="button" data-angle="144" style="transform:rotateY(144deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-c7ecb52f75.webp" alt="森林行星">
-              <div class="star-label"><div class="name">貼圖星</div><div class="medium">Sticker Star</div></div>
+              <div class="star-label"><div class="name">貼圖星</div><div class="medium"></div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(141.5deg) translateZ(250px);"></span>
@@ -2855,7 +2856,7 @@
           <button class="ring-item" type="button" data-angle="216" style="transform:rotateY(216deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-d632b5740e.webp" alt="星環行星">
-              <div class="star-label"><div class="name">萬象星</div><div class="medium">Spectrum</div></div>
+              <div class="star-label"><div class="name">萬象星</div><div class="medium"></div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(213.5deg) translateZ(250px);"></span>
@@ -2875,7 +2876,7 @@
           <button class="ring-item" type="button" data-angle="288" style="transform:rotateY(288deg) translateZ(var(--orbit-r));">
             <div class="star-content">
               <img decoding="async" class="planet-img" src="images/img-7f9c754636.webp" alt="星環行星">
-              <div class="star-label"><div class="name">委託星</div><div class="medium">Commission Star</div></div>
+              <div class="star-label"><div class="name">委託星</div><div class="medium"></div></div>
             </div>
           </button>
           <span class="trail-dot td-ccw" style="transform:rotateY(285.5deg) translateZ(250px);"></span>
@@ -3474,7 +3475,7 @@
       if(window.__navTabsSync) window.__navTabsSync(selected);
       if(rpName && stars[selected]){
         rpName.textContent = stars[selected].zh;
-        rpEn.textContent = stars[selected].en + '  ·  MAG ' + stars[selected].mag;
+        rpEn.textContent = [stars[selected].en, 'MAG ' + stars[selected].mag].filter(Boolean).join('  ·  ');
       }
       rpDots.forEach(function(d, i){
         d.classList.toggle('is-active', i === selected);
@@ -4324,7 +4325,7 @@
       $('lgSum').textContent = LOG[i].summary || '（一句話簡介待補）這顆星球是 X-404 在星圖空白處留下的一筆新座標。';
       $('lgMag').textContent = s.mag;
       $('lgMagChip').textContent = s.mag;
-      $('lgDes').textContent = s.en.split('·')[0].trim();
+      $('lgDes').textContent = s.en.split('·')[0].trim() || '—';
       $('lgLogNo').textContent = no;
       var t = $('lgText'); t.innerHTML = '';
       var paras = (LOG[i].text && LOG[i].text.length) ? LOG[i].text : ['這顆星球的設定與創作說明還在整理中。', '之後會在這裡寫下它的來歷、設計想法，以及它在 LOSTAR 世界裡代表的意義。'];
@@ -4900,7 +4901,7 @@
           c.innerHTML = '<span class="ft-frame"><img loading="lazy" decoding="async" alt=""></span><span class="ft-name"></span><span class="ft-star"></span>';
           c.querySelector('img').src = p.src;
           c.querySelector('.ft-name').textContent = p.title;
-          c.querySelector('.ft-star').textContent = stars[p.star].zh + ' · ' + stars[p.star].en.toUpperCase();
+          c.querySelector('.ft-star').textContent = [stars[p.star].zh, stars[p.star].en.toUpperCase()].filter(Boolean).join(' · ');
           c.addEventListener('click', function(){ if(!busy) openDetail(p.star); });
           row.appendChild(c);
         });
