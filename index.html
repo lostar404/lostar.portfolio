@@ -2242,7 +2242,9 @@
   body.pf-scene #scene *{mix-blend-mode:normal !important;}
   body.pf-scene #scene .sc-card, body.pf-scene #scene .sc-tip, body.pf-scene .sc-ui{-webkit-backdrop-filter:none !important; backdrop-filter:none !important;}
   body.fx-lite #scStage *{will-change:auto !important;}
-  body.fx-lite #scStage .sk-img, body.fx-lite #scStage .sk-ro, body.fx-lite #scStage .sk-pl2{will-change:auto !important;}
+  body.fx-lite #scStage .sk-img, body.fx-lite #scStage .sk-pl2{will-change:auto !important;}
+  /* 流暢模式 keeps the drifting asteroids: each rock is its own small GPU layer, so moving it never repaints the sky */
+  body.fx-lite #scStage .sk-ro{will-change:transform !important;}
   /* the sky is always its own stacking context, so missiles/explosions (.sk-fx) stay behind the cockpit window */
   .sc-sky{isolation:isolate;}
   /* 流暢模式: sky and cockpit art are static textures — raster once, never repaint on hover */
@@ -5982,7 +5984,6 @@ cm.addEventListener('click',function(){
     requestAnimationFrame(tick);
     if(!document.body.classList.contains('pf-scene')||document.hidden){ last=0; return; }
     if(!ready&&!init()) return;
-    if(document.body.classList.contains('fx-lite')){ last=0; return; }   /* 流暢模式: asteroids hold still (no per-frame repaint of the sky) */
     var dt=last?Math.min(.1,(t-last)/1000):0; last=t;
     var W=parent.offsetWidth, H=parent.offsetHeight, top=H*.05, bot=H*.5;
     st.forEach(function(r){
