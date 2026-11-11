@@ -1374,6 +1374,9 @@
     #profile .pw-awards li{display:flex; align-items:baseline; gap:8px; padding:6px 0; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--text);}
     #profile .aw-l{flex:1 1 10px; min-width:10px; border-bottom:1px dotted rgba(143,227,199,.35); transform:translateY(-.25em);}
     #profile .aw-r{flex:none; font-weight:var(--fw-semibold); color:var(--hud);}
+    #profile .pw-awards li{align-items:center; gap:12px; padding:9px 0;}
+    #profile .pw-awards .aw-c{width:56px; height:75px; margin:0;}
+    #profile .pw-awards .aw-miss svg{width:22px; height:28px;}
     #profile .pw-take{margin:12px 0 0; font-size:var(--fs-ui); line-height:var(--lh-long); color:var(--muted);}
   }
   .pf-chips{display:flex; flex-wrap:wrap; gap:7px;}
@@ -1954,6 +1957,9 @@
     body.pf-sheet #profile .pw-awards li{display:flex; align-items:baseline; gap:8px; padding:7px 0; font-size:var(--fs-ui); line-height:var(--lh-body); color:var(--text);}
     body.pf-sheet #profile .aw-l{flex:1 1 16px; min-width:16px; border-bottom:1px dotted rgba(143,227,199,.35); transform:translateY(-.25em);}
     body.pf-sheet #profile .aw-r{flex:none; font-weight:var(--fw-semibold); color:var(--hud); font-size:var(--fs-ui);}
+    body.pf-sheet #profile .pw-awards li{align-items:center; gap:clamp(14px,1.2vw,20px); padding:clamp(10px,1.2vh,14px) 0;}
+    body.pf-sheet #profile .pw-awards .aw-c{width:clamp(64px,5vw,84px); height:clamp(86px,6.7vw,112px); margin:0;}
+    body.pf-sheet #profile .pw-awards .aw-miss svg{width:26px; height:32px;}
     body.pf-sheet #profile .pw-take{margin:14px 0 0; font-size:var(--fs-ui); line-height:var(--lh-long); color:var(--muted);}
     body.pf-sheet #profile .pfi-grid{grid-column:2; grid-row:4; display:grid !important; grid-template-columns:1fr 1fr !important; gap:clamp(14px,2vw,26px) !important; margin:0 !important;}
     body.pf-sheet #profile .pfi-col{padding:clamp(12px,1.6vh,18px) clamp(14px,1.4vw,20px); border:1px solid var(--line-soft); background:linear-gradient(180deg,rgba(40,46,90,.22),rgba(8,10,22,.2));}
