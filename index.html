@@ -5797,6 +5797,7 @@ cm.addEventListener('click',function(){
   var boarding=false;
   ship.addEventListener('click',function(e){
     e.stopPropagation(); if(boarding) return; boarding=true;
+    if(window.__scLoad){ window.__scLoad(function(){ boarding=false; }); return; }
     var r=ship.getBoundingClientRect(), sc=document.getElementById('scene'), nav=document.getElementById('navPf');
     if(reduce||!nav||!ship.animate){ if(window.__scOpen) window.__scOpen(); boarding=false; return; }
     /* ship-only flight: dash off to the left, then swoop back in from the lower-left, big and out of focus, toward the upper-right while the cockpit opens */
@@ -6081,6 +6082,38 @@ function measure(){ if(measured||running) return; running=true; setTimeout(funct
   function done(){ running=false; if(ts.length<20) return; var d=[]; for(var i=1;i<ts.length;i++) d.push(ts[i]-ts[i-1]); d.sort(function(a,b){return a-b;}); var med=d[d.length>>1], p90=d[Math.floor(d.length*.9)];
     measured=true; if(med>24||p90>45) set(true,false); } },1400); }
 new MutationObserver(function(){ if(B.classList.contains('pf-scene')) measure(); }).observe(B,{attributes:true,attributeFilter:['class']});
+})();</script>
+<style>
+#scLoad{position:fixed; inset:0; z-index:1300; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; background:radial-gradient(ellipse at 50% 55%,#0d1233 0%,#050714 70%); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .35s ease, visibility 0s .35s;}
+#scLoad.on{opacity:1; visibility:visible; pointer-events:auto; transition:opacity .3s ease;}
+#scLoad .sl-t{font-size:clamp(16px,1.5vw,22px); color:var(--text); letter-spacing:.18em;}
+#scLoad .sl-t i{font-style:normal; display:inline-block; width:1.6em; text-align:left;}
+#scLoad .sl-s{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:.24em; color:var(--hud); opacity:.8;}
+#scLoad .sl-bar{width:min(320px,62vw); height:3px; border-radius:2px; background:rgba(143,227,199,.15); overflow:hidden;}
+#scLoad .sl-bar b{display:block; height:100%; width:0; background:linear-gradient(90deg,#8fe3c7,#8ab4ff); box-shadow:0 0 10px rgba(143,227,199,.6); transition:width .25s ease-out;}
+#scLoad .sl-ship{width:54px; height:54px; border-radius:50%; border:1px solid rgba(143,227,199,.45); display:flex; align-items:center; justify-content:center; animation:slSpin 2.4s linear infinite;}
+#scLoad .sl-ship::after{content:""; width:8px; height:8px; border-radius:50%; background:var(--hud); box-shadow:0 0 12px var(--hud); transform:translateY(-27px);}
+@keyframes slSpin{to{transform:rotate(360deg);}}
+@media (prefers-reduced-motion:reduce){ #scLoad .sl-ship{animation:none;} }
+</style>
+<div id="scLoad" role="status" aria-live="polite" aria-hidden="true"><div class="sl-ship"></div><div class="sl-s">BOARDING ・ GLEANER</div><div class="sl-t">前往飛船中<i id="slDots">...</i></div><div class="sl-bar"><b id="slBar"></b></div></div>
+<script>(function(){
+var ov=document.getElementById('scLoad'), bar=document.getElementById('slBar'), dots=document.getElementById('slDots'), busy=false;
+window.__scLoad=function(done){
+  var sc=document.getElementById('scene'); if(busy||!sc||!window.__scOpen){ if(window.__scOpen) window.__scOpen(); if(done) done(); return; }
+  busy=true; ov.setAttribute('aria-hidden','false'); ov.classList.add('on'); bar.style.width='4%';
+  var n=0, dt=setInterval(function(){ n=(n+1)%4; dots.textContent=('...').slice(0,n)+'\u00a0\u00a0\u00a0'.slice(0,3-n); },380);
+  var imgs=[].slice.call(sc.querySelectorAll('img')), total=imgs.length||1, ok=0, t0=performance.now(), MIN=1900, MAX=7000, finished=false;
+  function prog(){ var p=Math.min(1,(performance.now()-t0)/MIN)*.5+ (ok/total)*.5; bar.style.width=Math.max(4,Math.round(p*96))+'%'; }
+  var pt=setInterval(prog,120);
+  setTimeout(function(){ sc.classList.add('sc-warm'); },320);
+  var jobs=imgs.map(function(im){ var p=(im.decode?im.decode():Promise.resolve()); return p.catch(function(){}).then(function(){ ok++; prog(); }); });
+  function finish(){ if(finished) return; finished=true; clearInterval(pt); clearInterval(dt); bar.style.width='100%';
+    setTimeout(function(){ sc.classList.remove('sc-warm'); sc.classList.add('sc-enter'); setTimeout(function(){ sc.classList.remove('sc-enter'); },1000); window.__scOpen();
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.remove('on'); ov.setAttribute('aria-hidden','true'); busy=false; if(done) done(); }); }); },260); }
+  Promise.all(jobs).then(function(){ var w=MIN-(performance.now()-t0); setTimeout(finish,Math.max(0,w)); });
+  setTimeout(finish,MAX);
+};
 })();</script>
 </body>
 </html>
