@@ -539,6 +539,7 @@
   @keyframes planet-float{ 0%,100%{ translate:0 -10px; } 50%{ translate:0 10px; } }   /* compositor-only (was animating `top`, which forced layout every frame) */
   .ring-item:hover .planet-img{filter:drop-shadow(0 0 53px rgba(200,190,240,0.32));}
   .ring-item:nth-of-type(1) .planet-img{animation-duration:3.7s; animation-delay:-2.4s;}
+  .ring-item:nth-of-type(1) .planet-img{width:450px !important;}   /* 啟航星 was drawn much larger than the others: at the front it pushed its label down onto 查看詳情 */
   .ring-item:nth-of-type(2) .planet-img, .ring-item:nth-of-type(5) .planet-img{width:371px;}   /* 元宇宙 / 委託星 +6% */
   .ring-item:nth-of-type(2) .planet-img{animation-duration:4.1s; animation-delay:-0.6s;}
   .ring-item:nth-of-type(3) .planet-img{animation-duration:5.3s; animation-delay:-1.8s;}
