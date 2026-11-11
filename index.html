@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<script>(function(){try{if('scrollRestoration' in history) history.scrollRestoration='manual';}catch(e){} try{var nv=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0]; if(nv&&nv.type==='reload'&&/^#log-/i.test(location.hash)) history.replaceState(null,'',location.pathname+location.search);}catch(e){} function top(){ if(/^#log-/i.test(location.hash)) return; window.scrollTo(0,0); } top(); window.addEventListener('DOMContentLoaded',top); window.addEventListener('load',function(){ top(); setTimeout(top,120); setTimeout(top,500); }); window.addEventListener('pageshow',function(e){ if(e.persisted) top(); });})();</script>
+<script>(function(){try{if('scrollRestoration' in history) history.scrollRestoration='manual';}catch(e){} function top(){ if(/^#log-/i.test(location.hash)) return; window.scrollTo(0,0); } top(); window.addEventListener('DOMContentLoaded',top); window.addEventListener('load',function(){ top(); setTimeout(top,120); setTimeout(top,500); }); window.addEventListener('pageshow',function(e){ if(e.persisted) top(); });})();</script>
 <script>(function(){var raf=window.requestAnimationFrame.bind(window),held=[];window.requestAnimationFrame=function(cb){if(window.__rafHold){held.push(cb);return -held.length;}return raf(cb);};window.__rafRelease=function(){window.__rafHold=false;var h=held;held=[];h.forEach(function(cb){raf(cb);});};})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -5114,7 +5114,18 @@
     var hashMatch = /^#log-(\d+)$/.exec(window.location.hash || '');
     if(hashMatch){
       var hi = parseInt(hashMatch[1], 10) - 1;
-      if(stars[hi]){ selectStar(hi); openDetail(hi, { fly: false }); }
+      var clean = window.location.pathname + window.location.search;
+      if(stars[hi]){
+        if(history.state && history.state.log === hi){   /* reload on a planet page: the home entry is already behind it */
+          selectStar(hi); openDetail(hi, { fly: false }); pushedState = true;
+        } else {                                          /* shared link: slip a home entry in, so Back returns to the star ring */
+          try{ history.replaceState(null, '', clean); }catch(e){}
+          selectStar(hi); openDetail(hi, { fly: false });
+          try{ history.pushState({ log: hi }, '', '#log-' + (hi + 1)); pushedState = true; }catch(e){}
+        }
+      } else {
+        try{ history.replaceState(null, '', clean); }catch(e){}   /* unknown planet number -> clean home address */
+      }
     }
   })();
 
