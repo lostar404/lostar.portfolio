@@ -1330,11 +1330,6 @@
   .pf-btn small{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
   .pf-btn:hover{background:var(--hud-16);}
   .pf-btn.ghost{border-color:var(--line); background:none;}
-  .pf-btn[aria-disabled="true"]{opacity:.55; cursor:default;}
-  .pf-ver{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:8px 0 0; padding:7px 9px; border:1px dashed var(--line); font-size:var(--fs-meta); color:var(--muted);}
-  .pf-ver span{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
-  .pf-ver button{padding:3px 10px; border:1px solid var(--line); background:none; color:var(--muted); font:inherit; font-size:var(--fs-meta); cursor:pointer;}
-  .pf-ver button.on{border-color:var(--hud); color:var(--text); background:var(--hud-08);}
   .pf-contact{position:relative; display:flex;}
   .pf-contact > .pf-btn{flex:1 1 auto;}
   .pf-caret{display:inline-block; width:6px; height:6px; margin:0 2px 3px 6px; border-right:1.5px solid var(--hud); border-bottom:1.5px solid var(--hud); transform:rotate(45deg); transition:transform .2s ease;}
@@ -1677,6 +1672,17 @@
   .pfi-sub small{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); font-weight:400;}
   .pf-menu{text-align:left; background:#0a0c1e;}
   .pf-mi{align-items:flex-start;}
+  /* phones / tablets (profile sheet): no dropdown — the contact choices are laid open right where the resume button used to be */
+  @media (max-width:960px){
+    #pfContactBtn{display:none !important;}
+    #pfContact{display:block; width:100%;}
+    #pfContact .pf-menu{display:block !important; position:static !important; width:auto !important; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important;}
+    #pfContact .pf-menu[hidden]{display:block !important;}
+    #pfContact .pf-menu::before{content:"CONTACT \00B7 聯絡我"; display:block; margin:0 0 8px; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
+    #pfContact .pf-mi{border:1px solid var(--hud); background:var(--hud-08); padding:11px 16px; margin:0 0 8px; border-radius:0; width:100%; flex-direction:row; justify-content:space-between; align-items:center; gap:12px;}
+    #pfContact .pf-mk{font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud);}
+    #pfContact .pf-mv{font-size:var(--fs-ui); color:var(--text);}
+  }
   @media (min-width:961px){
     .top-grid .pfi-sub{justify-content:flex-start;}
     .top-grid .pf-menu{left:0; right:auto; width:max(100%, 220px);}
@@ -2618,7 +2624,6 @@
           </div>
         </div>
         <div class="pfi-acts">
-          <a class="pf-btn" href="#" id="pfResume" role="button">下載履歷 <small>RESUME PDF</small></a>
           <div class="pf-contact" id="pfContact">
             <button type="button" class="pf-btn ghost" id="pfContactBtn" aria-haspopup="true" aria-expanded="false" aria-controls="pfContactMenu">聯絡我 <small>CONTACT <i class="pf-caret" aria-hidden="true"></i></small></button>
             <div class="pf-menu" id="pfContactMenu" role="menu" hidden>
@@ -5105,7 +5110,6 @@
     (function(){
       var panel = document.getElementById('profile');
       if(!panel) return;
-      var rs = document.getElementById('pfResume'); if(rs) rs.addEventListener('click', function(e){ if(rs.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
       function fromHash(){
         if((window.location.hash || '') !== '#profile') return;
         var top = panel.getBoundingClientRect().top + window.pageYOffset - 90;
@@ -5254,7 +5258,7 @@ cm.addEventListener('click',function(){
 });
 })();
 </script>
-<script>(function(){var b=document.getElementById("pfResume");if(!b)return;b.setAttribute("href","resume/lostar-resume.pdf");b.setAttribute("download","蕭翔逸_履歷.pdf");b.removeAttribute("role");})();</script>
+
 <script>
 (function(){
   function gone(el){ if(el) el.classList.add('gone'); }
