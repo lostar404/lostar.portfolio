@@ -2220,6 +2220,17 @@
   .hot-globe .sc-tip{left:100%; bottom:50%; transform:translate(10px,50%);}
   .hot-globe:hover .sc-tip, .hot-globe:focus-visible .sc-tip{transform:translate(14px,50%);}
   .hot-globe .sc-tip::after{left:-10px; top:50%; width:10px; height:1px;}
+  /* 輕量模式: 低階筆電 / 偵測到掉幀時自動啟用,可手動切換 */
+  body.fx-lite #scStage *, body.fx-lite #scStage{animation:none !important;}
+  body.fx-lite #scStage .sc-glow, body.fx-lite #scStage .sc-lamp-spill, body.fx-lite #scStage .sc-met, body.fx-lite #scStage .sc-ping{display:none !important;}
+  body.fx-lite #scStage .sc-star, body.fx-lite #scStage .sk-sp{display:none !important;}
+  body.fx-lite #scene .sc-card, body.fx-lite #scene .sc-tip, body.fx-lite .sc-ui{-webkit-backdrop-filter:none !important; backdrop-filter:none !important;}
+  body.fx-lite #scStage .sc-bg, body.fx-lite #scStage .sc-dash, body.fx-lite #scStage .sc-sky, body.fx-lite #scStage .sc-chair, body.fx-lite #scStage .sc-lamp, body.fx-lite #scStage .sc-rdw, body.fx-lite #scStage .sc-plant, body.fx-lite #scStage .sc-rs, body.fx-lite #scStage .sk-d{translate:none !important;}
+  body.fx-lite #scStage .sk-img, body.fx-lite #scStage .sk-ro, body.fx-lite #scStage .sk-pl2{will-change:auto !important;}
+  .sc-uir{display:flex; align-items:center; gap:10px;}
+  .sc-fx{pointer-events:auto; cursor:pointer; padding:8px 14px; border-radius:999px; border:1px solid rgba(143,227,199,.35); background:rgba(9,11,26,.85); color:var(--muted); font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label);}
+  .sc-fx:hover{background:rgba(143,227,199,.14); color:var(--hud);}
+  body.fx-lite .sc-fx{color:var(--hud); border-color:rgba(143,227,199,.7);}
   body:not(.pf-scene) #scene *{animation-play-state:paused !important;}
   /* while the cockpit is open the home page underneath is fully covered: stop its animations so the GPU only works on the cockpit */
   body.pf-scene > :not(#scene):not(#profile):not(script):not(style){visibility:hidden; transition:visibility 0s linear .55s;}
@@ -2449,7 +2460,7 @@
   </div>
   <svg class="sc-link" id="scLink" aria-hidden="true"><path id="scLinkP" pathLength="1"/><circle id="scLinkA" r="4"/><circle id="scLinkR" r="4"/><rect id="scLinkE" width="7" height="7"/></svg>
   <div class="sc-vig"></div>
-  <div class="sc-ui"><span class="sc-name">拾星號 <b>GLEANER</b> ・ 艦橋</span><button type="button" class="sc-close" id="scClose">✕ CLOSE</button></div>
+  <div class="sc-ui"><span class="sc-name">拾星號 <b>GLEANER</b> ・ 艦橋</span><span class="sc-uir"><button type="button" class="sc-fx" id="scFx" aria-pressed="false" title="開啟後會關閉背景動畫與光效,讓畫面更順">⚡ 流暢模式:關</button><button type="button" class="sc-close" id="scClose">✕ CLOSE</button></span></div>
 </div>
 <div class="pf-stand" id="pfStand" aria-hidden="true"></div>
 <div class="pal" id="pal" aria-label="小助理"><canvas id="palCv" aria-hidden="true"></canvas><div class="pal-arc" id="palArc" role="menu" aria-label="前往其他頁面"></div><div class="pal-bub" id="palBub" role="status" aria-live="polite"></div><button type="button" class="pal-x" id="palX" aria-label="收合小助理">✕</button></div>
@@ -6055,6 +6066,21 @@ function shut(){ lb.hidden=true; im.removeAttribute('src'); }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('.aw-c[data-full]'); if(b){ e.preventDefault(); e.stopPropagation(); openLb(b); } },true);
 lb.addEventListener('click',function(e){ e.stopPropagation(); shut(); });
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden){ e.stopImmediatePropagation(); e.preventDefault(); shut(); } },true);
+})();</script>
+<script>(function(){
+var B=document.body, btn=document.getElementById('scFx'); if(!btn) return;
+var KEY='lostarFx', saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+function set(on,persist){ B.classList.toggle('fx-lite',on); btn.setAttribute('aria-pressed',on?'true':'false'); btn.textContent=on?'⚡ 流暢模式:開':'⚡ 流暢模式:關'; if(persist){ try{ localStorage.setItem(KEY,on?'lite':'full'); }catch(e){} } }
+var q=location.search; var forced=/[?&]fx=lite/.test(q)?'lite':/[?&]fx=full/.test(q)?'full':null;
+var weak=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||(navigator.deviceMemory&&navigator.deviceMemory<=4);
+var pref=forced||saved; set(pref?pref==='lite':!!weak,false);
+btn.addEventListener('click',function(e){ e.stopPropagation(); set(!B.classList.contains('fx-lite'),true); measured=true; });
+var measured=!!pref, running=false;
+function measure(){ if(measured||running) return; running=true; setTimeout(function(){ if(!B.classList.contains('pf-scene')){ running=false; return; }
+  var ts=[],t0=performance.now(); (function f(t){ ts.push(t); if(t-t0<2600&&B.classList.contains('pf-scene')) requestAnimationFrame(f); else done(); })(t0);
+  function done(){ running=false; if(ts.length<20) return; var d=[]; for(var i=1;i<ts.length;i++) d.push(ts[i]-ts[i-1]); d.sort(function(a,b){return a-b;}); var med=d[d.length>>1], p90=d[Math.floor(d.length*.9)];
+    measured=true; if(med>24||p90>45) set(true,false); } },1400); }
+new MutationObserver(function(){ if(B.classList.contains('pf-scene')) measure(); }).observe(B,{attributes:true,attributeFilter:['class']});
 })();</script>
 </body>
 </html>
