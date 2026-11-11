@@ -3110,7 +3110,7 @@
     }
     function attempt(k, sawOk){
       if(k >= urls.length){ return; }   // nothing usable -> keep the block hidden rather than show a made-up number
-      fetch(urls[k]).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
+      (window.AbortController?(function(){ var ac=new AbortController(); setTimeout(function(){ ac.abort(); },4000); return fetch(urls[k],{signal:ac.signal}); })():fetch(urls[k])).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
         .then(function(j){
           var n = parseCount(j);
           if(n && n > 0) show(n);
@@ -3121,15 +3121,23 @@
     // GoatCounter's public counter stayed at 0 for this site, so the number on the page now comes from a tiny
     // independent counter (abacus). It is +1'd on every page load; BASE carries over the visits GoatCounter had already logged.
     var BASE = 45, NS = 'lostar404-portfolio', KEY = 'visits';
+    /* guards: count once per browser per 30 min, never show a smaller number than before, 4s timeout */
+    function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){ return null; } }
+    function tf(url,ms){ var ac=window.AbortController?new AbortController():null, tm=null, o={}; if(ac){ o.signal=ac.signal; tm=setTimeout(function(){ ac.abort(); },ms); }
+      return fetch(url,o).then(function(r){ if(tm) clearTimeout(tm); return r; },function(e){ if(tm) clearTimeout(tm); throw e; }); }
     function viaAbacus(){
-      var url = 'https://abacus.jasoncameron.dev/hit/' + NS + '/' + KEY;   // every page load (refresh included) counts once
-      fetch(url).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
+      var last=parseInt(ls('lostarVisitAt')||'0',10), fresh=!(Date.now()-last<30*60*1000);
+      var url = 'https://abacus.jasoncameron.dev/'+(fresh?'hit':'get')+'/' + NS + '/' + KEY;
+      tf(url,4000).then(function(r){ if(!r.ok) throw new Error('bad'); return r.json(); })
         .then(function(j){
           var n = parseInt(j && j.value, 10);
           if(!isFinite(n) || n < 0) throw new Error('bad');
-          show(BASE + n);
+          if(fresh) ls('lostarVisitAt',String(Date.now()));
+          var shown=BASE+n, best=parseInt(ls('lostarVisitMax')||'0',10);
+          if(best && shown<best){ if(shown<best*0.5){ show(best); return; } shown=best; }   /* counter reset upstream -> keep the last known number */
+          ls('lostarVisitMax',String(shown)); show(shown);
         })
-        .catch(function(){ attempt(0, false); });
+        .catch(function(){ var best=parseInt(ls('lostarVisitMax')||'0',10); if(best>0) show(best); else attempt(0, false); });
     }
     setTimeout(viaAbacus, 800);
   })();
@@ -5604,28 +5612,40 @@ cm.addEventListener('click',function(){
     var fresh=rows.filter(function(r){ return !seen[r.id]; });
     fresh.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,animate); }, animate?k*450:0); });
   }
+  /* resilience: timeouts, offline notice, back-off polling */
+  var sendBtn=form.querySelector('button[type="submit"]'), fails=0, nextAt=0, down=false;
+  function tf(url,opt,ms){ opt=opt||{}; var ac=window.AbortController?new AbortController():null, tm=null; if(ac){ opt.signal=ac.signal; tm=setTimeout(function(){ ac.abort(); },ms||8000); }
+    return fetch(url,opt).then(function(r){ if(tm) clearTimeout(tm); return r; },function(e){ if(tm) clearTimeout(tm); throw 0; }); }
+  function setDown(on){ down=on; if(sendBtn) sendBtn.disabled=on; if(on) say('留言訊號暫時中斷，稍後會自動重新連線'); else if(msg && /訊號/.test(msg.textContent)) say(''); }
+  function ok(){ fails=0; nextAt=Date.now()+15000; if(down) setDown(false); }
+  function bad(){ fails++; nextAt=Date.now()+Math.min(300000,15000*Math.pow(2,fails-1)); setDown(true); }
   function load(first){
     var q=SB_URL+'/rest/v1/notes?select=id,body&order=id.desc&limit='+(first?MAXF():20);
-    fetch(q,{headers:H}).then(function(r){ return r.ok?r.json():Promise.reject(r.status); }).then(function(rows){
-      rows=rows.slice().reverse();
-      if(first){ var n=0; rows.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,true); }, 500+k*420); }); }
+    tf(q,{headers:H},8000).then(function(r){ return r.ok?r.json():Promise.reject(r.status); }).then(function(rows){
+      ok(); rows=rows.slice().reverse();
+      if(first){ rows.forEach(function(r,k){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; setTimeout(function(){ addBubble(r.body,true); }, 500+k*420); }); }
       else take(rows,true);
-    }).catch(function(){});
+    }).catch(function(){ bad(); });
   }
   function send(){
     if(busy) return;
     var t=ta.value.replace(/\s+/g,' ').trim(); if(!t) return;
     if(hp && hp.value) return;
+    if(down){ say('留言訊號暫時中斷，稍後會自動重新連線'); return; }
     var wait=8000-(Date.now()-lastSent); if(wait>0){ say('請稍等 '+Math.ceil(wait/1000)+' 秒再送出'); return; }
     busy=true; say('');
-    fetch(SB_URL+'/rest/v1/notes',{method:'POST',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=representation'},H),body:JSON.stringify({body:t.slice(0,30)})})
+    tf(SB_URL+'/rest/v1/notes',{method:'POST',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=representation'},H),body:JSON.stringify({body:t.slice(0,30)})},8000)
       .then(function(r){ return r.ok?r.json():Promise.reject(r.status); })
-      .then(function(rows){ var r=rows&&rows[0]; if(r&&!seen[r.id]){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; } lastSent=Date.now(); ta.value=''; cnt.textContent='0/30'; addBubble(t,true); })
-      .catch(function(){ say('送出失敗，請稍後再試'); })
+      .then(function(rows){ ok(); var r=rows&&rows[0]; if(r&&!seen[r.id]){ seen[r.id]=1; if(r.id>lastId) lastId=r.id; } lastSent=Date.now(); ta.value=''; cnt.textContent='0/30'; addBubble(t,true); })
+      .catch(function(st){
+        if(st===429) say('送太快了，請稍等一下再試');
+        else if(st===400||st===401||st===403||st===409||st===422) say('這則留言無法送出（可能超過字數或格式不符）');
+        else { bad(); say('留言訊號中斷，請稍後再試'); }
+      })
       .then(function(){ busy=false; });
   }
   load(true);
-  setInterval(function(){ if(!document.hidden && (window.innerWidth>=1600 || document.body.classList.contains('cm-open'))) load(false); },15000);
+  setInterval(function(){ if(document.hidden || Date.now()<nextAt) return; if(down || window.innerWidth>=1600 || document.body.classList.contains('cm-open')) load(false); },5000);
 })();
 </script>
 <script>
