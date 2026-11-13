@@ -6283,6 +6283,12 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     #profile.pf-rise .pfi-sh h2{animation:pfRise .6s cubic-bezier(.2,.75,.2,1) .05s both;}
     #profile.pf-rise .pfi-names h2{animation:pfRise .6s cubic-bezier(.2,.75,.2,1) .15s both;}
     #profile.pf-rise .pfi-sh .hud-label, #profile.pf-rise .pfi-sh p, #profile.pf-rise .pfi-role{animation:pfRiseFade .5s ease .25s both;}
+
+    /* divider between 工作經歷 and 求學經歷 (same as the stage dividers) */
+    #profile .pw-sub2, body.pf-sheet #profile .pw-sub2{position:relative; margin-top:64px !important;}
+    #profile .pw-sub2::before{content:""; position:absolute; left:-1px; right:0; top:-34px; height:1px; background:linear-gradient(90deg,var(--hud),rgba(120,140,220,.25) 40%,transparent);}
+    #profile .pw-sub2::after{content:""; position:absolute; left:-5px; top:-38px; width:9px; height:9px; background:var(--hud); transform:rotate(45deg); box-shadow:0 0 10px var(--hud);}
+    @media (max-width:760px){ #profile .pw-sub2, body.pf-sheet #profile .pw-sub2{margin-top:56px !important;} }
 </style>
 <script>
 /* marquee window glints (100+ looping animations) only run while the marquee is on screen */
