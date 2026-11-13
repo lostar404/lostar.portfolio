@@ -5714,7 +5714,27 @@ cm.addEventListener('click',function(){
   function closeScene(){ if(window.__scCardShut) window.__scCardShut(); clearTimeout(zt); document.body.classList.remove('pf-scene','pf-zoom','pf-sheet'); scene.setAttribute('aria-hidden','true'); }
   window.__scOpen=function(){ if(!sceneOpen()) openScene(); };
   /* header 個人簡介: open the profile page directly (the cockpit is entered through the ship avatar) */
-  if(navPf) navPf.addEventListener('click',function(){ if(sceneOpen()) closeScene(); if(isOpen()) shut(); else open(); });
+  /* header 個人簡介: a navy curtain wipes up over the page, the profile is swapped in behind it, then the curtain lifts off and the titles rise.
+     (the cockpit dashboard keeps its own zoom-in, this is only for the header button) */
+  var cur=null, curBusy=false, rdc=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function curtain(mid,rise){
+    cur=cur||document.getElementById('pfCurtain');
+    if(!cur||rdc||!cur.animate){ mid(); return; }
+    if(curBusy) return; curBusy=true;
+    var E='cubic-bezier(.76,0,.24,1)';
+    cur.style.visibility='visible';
+    cur.animate([{transform:'translateY(101%)'},{transform:'translateY(0)'}],{duration:320,easing:E,fill:'forwards'}).finished.then(function(){
+      mid();
+      if(rise&&prof){ prof.classList.remove('pf-rise'); void prof.offsetWidth; prof.classList.add('pf-rise'); setTimeout(function(){ prof.classList.remove('pf-rise'); },1100); }
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        cur.animate([{transform:'translateY(0)'},{transform:'translateY(-101%)'}],{duration:380,easing:E,fill:'forwards'}).finished.then(function(){ cur.style.visibility='hidden'; curBusy=false; });
+      }); });
+    });
+  }
+  if(navPf) navPf.addEventListener('click',function(){
+    if(isOpen()) curtain(function(){ if(sceneOpen()) closeScene(); shut(); },false);
+    else curtain(function(){ if(sceneOpen()) closeScene(); open(); },true);
+  });
   if(scClose) scClose.addEventListener('click',closeScene);
   if(scDash) scDash.addEventListener('click',function(){ if(isOpen()||document.body.classList.contains('pf-zoom')) return; document.body.classList.add('pf-zoom'); zt=setTimeout(open,520); });
 
@@ -6253,6 +6273,16 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     #scRd{pointer-events:none !important; cursor:default;}
     #scRd img{animation:none !important; filter:none !important;}
     #scRdTip{display:none !important;}
+
+    /* header 個人簡介 curtain transition */
+    #pfCurtain{position:fixed; inset:0; z-index:1400; pointer-events:none; visibility:hidden; transform:translateY(101%); background:linear-gradient(180deg,#0d1440 0%,#070a22 55%,#04050d 100%);}
+    #pfCurtain::before{content:""; position:absolute; left:0; right:0; top:0; height:2px; background:linear-gradient(90deg,transparent,var(--hud) 30%,#9db4ff 70%,transparent); box-shadow:0 0 18px var(--hud);}
+    #pfCurtain::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:linear-gradient(90deg,transparent,#9db4ff 30%,var(--hud) 70%,transparent); box-shadow:0 0 18px var(--hud);}
+    @keyframes pfRise{from{translate:0 75%; clip-path:inset(-10% 0 75% 0);} to{translate:0 0; clip-path:inset(-10% 0 -10% 0);}}
+    @keyframes pfRiseFade{from{opacity:0; translate:0 10px;} to{opacity:1; translate:0 0;}}
+    #profile.pf-rise .pfi-sh h2{animation:pfRise .6s cubic-bezier(.2,.75,.2,1) .05s both;}
+    #profile.pf-rise .pfi-names h2{animation:pfRise .6s cubic-bezier(.2,.75,.2,1) .15s both;}
+    #profile.pf-rise .pfi-sh .hud-label, #profile.pf-rise .pfi-sh p, #profile.pf-rise .pfi-role{animation:pfRiseFade .5s ease .25s both;}
 </style>
 <script>
 /* marquee window glints (100+ looping animations) only run while the marquee is on screen */
@@ -6262,5 +6292,6 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
   new IntersectionObserver(function(en){ mq.classList.toggle('mq-off',!en[0].isIntersecting); },{rootMargin:'120px'}).observe(mq);
 })();
 </script>
+<div id="pfCurtain" aria-hidden="true"></div>
 </body>
 </html>
