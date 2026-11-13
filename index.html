@@ -243,8 +243,7 @@
       rgba(210,195,225,0.16) 48%,
       rgba(190,198,235,0.10) 58%,
       transparent 68%, transparent 100%);
-    filter:blur(28px);
-    mix-blend-mode:screen;
+    filter:blur(28px);   /* no mix-blend-mode: over the near-black page it looks the same and saves a full-screen blend pass */
   }
   .star-far{
     position:fixed; inset:0; z-index:-1; pointer-events:none;
@@ -361,7 +360,6 @@
       radial-gradient(ellipse 560px 340px at 15% 82%, rgba(42,95,125,0.2), transparent 70%),
       radial-gradient(ellipse 480px 320px at 92% 75%, rgba(78,65,135,0.16), transparent 70%);
     filter:blur(55px) saturate(1.05);
-    mix-blend-mode:screen;
   }
   .vignette{
     position:fixed; inset:0; z-index:-1; pointer-events:none;
@@ -1548,6 +1546,7 @@
   .tr-door .lf.l{transform-origin:0 50%;} .tr-door .lf.r{transform-origin:100% 50%;}
   .tr-door.open .lf{transform:scaleX(.1);}
   .tr-w{animation:tr-glint 6s ease-in-out infinite;}
+  .mq.mq-off .tr-w{animation-play-state:paused;}
   @keyframes tr-glint{ 0%,100%{ opacity:.85; } 50%{ opacity:1; } }
   /* click hints: arrow under the avatar, tap icon + CLICK on the train; 6s cycle, gone after first click */
   .pl-avatar .av-hint{position:absolute; left:50%; bottom:-22px; width:14px; height:14px; margin-left:-7px; z-index:5; pointer-events:none; opacity:0; animation:hint-blink 6s ease-in-out infinite;}
@@ -1750,7 +1749,7 @@
     .vh-tilt{-webkit-mask-image:none; mask-image:none;}
   }
   /* section flow: the page colour drifts as you scroll, blocks rise in as they arrive, and a big outlined number marks each sector */
-  .scroll-tint{position:fixed; inset:0; z-index:-2; pointer-events:none; mix-blend-mode:screen;
+  .scroll-tint{position:fixed; inset:0; z-index:-2; pointer-events:none;
     --tr:70; --tg:50; --tb:150; --ta:.10;
     background:
       radial-gradient(ellipse 130% 70% at 50% 22%, rgba(var(--tr),var(--tg),var(--tb),var(--ta)), transparent 75%),
@@ -2959,7 +2958,7 @@
 
 <section class="showcase" id="showcase" aria-hidden="true" hidden>
   <div class="wrap">
-    <div class="mq" id="mq"><div class="mq-track" id="mqTrack"></div></div>
+    <div class="mq mq-off" id="mq"><div class="mq-track" id="mqTrack"></div></div>
     <div class="mq-hint" id="mqHint"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M9 9l11 4-4.5 1.8L13 19.5z" fill="#fff"/><path d="M5.2 8.2a5.5 5.5 0 0 1 2.6-4.6M3 11a8 8 0 0 1 2.2-6.2M9.4 6.2A3.2 3.2 0 0 0 7 8.5"/></svg>CLICK</div>
   </div>
 </section>
@@ -5403,7 +5402,7 @@ cm.addEventListener('click',function(){
   var hovering=false;
   var last=0, t0=performance.now();
   function frame(now){
-    if(!vis){ running=false; return; }
+    if(!vis||covered()){ running=false; return; }
     var dt=Math.min(.05,(now-last)/1000); last=now; var t=(now-t0)/1000, px, py;
     if(mouse && now-lastM<4000){ var sr=stage.getBoundingClientRect(); px=Math.max(-1,Math.min(1,((mouse.x-sr.left)/sr.width-.5)*2)); py=Math.max(-1,Math.min(1,((mouse.y-sr.top)/sr.height-.5)*2)); }
     else { px=Math.sin(t*.35)*.5; py=Math.cos(t*.28)*.35; }
@@ -5424,7 +5423,10 @@ cm.addEventListener('click',function(){
     if(reduce){ running=false; return; }
     requestAnimationFrame(frame);
   }
-  function kick(){ if(running||!vis) return; running=true; last=performance.now(); requestAnimationFrame(frame); }
+  /* the hero is hidden behind the bridge scene, the profile sheet and the work viewer: stop drawing while it is */
+  function covered(){ var c=document.body.classList, h=document.documentElement.classList; return c.contains('pf-scene')||c.contains('pf-zoom')||h.contains('lg-covered')||c.contains('pf-sheet'); }
+  function kick(){ if(running||!vis||covered()) return; running=true; last=performance.now(); requestAnimationFrame(frame); }
+  if('MutationObserver' in window){ var cmo=new MutationObserver(function(){ if(!covered()) kick(); }); cmo.observe(document.body,{attributes:true,attributeFilter:['class']}); cmo.observe(document.documentElement,{attributes:true,attributeFilter:['class']}); }
   if('IntersectionObserver' in window) new IntersectionObserver(function(en){ vis=en[0].isIntersecting; if(vis){ size(); kick(); } },{rootMargin:'80px'}).observe(stage);
   else { vis=true; kick(); }
 })();
@@ -6252,5 +6254,13 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     #scRd img{animation:none !important; filter:none !important;}
     #scRdTip{display:none !important;}
 </style>
+<script>
+/* marquee window glints (100+ looping animations) only run while the marquee is on screen */
+(function(){
+  var mq=document.getElementById('mq'); if(!mq) return;
+  if(!('IntersectionObserver' in window)){ mq.classList.remove('mq-off'); return; }
+  new IntersectionObserver(function(en){ mq.classList.toggle('mq-off',!en[0].isIntersecting); },{rootMargin:'120px'}).observe(mq);
+})();
+</script>
 </body>
 </html>
