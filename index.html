@@ -6371,50 +6371,30 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 })();
 </script>
 <style>
-/* mail icon -> small card under it showing the full address, with a copy button */
-.mail-pop{position:fixed; z-index:1500; display:none; min-width:250px; padding:12px 14px 12px; border:1px solid var(--hud); background:rgba(8,12,30,.96); box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 18px rgba(80,230,200,.18); color:var(--text);}
-.mail-pop.on{display:block; animation:mpIn .18s ease-out;}
+/* mail icon -> a small capsule under it with the full address, copied straight away */
+.mail-pop{position:fixed; z-index:1500; display:none; align-items:center; gap:10px; padding:8px 16px; border:1px solid var(--hud); border-radius:999px; background:rgba(8,12,30,.95); box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(80,230,200,.2); white-space:nowrap; pointer-events:none;}
+.mail-pop.on{display:flex; animation:mpIn .18s ease-out;}
 @keyframes mpIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
-.mail-pop::before{content:""; position:absolute; top:-6px; left:var(--ax,50%); width:10px; height:10px; margin-left:-5px; background:rgba(8,12,30,.96); border-left:1px solid var(--hud); border-top:1px solid var(--hud); transform:rotate(45deg);}
-.mail-pop small{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.2em; color:var(--hud);}
-.mail-pop .mp-row{display:flex; align-items:center; gap:10px; margin-top:6px;}
-.mail-pop .mp-addr{flex:1; font-family:var(--mono); font-size:14px; letter-spacing:.02em; color:#fff; user-select:all; -webkit-user-select:all; white-space:nowrap;}
-.mail-pop .mp-copy{flex:none; padding:5px 10px; border:1px solid var(--hud); background:rgba(80,230,200,.08); color:var(--hud); font-family:var(--mono); font-size:11px; letter-spacing:.12em; cursor:pointer;}
-.mail-pop .mp-copy:hover{background:rgba(80,230,200,.18);}
-.mail-pop .mp-copy.done{background:var(--hud); color:#06101c;}
-#pfContact #pfMail::after{display:none !important;}   /* the card shows the address now */
+.mail-pop .mp-addr{font-family:var(--mono); font-size:13px; color:#fff; letter-spacing:.02em;}
+.mail-pop .mp-ok{font-size:12px; color:var(--hud); letter-spacing:.06em;}
+#pfContact #pfMail::after{display:none !important;}
 </style>
-<div class="mail-pop" id="mailPop" role="dialog" aria-label="信箱"><small>EMAIL ・ 信箱</small><div class="mp-row"><span class="mp-addr">Lostar404@gmail.com</span><button type="button" class="mp-copy">複製</button></div></div>
+<div class="mail-pop" id="mailPop" role="status" aria-live="polite"><span class="mp-addr">Lostar404@gmail.com</span><span class="mp-ok">已複製 ✓</span></div>
 <script>
 (function(){
-  var pop=document.getElementById('mailPop'), cp=pop.querySelector('.mp-copy'), ADDR='Lostar404@gmail.com', from=null;
+  var pop=document.getElementById('mailPop'), ADDR='Lostar404@gmail.com', timer=0;
   function place(btn){
     var r=btn.getBoundingClientRect(), w=pop.offsetWidth, left=r.left+r.width/2-w/2;
-    left=Math.max(10,Math.min(left,innerWidth-w-10));
-    pop.style.left=left+'px'; pop.style.top=(r.bottom+12)+'px';
-    pop.style.setProperty('--ax',(r.left+r.width/2-left)+'px');
+    pop.style.left=Math.max(10,Math.min(left,innerWidth-w-10))+'px'; pop.style.top=(r.bottom+10)+'px';
   }
-  function open(btn){ from=btn; pop.classList.add('on'); place(btn); cp.textContent='複製'; cp.classList.remove('done'); }
-  function close(){ pop.classList.remove('on'); from=null; }
-  function copy(){
-    function done(){ cp.textContent='已複製 ✓'; cp.classList.add('done'); }
-    function fb(){ var ta=document.createElement('textarea'); ta.value=ADDR; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); done(); }catch(_){} document.body.removeChild(ta); }
-    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ADDR).then(done,fb); else fb();
-  }
-  cp.addEventListener('click',function(e){ e.stopPropagation(); copy(); });
-  /* header mail icon (all widths) and the profile's round mail icon (desktop, where it is icon-only) open the card instead of copying straight away */
+  function show(btn){ clearTimeout(timer); pop.classList.remove('on'); void pop.offsetWidth; pop.classList.add('on'); place(btn); timer=setTimeout(function(){ pop.classList.remove('on'); },2400); }
+  function copy(){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(ADDR).catch(fb); } else fb();
+    function fb(){ var ta=document.createElement('textarea'); ta.value=ADDR; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(_){} document.body.removeChild(ta); } }
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('#ctMail, #pfMail');
-    if(b && (b.id==='ctMail' || innerWidth>=961)){
-      e.preventDefault(); e.stopImmediatePropagation();
-      if(from===b) close(); else open(b);
-      return;
-    }
-    if(pop.classList.contains('on') && !pop.contains(e.target)) close();
+    if(b && (b.id==='ctMail' || innerWidth>=961)){ e.preventDefault(); e.stopImmediatePropagation(); copy(); show(b); }
   },true);
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
-  window.addEventListener('resize',function(){ if(from) place(from); });
-  window.addEventListener('scroll',function(){ if(from) place(from); },true);
+  window.addEventListener('scroll',function(){ pop.classList.remove('on'); },true);
 })();
 </script>
 </body>
