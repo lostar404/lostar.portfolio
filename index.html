@@ -2643,7 +2643,9 @@
         <div class="pfi-col"><h3>證照 <small>CERTIFICATES</small></h3>
           <div class="pf-chips"><span class="pf-chip">印前製程圖文組版 乙級</span><span class="pf-chip">印前製程圖文組版 丙級</span></div></div>
         <div class="pfi-col"><h3>裝備 ・ 軟體 <small>TOOLS</small></h3>
-          <div class="pf-chips"><span class="pf-chip">Procreate</span><span class="pf-chip">Photoshop</span><span class="pf-chip">Clip Studio Paint</span><span class="pf-chip">Illustrator</span><span class="pf-chip">Figma</span></div></div>
+          <div class="pf-chips"><span class="pf-chip">Procreate</span><span class="pf-chip">Photoshop</span><span class="pf-chip">Clip Studio Paint</span><span class="pf-chip">Illustrator</span></div>
+          <h4 class="pf-sub-h">輔助工具 <small>ASSIST</small></h4>
+          <div class="pf-chips"><span class="pf-chip">ChatGPT</span><span class="pf-chip">Claude</span><span class="pf-chip">Figma</span></div></div>
         <div class="pfi-col"><h3>可接任務 <small>SERVICES</small></h3>
           <div class="pf-chips"><span class="pf-chip">Vtuber 立繪</span><span class="pf-chip">角色設計</span><span class="pf-chip">品牌插畫</span><span class="pf-chip">LINE 貼圖</span></div></div>
       </div>
@@ -6200,6 +6202,10 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     .bh-float .bh-img{position:absolute; inset:0; width:100%; height:100%; filter:none; animation:none;}
     .bh-float .bh-hot{opacity:clamp(0, calc((var(--bh-bright,1) - 1) / .3), 1);}
     @media (prefers-reduced-motion: reduce){ .bh-float{animation:none;} }
+
+    /* 裝備・軟體 box: second row for 輔助工具 */
+    #profile .pf-sub-h{margin:12px 0 8px; font-size:var(--fs-ui); font-weight:var(--fw-semibold); color:var(--text);}
+    #profile .pf-sub-h small{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); color:var(--hud); font-weight:400; margin-left:6px;}
 </style>
 <script>
 /* marquee window glints (100+ looping animations) only run while the marquee is on screen */
