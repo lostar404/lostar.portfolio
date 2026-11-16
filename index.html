@@ -5864,7 +5864,7 @@ cm.addEventListener('click',function(){
   var boarding=false;
   ship.addEventListener('click',function(e){
     e.stopPropagation(); if(boarding) return; boarding=true;
-    if(window.__scLoad){ window.__scLoad(function(){ boarding=false; }); return; }
+    /* (the 前往飛船中 loading screen, window.__scLoad, is no longer used here: the ship flies off to the left again) */
     var r=ship.getBoundingClientRect(), sc=document.getElementById('scene'), nav=document.getElementById('navPf');
     if(reduce||!nav||!ship.animate){ if(window.__scOpen) window.__scOpen(); boarding=false; return; }
     /* ship-only flight: dash off to the left, then swoop back in from the lower-left, big and out of focus, toward the upper-right while the cockpit opens */
