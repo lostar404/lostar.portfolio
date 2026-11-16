@@ -2631,11 +2631,11 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="pfi-intro">
-        <h3 class="pfi-sub">關於我 <small>ABOUT ME</small></h3>
-        <p>高中至大學期間皆就讀多媒體設計相關科系，累積了美術繪畫與視覺設計的專業基礎，並培養出對創作的熱忱與興趣。</p>
-        <p>對我而言，創作是一段持續探索未知的旅程。正如個人創作品牌「迷航星 LOSTAR」所傳達的理念：「不因未知而停下，而因未知而啟程。」未來也希望持續突破既有的創作框架，發展更多元的設計能力與個人風格。</p>
+        <div class="pfi-intro">
+          <h3 class="pfi-sub">關於我 <small>ABOUT ME</small></h3>
+          <p>高中至大學期間皆就讀多媒體設計相關科系，累積了美術繪畫與視覺設計的專業基礎，並培養出對創作的熱忱與興趣。</p>
+          <p>對我而言，創作是一段持續探索未知的旅程。正如個人創作品牌「迷航星 LOSTAR」所傳達的理念：「不因未知而停下，而因未知而啟程。」未來也希望持續突破既有的創作框架，發展更多元的設計能力與個人風格。</p>
+        </div>
       </div>
       <div class="pfi-grid">
         <div class="pfi-col"><h3>專長 <small>SKILLS</small></h3>
@@ -6206,6 +6206,13 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     /* 裝備・軟體 box: second row for 輔助工具 */
     #profile .pf-sub-h{margin:12px 0 8px; font-size:var(--fs-ui); font-weight:var(--fw-semibold); color:var(--text);}
     #profile .pf-sub-h small{font-family:var(--mono); font-size:var(--fs-label); letter-spacing:var(--ls-label); color:var(--hud); font-weight:400; margin-left:6px;}
+
+    /* 關於我 sits under 聯絡我 in the left column */
+    body.pf-sheet #profile .pfi-head .pfi-intro{grid-column:auto; grid-row:auto; padding-top:4px; max-width:400px;}
+    body.pf-sheet #profile .pfi-head .pfi-intro p{font-size:var(--fs-ui) !important;}
+    body.pf-sheet #profile .pfi-grid{grid-row:2 !important; padding-top:6px !important;}
+    body.pf-sheet #profile .pfi-stats{grid-row:3 !important;}
+    body.pf-sheet #profile .pfi-work{grid-row:4 !important;}
 </style>
 <script>
 /* marquee window glints (100+ looping animations) only run while the marquee is on screen */
