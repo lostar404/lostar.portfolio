@@ -6218,6 +6218,11 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
       #pfContact .pf-mi:hover::after, #pfContact .pf-mi:focus-visible::after{opacity:1;}
       #pfContact #pfMail.copied::after{content:"已複製 ✓"; opacity:1;}
     }
+
+    /* 航行紀錄 route stars: brighter (white core, mint glow, soft halo) */
+    #profile .pf-tl .rt-node, .pf-tl .rt-node{width:26px; height:26px; margin:-13px 0 0 -13px; color:#f4fffb !important; filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 10px rgba(143,227,199,.95)) drop-shadow(0 0 22px rgba(120,170,255,.6));}
+    .rt-node::before{content:""; position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; border-radius:50%; background:radial-gradient(circle,rgba(143,227,199,.35) 0%,rgba(143,227,199,.12) 45%,transparent 70%); border:1px solid rgba(143,227,199,.45);}
+    .rt-node svg{position:relative;}
 </style>
 <script>
 /* marquee window glints (100+ looping animations) only run while the marquee is on screen */
