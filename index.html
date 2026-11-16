@@ -6233,5 +6233,142 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 })();
 </script>
 <div id="pfCurtain" aria-hidden="true"></div>
+<style>
+/* depth gauge in the planet pages' left gutter.
+   One pose at a time (stand / fall back / upside-down) sits in the middle of the gutter with a line above and below;
+   the pose changes only when the reader scrolls into that third of the page. */
+.lg-depth{position:fixed; z-index:6; top:50%; display:none; flex-direction:column; align-items:center; gap:14px; transform:translate(-50%,-50%); pointer-events:none;}
+.lg.open .lg-depth.fits{display:flex;}
+.lg-depth .ld-line{width:1px; height:clamp(70px,16vh,170px); background:linear-gradient(180deg,transparent,rgba(141,182,255,.55));}
+.lg-depth .ld-line.dn{background:linear-gradient(180deg,rgba(141,182,255,.55),transparent);}
+.lg-depth .ld-fig{position:relative; width:var(--ldw,170px); aspect-ratio:1054/1492;}
+.lg-depth .ld-fig img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:0; filter:drop-shadow(0 0 14px rgba(157,180,255,.5));}
+.lg-depth .ld-fig img.on{opacity:1;}
+/* splash: ripples on the star-sea surface under his back when he falls into pose 2.
+   The surface runs along his body (about 48deg, feet top-left -> head bottom-right) and is seen at a slant, so the rings are flattened ellipses on that line. */
+.lg-depth .ld-fx{position:absolute; inset:0; overflow:visible; pointer-events:none; z-index:0;}
+.lg-depth .ld-fig img{z-index:1;}
+.lg-depth .ld-fx ellipse{transform-box:fill-box; transform-origin:center; fill:none; stroke:#cdf6ff; opacity:0; filter:drop-shadow(0 0 3px rgba(143,227,199,.9));}
+.lg-depth .ld-fx circle{transform-box:fill-box; transform-origin:center; fill:#e8fff8; opacity:0;}
+.lg-depth .ld-crack{position:absolute; inset:0; overflow:visible; pointer-events:none; z-index:0; opacity:0; transition:opacity .5s ease, transform .6s cubic-bezier(.45,0,.3,1);}
+.lg-depth .ld-crack.on{opacity:1;}
+.lg-depth .ld-crack path{transform-box:fill-box; transform-origin:center; fill:none; stroke:#dff6ff; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 2px rgba(143,227,199,.9));}
+.lg-depth .ld-crack .glare{fill:url(#ldGlare); stroke:none; filter:none;}
+.lg-depth .ld-crack .cr-hole{fill:#04050d; fill-opacity:.95; stroke:#f2fbff;}
+.lg-depth .ld-shard{position:absolute; z-index:2; width:var(--s,8px); height:calc(var(--s,8px)*1.4); background:linear-gradient(135deg,#ffffff,#bfe9ff 60%,rgba(191,233,255,.35)); clip-path:polygon(50% 0,100% 70%,20% 100%); filter:drop-shadow(0 0 3px rgba(143,227,199,.9)); pointer-events:none; opacity:0;}
+@media (prefers-reduced-motion:reduce){ .lg-depth .ld-fig img{transition:opacity .2s;} }
+</style>
+<script>
+(function(){
+  var dt=document.getElementById('detail'), main=document.getElementById('lgMain'); if(!dt||!main) return;
+  var SRC=['images/sil-1.webp','images/sil-2.webp','images/sil-3.webp'];
+  /* viewBox = the silhouette canvas (1054x1492). Rings sit on the surface just under his back. */
+  var CX=520, CY=1120, ROT=0;
+  var FX='<svg class="ld-fx" viewBox="0 0 1054 1492" aria-hidden="true"><g transform="translate('+CX+' '+CY+') rotate('+ROT+') scale(1 .24)">'
+    +[0,1,2,3].map(function(k){return '<ellipse class="rp" cx="0" cy="0" rx="560" ry="560" stroke-width="'+(22-k*4)+'"/>';}).join('')
+    +'</g><g transform="translate('+CX+' '+CY+') rotate('+ROT+')">'
+    +[[-330,-60,16],[-170,-120,12],[40,-150,14],[230,-100,11],[380,-30,9],[-420,0,9],[120,-60,8]].map(function(d){return '<circle class="dp" cx="'+d[0]+'" cy="'+d[1]+'" r="'+d[2]+'"/>';}).join('')
+    +'</g></svg>';
+  var g=document.createElement('div'); g.className='lg-depth'; g.setAttribute('aria-hidden','true');
+  g.innerHTML='<i class="ld-line"></i><div class="ld-fig">'+FX+SRC.map(function(s,i){return '<img loading="lazy" decoding="async" alt="" src="'+s+'"'+(i?'':' class="on"')+'>';}).join('')+'</div><i class="ld-line dn"></i>';
+  dt.appendChild(g);
+  g.querySelector('.ld-fig').insertAdjacentHTML('afterbegin',crackSVG());
+  var imgs=[].slice.call(g.querySelectorAll('img')), cur=0, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function place(){
+    var r=main.getBoundingClientRect(), pad=parseFloat(getComputedStyle(main).paddingLeft)||0, gut=r.left+pad;
+    var w=Math.min(172, gut*.6);
+    g.classList.toggle('fits', gut>=180 && innerWidth>960);
+    g.style.left=(gut/2)+'px'; g.style.setProperty('--ldw', w+'px');
+  }
+  function show(n, instant){
+    if(n===cur){ if(MODE==='glass') crack(n===1,false); return; }
+    var a=imgs[cur], b=imgs[n], dir=n>cur?1:-1; cur=n;
+    imgs.forEach(function(im){ im.classList.remove('on'); });
+    b.classList.add('on');
+    if(instant||reduce||!b.animate){ if(MODE==='glass') crack(n===1,false); return; }
+    var E='cubic-bezier(.45,0,.3,1)';
+    a.animate([{transform:'rotate(0deg) scale(1)',opacity:1},{transform:'rotate('+(dir*50)+'deg) scale(.94)',opacity:0}],{duration:560,easing:E});
+    b.animate([{transform:'rotate('+(-dir*50)+'deg) scale(.94)',opacity:0},{transform:'rotate(0deg) scale(1)',opacity:1}],{duration:560,easing:E});
+    if(MODE==='glass'){ crack(n===1, n===1 && dir>0); if(n===1) shards(dir>0); }   /* glass belongs to the lying pose only: shatter once on the way down, shards fall; coming back up from below, the pane is already broken and shards drift up */
+    else if(n===1) splash(false); else if(dir<0 && n===0) splash(true);   /* he crosses the surface both ways: falling in, and rising back out */
+  }
+
+  /* glass: a cracked pane lying flat under his back (same perspective as the ripples), drawn in when he lands and left in place */
+  var MODE='glass';
+  function rnd(seed){ return function(){ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; }; }
+  function crackSVG(){
+    var R=rnd(404), rays=[], N=7, d='', d2='', hole=[], HN=14;
+    /* the hole he punched through: a jagged opening in the middle of the pane */
+    for(var h=0;h<HN;h++){ var ha=(h/HN)*Math.PI*2+(R()-.5)*.25, hr=(h%2?150:210)+R()*45; hole.push([Math.cos(ha)*hr,Math.sin(ha)*hr,ha,hr]); }
+    var holeD='M'+hole.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' L')+' Z';
+    for(var i=0;i<N;i++){
+      var a=(i/N)*Math.PI*2+(R()-.5)*.4, r=230, L=470+R()*260, pts=[[Math.cos(a)*r,Math.sin(a)*r]];
+      while(r<L){ r+=70+R()*90; var j=a+(R()-.5)*.24; pts.push([Math.cos(j)*Math.min(r,L), Math.sin(j)*Math.min(r,L)]); }
+      rays.push(pts); d+='M'+pts.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' L');
+    }
+    /* web: short broken arcs joining neighbouring rays at two radii */
+    [0.5].forEach(function(f,ri){
+      for(var i=0;i<N;i++){
+        if(R()<.45) continue;
+        var A=rays[i], B=rays[(i+1)%N], ia=Math.max(1,Math.round((A.length-1)*f)), ib=Math.max(1,Math.round((B.length-1)*(f+(R()-.5)*.15)));
+        var p=A[Math.min(ia,A.length-1)], q=B[Math.min(ib,B.length-1)], mx=(p[0]+q[0])/2*(1+(R()-.5)*.12), my=(p[1]+q[1])/2*(1+(R()-.5)*.12);
+        d2+='M'+p[0].toFixed(1)+' '+p[1].toFixed(1)+' L'+mx.toFixed(1)+' '+my.toFixed(1)+' L'+q[0].toFixed(1)+' '+q[1].toFixed(1);
+      }
+    });
+    return '<svg class="ld-crack" viewBox="0 0 1054 1492" aria-hidden="true"><defs><radialGradient id="ldGlare"><stop offset="0" stop-color="#cfefff" stop-opacity=".22"/><stop offset="1" stop-color="#cfefff" stop-opacity="0"/></radialGradient></defs>'
+      +'<g transform="translate('+CX+' '+CY+') scale(1 .3)"><ellipse class="glare" cx="0" cy="0" rx="480" ry="480"/>'
+      +'<path class="cr-hole" vector-effect="non-scaling-stroke" stroke-width="1.8" d="'+holeD+'"/>'
+      +'<path class="cr-main" pathLength="1" vector-effect="non-scaling-stroke" stroke-width="1.6" d="'+d+'"/>'
+      +'<path class="cr-web" pathLength="1" vector-effect="non-scaling-stroke" stroke-width="1" d="'+d2+'"/></g></svg>';
+  }
+  function crack(on, draw){
+    var c=g.querySelector('.ld-crack'); if(!c) return;
+    c.classList.toggle('on',on);
+    if(on && draw && !reduce){
+      var m=c.querySelector('.cr-main'), w=c.querySelector('.cr-web'), gl=c.querySelector('.glare');
+      m.animate([{strokeDasharray:'0 1'},{strokeDasharray:'1 0'}],{duration:420,delay:280,easing:'cubic-bezier(.2,.8,.3,1)',fill:'both'});
+      w.animate([{strokeDasharray:'0 1'},{strokeDasharray:'1 0'}],{duration:380,delay:560,easing:'ease-out',fill:'both'});
+      gl.animate([{opacity:0},{opacity:1,offset:.2},{opacity:.6}],{duration:900,delay:280,fill:'both'});
+      c.querySelector('.cr-hole').animate([{transform:'scale(.3)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:260,delay:260,easing:'cubic-bezier(.2,.9,.3,1.2)',fill:'both'});
+    }
+  }
+  /* a few loose shards: they fall when he sinks further, and drift back up when the reader scrolls up */
+  function shards(down){
+    if(reduce) return;
+    var fig=g.querySelector('.ld-fig'), W=fig.clientWidth, H=fig.clientHeight, R=Math.random, n=6+Math.floor(R()*3);
+    var cx=W*CX/1054, cy=H*CY/1492;
+    for(var i=0;i<n;i++){
+      var e=document.createElement('i'); e.className='ld-shard'; var sz=4+R()*7; e.style.setProperty('--s',sz+'px');
+      var x0=cx+(R()-.5)*W*.9, y0=cy+(R()-.5)*H*.08; e.style.left=x0+'px'; e.style.top=y0+'px'; fig.appendChild(e);
+      var dy=(down?1:-1)*(70+R()*120), dx=(R()-.5)*40, rot=(R()-.5)*540, dl=R()*260;
+      e.animate([{transform:'translate(0,0) rotate(0deg)',opacity:0},{opacity:1,offset:.15},{opacity:.9,offset:.7},{transform:'translate('+dx+'px,'+dy+'px) rotate('+rot+'deg)',opacity:0}],
+        {duration:1100+R()*600,delay:dl,easing:down?'cubic-bezier(.4,0,.8,.6)':'cubic-bezier(.2,.5,.4,1)',fill:'both'}).onfinish=function(){ this.effect.target.remove(); };
+    }
+  }
+  function splash(atFeet){
+    var fx=g.querySelector('.ld-fx'); fx.style.transform=atFeet?'translateY(20%)':'';   /* rising back out: the surface is at his feet */
+    var rings=[].slice.call(g.querySelectorAll('.ld-fx .rp')), drops=[].slice.call(g.querySelectorAll('.ld-fx .dp'));
+    rings.forEach(function(r,k){
+      r.animate([{transform:'scale(.15)',opacity:0},{transform:'scale(.35)',opacity:1,offset:.12},{transform:'scale(1.15)',opacity:0}],{duration:1500,delay:300+k*170,easing:'cubic-bezier(.15,.6,.3,1)',fill:'both'});
+    });
+    drops.forEach(function(d,k){
+      var up=-(18+(k%3)*12);
+      d.animate([{transform:'translate(0,0)',opacity:0},{transform:'translate(0,'+(up*.6)+'px)',opacity:1,offset:.35},{transform:'translate(0,'+up+'px)',opacity:0}],{duration:800,delay:320+k*30,easing:'cubic-bezier(.2,.7,.4,1)',fill:'both'});
+    });
+  }
+  window.__ldSplash=splash;
+  function stage(){
+    var max=dt.scrollHeight-dt.clientHeight; if(max<=0) return 0;
+    var f=dt.scrollTop/max; return f<1/3?0:(f<2/3?1:2);
+  }
+  var tick=false;
+  dt.addEventListener('scroll',function(){ if(tick) return; tick=true; requestAnimationFrame(function(){ tick=false; show(stage()); }); },{passive:true});
+  window.addEventListener('resize',place);
+  /* every time a planet page opens (or the pager switches planet), start again from the standing pose */
+  new MutationObserver(function(){ if(dt.classList.contains('open')){ place(); show(stage(),true); } }).observe(dt,{attributes:true,attributeFilter:['class']});
+  var lbl=document.getElementById('dtName'); if(lbl) new MutationObserver(function(){ requestAnimationFrame(function(){ place(); show(stage(),true); }); }).observe(lbl,{childList:true,characterData:true,subtree:true});
+  place();
+})();
+</script>
 </body>
 </html>
