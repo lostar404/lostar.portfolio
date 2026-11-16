@@ -5242,7 +5242,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!menu.hidde
 menu.addEventListener('click',function(e){if(e.target.closest('a'))setTimeout(function(){set(false);},0);});
 if(cp)cp.addEventListener('click',function(){
   var t='Lostar404@gmail.com',lab=cp.firstChild;
-  function done(){var v=cp.querySelector('.pf-mv'),o=v.textContent;v.textContent='已複製 ✓';setTimeout(function(){v.textContent=o;},1400);}
+  function done(){var v=cp.querySelector('.pf-mv'),o=v.textContent;v.textContent='已複製 ✓';cp.classList.add('copied');setTimeout(function(){v.textContent=o;cp.classList.remove('copied');},1400);}
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){fallback();});}else fallback();
   function fallback(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(_){}document.body.removeChild(ta);}
 });
@@ -6213,6 +6213,20 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     body.pf-sheet #profile .pfi-grid{grid-row:2 !important; padding-top:6px !important;}
     body.pf-sheet #profile .pfi-stats{grid-row:3 !important;}
     body.pf-sheet #profile .pfi-work{grid-row:4 !important;}
+
+    /* desktop profile: no 聯絡我 dropdown, the two contacts sit as round icons */
+    @media (min-width:961px){
+      #pfContactBtn{display:none !important;}
+      #pfContact{margin-bottom:16px;}
+      #pfContact .pf-menu, #pfContact .pf-menu[hidden]{display:flex !important; gap:12px; position:static !important; width:auto !important; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important;}
+      #pfContact .pf-mi{position:relative; width:46px !important; height:46px; padding:0 !important; margin:0; justify-content:center !important; border:1px solid var(--hud); border-radius:50%; background:var(--hud-08); transition:background .2s ease, box-shadow .2s ease;}
+      #pfContact .pf-mi:hover, #pfContact .pf-mi:focus-visible{background:rgba(80,230,200,.18); box-shadow:0 0 14px rgba(80,230,200,.35);}
+      #pfContact .pf-mk{width:20px; height:20px;}
+      #pfContact .pf-mv{display:none;}
+      #pfContact .pf-mi::after{content:attr(title); position:absolute; left:50%; top:calc(100% + 8px); transform:translateX(-50%); white-space:nowrap; font-family:var(--mono); font-size:var(--fs-micro); letter-spacing:var(--ls-label); color:var(--hud); opacity:0; pointer-events:none; transition:opacity .2s ease;}
+      #pfContact .pf-mi:hover::after, #pfContact .pf-mi:focus-visible::after{opacity:1;}
+      #pfContact #pfMail.copied::after{content:"已複製 ✓"; opacity:1;}
+    }
 </style>
 <script>
 /* marquee window glints (100+ looping animations) only run while the marquee is on screen */
