@@ -6372,10 +6372,12 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 </script>
 <style>
 /* mail icon -> a small capsule under it with the full address, copied straight away */
-.mail-pop{position:fixed; z-index:1500; display:none; align-items:center; gap:10px; padding:8px 16px; border:1px solid var(--hud); border-radius:999px; background:rgba(8,12,30,.95); box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(80,230,200,.2); white-space:nowrap; pointer-events:none;}
+.mail-pop{position:fixed; z-index:1500; display:none; align-items:center; gap:10px; padding:8px 16px; border:1px solid var(--hud); border-radius:999px; background:rgba(8,12,30,.95); box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(80,230,200,.2); white-space:nowrap; pointer-events:auto; cursor:text;}
 .mail-pop.on{display:flex; animation:mpIn .18s ease-out;}
 @keyframes mpIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
-.mail-pop .mp-addr{font-family:var(--mono); font-size:13px; color:#fff; letter-spacing:.02em;}
+.mail-pop .mp-addr{font-family:var(--mono); font-size:13px; color:#fff; letter-spacing:.02em; user-select:text; -webkit-user-select:text;}
+.mail-pop .mp-addr::selection{background:var(--hud); color:#06101c;}
+.mail-pop .mp-ok{user-select:none; -webkit-user-select:none;}
 .mail-pop .mp-ok{font-size:12px; color:var(--hud); letter-spacing:.06em;}
 #pfContact #pfMail::after{display:none !important;}
 </style>
@@ -6387,13 +6389,17 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     var r=btn.getBoundingClientRect(), w=pop.offsetWidth, left=r.left+r.width/2-w/2;
     pop.style.left=Math.max(10,Math.min(left,innerWidth-w-10))+'px'; pop.style.top=(r.bottom+10)+'px';
   }
-  function show(btn){ clearTimeout(timer); pop.classList.remove('on'); void pop.offsetWidth; pop.classList.add('on'); place(btn); timer=setTimeout(function(){ pop.classList.remove('on'); },2400); }
+  /* stays while the pointer is on it or text in it is selected (so the address can be selected by mouse), otherwise fades after a few seconds; a click elsewhere closes it */
+  function hide(){ if(pop.matches(':hover')){ timer=setTimeout(hide,800); return; } var sel=getSelection&&getSelection(); if(sel&&!sel.isCollapsed&&pop.contains(sel.anchorNode)){ timer=setTimeout(hide,800); return; } pop.classList.remove('on'); }
+  function show(btn){ clearTimeout(timer); pop.classList.remove('on'); void pop.offsetWidth; pop.classList.add('on'); place(btn); timer=setTimeout(hide,3500); }
   function copy(){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(ADDR).catch(fb); } else fb();
     function fb(){ var ta=document.createElement('textarea'); ta.value=ADDR; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(_){} document.body.removeChild(ta); } }
   document.addEventListener('click',function(e){
     var b=e.target.closest&&e.target.closest('#ctMail, #pfMail');
-    if(b && (b.id==='ctMail' || innerWidth>=961)){ e.preventDefault(); e.stopImmediatePropagation(); copy(); show(b); }
+    if(b && (b.id==='ctMail' || innerWidth>=961)){ e.preventDefault(); e.stopImmediatePropagation(); copy(); show(b); return; }
+    if(pop.classList.contains('on') && !pop.contains(e.target)){ clearTimeout(timer); pop.classList.remove('on'); }
   },true);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') pop.classList.remove('on'); });
   window.addEventListener('scroll',function(){ pop.classList.remove('on'); },true);
 })();
 </script>
