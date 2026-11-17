@@ -3683,16 +3683,17 @@
     }
     function addSeries(name, meta, stickers){ pushSeries(STICKER_NAME, name, meta, stickers, '貼圖系列'); }
     // metaverse: addCharacterSeries('角色名稱', { year:'2026', desc:'角色／系列說明', cover:'(選填) 封面圖', pinned:false }, [ { src:'…', title:'' }, … ]);
+    var AI_NOTE = '使用 Midjourney 依照草稿生成初步人物形象，再依照人物設定修改、重繪。';
     function addCharacterSeries(name, meta, works){ pushSeries(META_NAME, name, meta, works, '角色系列'); }
     addCharacterSeries('許願神．新輝', { year: '', desc: '大學畢業專題《願の神社》的虛擬角色。由我負責角色形象設計與故事主軸發想，並包辦專題的全部 2D 美術：角色美術圖、2D Live 繪製與拆件、直播封面圖。' }, [
       { src: 'images/img-97a63c4a41.webp' },
       { src: 'images/img-b1790d263b.webp' },
       { src: 'images/img-bb3289a955.webp' },
       { src: 'images/img-883046bbe5.webp' },
-      { src: 'images/img-8930c158be.webp' },
-      { src: 'images/img-0fe1611205.webp' },
-      { src: 'images/img-c618887aef.webp' },
-      { src: 'images/img-5361f20373.webp' },
+      { src: 'images/img-8930c158be.webp', ai: true },
+      { src: 'images/img-0fe1611205.webp', ai: true },
+      { src: 'images/img-c618887aef.webp', ai: true },
+      { src: 'images/img-5361f20373.webp', ai: true },
       { src: 'images/img-a2c282af93.webp', title: '新輝 Q版 動圖' }
     ]);
     addCharacterSeries('星鯊．魚', { year: '', desc: '' }, [
@@ -3966,6 +3967,7 @@
         var cnt = document.createElement('span'); cnt.textContent = (s.stickers.length || 0) + ' ' + cfg.label + (s.year ? ' · ' + s.year : ''); meta.appendChild(cnt);
         if(s.url){ var a = document.createElement('a'); a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = (s.platform || '前往') + ' ↗'; meta.appendChild(a); }
         info.appendChild(meta);
+        if(s.stickers.some(function(x){ return x.ai; })){ var an = document.createElement('p'); an.className = 'ai-note'; an.innerHTML = '<span class="ai-tag">AI 輔助</span>標示的作品：' + AI_NOTE; info.appendChild(an); }
         bodyEl.appendChild(info);
         var tb = ownToolbar(s, series, stars[i].zh, true); if(tb){ tb.style.marginTop = '0'; tb.style.marginBottom = '18px'; bodyEl.appendChild(tb); }
         var fit = stars[i].zh !== STICKER_NAME;
@@ -3977,8 +3979,9 @@
             var im = document.createElement('img'); im.alt = st.title || ''; im.loading = 'lazy'; im.src = st.src;
             if(fit){ (function(c, m, st){ function setAR(){ if(m.naturalWidth && m.naturalHeight){ st._ar = (m.naturalWidth / m.naturalHeight).toFixed(4); c.style.setProperty('--ar', st._ar); } fitUniform(grid); } if(st._ar){ c.style.setProperty('--ar', st._ar); m.addEventListener('load', setAR); } else if(m.complete) setAR(); else m.addEventListener('load', setAR); })(cell, im, st); }
             cell.appendChild(im);
+            if(st.ai){ var ab = document.createElement('span'); ab.className = 'ai-tag'; ab.textContent = 'AI 輔助'; cell.appendChild(ab); }
             cell.addEventListener('click', function(){
-              lbOpen(s.stickers.map(function(x, m){ return { src: x.src, title: x.title || (s.name + ' · ' + (m + 1) + ' / ' + s.stickers.length), year: '', medium: '', desc: '' }; }), n);
+              lbOpen(s.stickers.map(function(x, m){ return { src: x.src, title: x.title || (s.name + ' · ' + (m + 1) + ' / ' + s.stickers.length), year: '', medium: x.ai ? 'AI 輔助繪圖' : '', desc: x.ai ? AI_NOTE : '' }; }), n);
             });
             grid.appendChild(cell);
           });
@@ -6396,6 +6399,12 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 
     /* Space Mono draws a stylised @; accounts read better in the sans face */
     #pfContact .pf-mv{font-family:var(--sans) !important;}
+
+    /* AI-assisted works: small tag on the tile + a note under the series description */
+    .stk-cell .ai-tag{position:absolute; left:8px; top:8px; z-index:2;}
+    .ai-tag{display:inline-block; padding:2px 8px; border:1px solid var(--hud); border-radius:999px; background:rgba(6,12,28,.82); color:var(--hud); font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:.06em; line-height:1.5; pointer-events:none;}
+    .ai-note{margin-top:10px; font-size:var(--fs-meta,13px); color:var(--muted); line-height:1.7;}
+    .ai-note .ai-tag{margin-right:6px; vertical-align:1px;}
 </style>
 <div class="mail-pop" id="mailPop" role="status" aria-live="polite"><span class="mp-addr">Lostar404@gmail.com</span><span class="mp-ok">已複製 ✓</span></div>
 <script>
