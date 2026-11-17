@@ -6380,6 +6380,19 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 .mail-pop .mp-ok{user-select:none; -webkit-user-select:none;}
 .mail-pop .mp-ok{font-size:12px; color:var(--hud); letter-spacing:.06em;}
 #pfContact #pfMail::after{display:none !important;}
+
+    /* profile contacts (desktop): icon + account, mail above IG, left-aligned */
+    @media (min-width:961px){
+      #pfContact .pf-menu, #pfContact .pf-menu[hidden]{flex-direction:column !important; align-items:flex-start !important; gap:10px !important;}
+      #pfContact .pf-mi{width:auto !important; height:auto; gap:12px; padding:0 !important; border:0; border-radius:0; background:none; justify-content:flex-start !important; color:var(--text); cursor:pointer;}
+      #pfContact .pf-mi:hover, #pfContact .pf-mi:focus-visible{background:none; box-shadow:none;}
+      #pfContact .pf-mk{flex:none; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border:1px solid var(--hud); border-radius:50%; background:var(--hud-08); transition:background .2s ease, box-shadow .2s ease;}
+      #pfContact .pf-mk svg{width:17px; height:17px;}
+      #pfContact .pf-mi:hover .pf-mk, #pfContact .pf-mi:focus-visible .pf-mk{background:rgba(80,230,200,.18); box-shadow:0 0 12px rgba(80,230,200,.35);}
+      #pfContact .pf-mv{display:inline !important; font-family:var(--mono); font-size:var(--fs-ui); letter-spacing:.02em; color:var(--text); user-select:text; -webkit-user-select:text;}
+      #pfContact .pf-mi:hover .pf-mv{color:var(--hud);}
+      #pfContact #pfMail.copied .pf-mv{color:var(--hud);}
+    }
 </style>
 <div class="mail-pop" id="mailPop" role="status" aria-live="polite"><span class="mp-addr">Lostar404@gmail.com</span><span class="mp-ok">已複製 ✓</span></div>
 <script>
@@ -6395,8 +6408,8 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
   function copy(){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(ADDR).catch(fb); } else fb();
     function fb(){ var ta=document.createElement('textarea'); ta.value=ADDR; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(_){} document.body.removeChild(ta); } }
   document.addEventListener('click',function(e){
-    var b=e.target.closest&&e.target.closest('#ctMail, #pfMail');
-    if(b && (b.id==='ctMail' || innerWidth>=961)){ e.preventDefault(); e.stopImmediatePropagation(); copy(); show(b); return; }
+    var b=e.target.closest&&e.target.closest('#ctMail');
+    if(b){ e.preventDefault(); e.stopImmediatePropagation(); copy(); show(b); return; }
     if(pop.classList.contains('on') && !pop.contains(e.target)){ clearTimeout(timer); pop.classList.remove('on'); }
   },true);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') pop.classList.remove('on'); });
