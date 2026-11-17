@@ -6375,7 +6375,7 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
 .mail-pop{position:fixed; z-index:1500; display:none; align-items:center; gap:10px; padding:8px 16px; border:1px solid var(--hud); border-radius:999px; background:rgba(8,12,30,.95); box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 16px rgba(80,230,200,.2); white-space:nowrap; pointer-events:auto; cursor:text;}
 .mail-pop.on{display:flex; animation:mpIn .18s ease-out;}
 @keyframes mpIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
-.mail-pop .mp-addr{font-family:var(--mono); font-size:13px; color:#fff; letter-spacing:.02em; user-select:text; -webkit-user-select:text;}
+.mail-pop .mp-addr{font-family:var(--sans); font-size:14px; color:#fff; letter-spacing:.01em; user-select:text; -webkit-user-select:text;}
 .mail-pop .mp-addr::selection{background:var(--hud); color:#06101c;}
 .mail-pop .mp-ok{user-select:none; -webkit-user-select:none;}
 .mail-pop .mp-ok{font-size:12px; color:var(--hud); letter-spacing:.06em;}
@@ -6389,10 +6389,13 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
       #pfContact .pf-mk{flex:none; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border:1px solid var(--hud); border-radius:50%; background:var(--hud-08); transition:background .2s ease, box-shadow .2s ease;}
       #pfContact .pf-mk svg{width:17px; height:17px;}
       #pfContact .pf-mi:hover .pf-mk, #pfContact .pf-mi:focus-visible .pf-mk{background:rgba(80,230,200,.18); box-shadow:0 0 12px rgba(80,230,200,.35);}
-      #pfContact .pf-mv{display:inline !important; font-family:var(--mono); font-size:var(--fs-ui); letter-spacing:.02em; color:var(--text); user-select:text; -webkit-user-select:text;}
+      #pfContact .pf-mv{display:inline !important; font-family:var(--sans); font-size:var(--fs-ui); letter-spacing:.01em; color:var(--text); user-select:text; -webkit-user-select:text;}
       #pfContact .pf-mi:hover .pf-mv{color:var(--hud);}
       #pfContact #pfMail.copied .pf-mv{color:var(--hud);}
     }
+
+    /* Space Mono draws a stylised @; accounts read better in the sans face */
+    #pfContact .pf-mv{font-family:var(--sans) !important;}
 </style>
 <div class="mail-pop" id="mailPop" role="status" aria-live="polite"><span class="mp-addr">Lostar404@gmail.com</span><span class="mp-ok">已複製 ✓</span></div>
 <script>
