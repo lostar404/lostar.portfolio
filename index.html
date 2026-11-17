@@ -3967,7 +3967,6 @@
         var cnt = document.createElement('span'); cnt.textContent = (s.stickers.length || 0) + ' ' + cfg.label + (s.year ? ' · ' + s.year : ''); meta.appendChild(cnt);
         if(s.url){ var a = document.createElement('a'); a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = (s.platform || '前往') + ' ↗'; meta.appendChild(a); }
         info.appendChild(meta);
-        if(s.stickers.some(function(x){ return x.ai; })){ var an = document.createElement('p'); an.className = 'ai-note'; an.innerHTML = '<span class="ai-tag">AI 輔助</span>標示的作品：' + AI_NOTE; info.appendChild(an); }
         bodyEl.appendChild(info);
         var tb = ownToolbar(s, series, stars[i].zh, true); if(tb){ tb.style.marginTop = '0'; tb.style.marginBottom = '18px'; bodyEl.appendChild(tb); }
         var fit = stars[i].zh !== STICKER_NAME;
@@ -3979,7 +3978,7 @@
             var im = document.createElement('img'); im.alt = st.title || ''; im.loading = 'lazy'; im.src = st.src;
             if(fit){ (function(c, m, st){ function setAR(){ if(m.naturalWidth && m.naturalHeight){ st._ar = (m.naturalWidth / m.naturalHeight).toFixed(4); c.style.setProperty('--ar', st._ar); } fitUniform(grid); } if(st._ar){ c.style.setProperty('--ar', st._ar); m.addEventListener('load', setAR); } else if(m.complete) setAR(); else m.addEventListener('load', setAR); })(cell, im, st); }
             cell.appendChild(im);
-            if(st.ai){ var ab = document.createElement('span'); ab.className = 'ai-tag'; ab.textContent = 'AI 輔助'; cell.appendChild(ab); }
+            if(st.ai){ var ac = document.createElement('span'); ac.className = 'ai-cap'; ac.innerHTML = '<b>AI 輔助繪圖</b>'; ac.appendChild(document.createTextNode(AI_NOTE)); cell.appendChild(ac); }
             cell.addEventListener('click', function(){
               lbOpen(s.stickers.map(function(x, m){ return { src: x.src, title: x.title || (s.name + ' · ' + (m + 1) + ' / ' + s.stickers.length), year: '', medium: x.ai ? 'AI 輔助繪圖' : '', desc: x.ai ? AI_NOTE : '' }; }), n);
             });
@@ -6405,6 +6404,12 @@ new MutationObserver(sync).observe(B,{attributes:true,attributeFilter:['class']}
     .ai-tag{display:inline-block; padding:2px 8px; border:1px solid var(--hud); border-radius:999px; background:rgba(6,12,28,.82); color:var(--hud); font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:.06em; line-height:1.5; pointer-events:none;}
     .ai-note{margin-top:10px; font-size:var(--fs-meta,13px); color:var(--muted); line-height:1.7;}
     .ai-note .ai-tag{margin-right:6px; vertical-align:1px;}
+
+    /* AI-assisted works: the note sits right under the picture */
+    .stk-cell .ai-cap{display:block; position:relative; z-index:1; padding:10px 4px 2px; background:var(--bg,#05060f); text-align:left; font-family:var(--sans); font-size:12.5px; line-height:1.6; letter-spacing:.01em; color:var(--muted); white-space:normal; cursor:zoom-in;}
+    .stk-cell .ai-cap b{display:block; margin-bottom:2px; color:var(--hud); font-size:12px; font-weight:600; letter-spacing:.08em;}
+    .stk-grid.is-fit .stk-cell:has(.ai-cap){overflow:visible;}
+    .stk-grid.is-fit .stk-cell:has(.ai-cap):hover{transform:none;}
 </style>
 <div class="mail-pop" id="mailPop" role="status" aria-live="polite"><span class="mp-addr">Lostar404@gmail.com</span><span class="mp-ok">已複製 ✓</span></div>
 <script>
